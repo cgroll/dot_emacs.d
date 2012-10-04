@@ -1,0 +1,432 @@
+* Text behaviour
+** Default major-mode
+Usually, I tend to spend nearly all of my time in org-mode.
+#+BEGIN_SRC emacs-lisp
+  (setq default-major-mode 'org-mode)
+#+END_SRC
+** Auto-fill: automount line breaks
+Auto-fill-mode enables automatic line breaks. I will set the automatic
+line break to a value of 69, thereby omitting line wrapping even on
+small screen-widths like on netbooks, or at screens with low
+resolution.
+
+Auto-fill-mode should basicly be started automatically for any major
+skdlf mode. However, some special modes like minibuffer mode should be
+excluded, so that the way to go here is with mode hooks for basically
+any mode that is relevant for me.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  (add-hook 'fundamental-mode-hook 'turn-on-auto-fill)
+  (add-hook 'ess-mode-hook 'turn-on-auto-fill)
+  (add-hook 'emacs-lisp-mode-hook 'turn-on-auto-fill)
+  (add-hook 'message-mode-hook 'turn-on-auto-fill)
+  (setq fill-column 69)
+#+END_SRC
+** Ex-post paragraph filling
+A complete paragraph can be filled by default with "M-q".
+
+** Delete-selection-mode
+With default settings, emacs behaves different during copy-pasting
+than commonly known programs like word, lyx, etc. In order to be able
+to paste something such that it directly replaces a highlighted
+region, delete-selection-mode has to be enabled. I will use this
+behaviour globally.
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode 1)               
+#+END_SRC
+
+* Layout
+** Fonts
+Depending on the screen resolution I use different default fonts. For
+example, on my home screen I found DejaVuSans Condensed Bold or
+Liberation Sans Bold with size 10 to be a good choice.
+** Menus
+In order to save precious display space, toolbars and scroll bars
+shall be disabled. Moving by keybindings is faster anyways.
+#+BEGIN_SRC emacs-lisp
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+#+END_SRC
+However, besides line-numbers, also current column numbers shall be
+shown. 
+#+BEGIN_SRC emacs-lisp
+  (column-number-mode 1)
+#+END_SRC
+** Color-theme
+Following the practice of most heavy-weight programmers, I adjust my
+emacs face-colors in order to have a dark-colored background and
+colored letters. This allegedly should be less exhausting to the
+eyes.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
+  (require 'color-theme)
+  (color-theme-initialize)
+  (color-theme-jsc-dark)
+#+END_SRC
+Remark: sadly, this configuration seems to distort my auto-completion
+tooltip menu.
+I also like to highlight to current line and cursor point.
+#+BEGIN_SRC emacs-lisp  
+  (global-hl-line-mode 1)
+  (set-cursor-color "red")
+#+END_SRC
+** Scrolling behaviour
+It seems clearer to me to scroll only one line in case that cursor
+leaves window boundaries.
+#+BEGIN_SRC emacs-lisp  
+    (setq scroll-step 1)
+#+END_SRC
+* Indentation
+Basically all indentation should be done automatically with one
+single keystroke, here "C-j". This usually will call the function
+indent-for-tab-command, which claims to "indent line or region in a
+proper way regarding the current major mode or insert tab."
+For some special modes, however, special extensions of the function
+exist. 
+
+First, I will set the length of indentation, and the indentation
+stops. 	
+#+BEGIN_SRC emacs-lisp
+  (setq tab-width 3)
+  (setq tab-stop-list '(3 6 9 12 15 18 21 24))
+#+END_SRC
+Now, set indentation key.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-j") 'indent-for-tab-command)
+  (define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+  (define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+#+END_SRC
+Furthermore, when relying completely on automatic indentation, it
+usually is more appropriate to automatically set the next line to
+adequate indentation. Hence, my standard settings for new lines will
+be with indentation.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "RET") 'newline-and-indent)
+  (global-set-key (kbd "C-M-<return>") 'newline)
+  (global-set-key (kbd "C-M-S-<return>") 'indent-new-comment-line)
+#+END_SRC
+The following code should originally force emacs to use real TABs
+instead of spaces. Furthermore, tab-to-tab-stop allows only stop at
+the stops given by tab-stop-list. The function cg/insert-tab inserts
+TAB at point. More sophisticated behaviour like on regions still has
+to be inserted, as well as an inverting command.
+#+BEGIN_SRC emacs-lisp  
+  (setq-default indent-tabs-mode nil)
+  (setq indent-tabs-mode nil)
+  (tab-to-tab-stop)
+    (defun cg/insert-tab ()
+      "insert TAB at point"
+      (interactive)
+      (insert-tab)
+      )
+    (global-set-key (kbd "M-j") 'cg/insert-tab) 
+#+END_SRC
+
+** TODO Enable manual indentation
+For some settings, however, I want to be able to manually include a
+tab on a complete highlighted region or line. For example, code in
+babel code blocks usually is indented. The active org-mode major
+mode does not recognize language specific indentation inside of code
+blocks automatically. One way always would be to use quotation on
+TAB: press "C-q TAB".
+Manual indentation should be bound to M-j and C-M-j.
+
+
+** Indentation according to org-outline
+Org documents can be indented according to their underlying outline
+structure. That means, lower-level subtrees will be indented
+more. However, I will rely on the default setting here, since
+org-indent-mode will waste precious display space.
+#+BEGIN_SRC emacs-lisp
+  (org-indent-mode nil)
+#+END_SRC
+
+
+
+* Syntax-based motion and deletion
+Syntax-based motion is the key to fast cursor movements. Hence, I
+heavily rely on some in-built motion commands, which I slightly adapt
+for customized syntax interpretation. 
+Since my cursor movements mainly consist of word-based and sexp-based
+syntax, I did adapt their key bindings, in order to have them set to
+the best accessible keys.
+
+** Keybindings overview
+
+|-----------+---------+----------|
+| item      | command | shortcut |
+|-----------+---------+----------|
+| pointwise |         |          |
+|-----------+---------+----------|
+|           | forw    | C-f      |
+|           | backw   | C-b      |
+|           | up      | C-p      |
+|           | down    | C-n      |
+| deletion  |         |          |
+|           | forw    | C-d      |
+|           | backw   | C-DEL    |
+|           | backw   | DEL      |
+|-----------+---------+----------|
+| words           |       |         |
+|-----------------+-------+---------|
+|                 | forw  | M-n     |
+|                 | backw | M-p     |
+| deletion        |       |         |
+|                 | forw  | M-d     |
+|                 | backw | M-DEL   |
+|-----------------+-------+---------|
+| line            |       |         |
+|-----------------+-------+---------|
+|                 | forw  | C-e     |
+|                 | backw | C-a     |
+| deletion        |       |         |
+|                 | forw  | C-k     |
+|                 | backw | C-DEL   |
+|                 | backw | M-k     |
+|-----------------+-------+---------|
+| sentence        |       |         |
+|-----------------+-------+---------|
+|                 | forw  | M-e     |
+|                 | backw | M-a     |
+| deletion        |       |         |
+|                 | forw  |         |
+|                 | backw |         |
+|-----------------+-------+---------|
+| sexp            |       |         |
+|-----------------+-------+---------|
+|                 | forw  | C-M-n   |
+|                 | backw | C-M-p   |
+| deletion        |       |         |
+|                 | forw  | C-M-d   |
+|                 | backw | C-M-DEL |
+|-----------------+-------+---------|
+| non-white-space |       |         |
+|-----------------+-------+---------|
+|                 | forw  | S-C-f   |
+|                 | backw | S-C-b   |
+| deletion        |       |         |
+|                 | forw  | S-C-D   |
+|                 | backw | S-C-DEL |
+
+*** Word-based
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-n") 'forward-word)
+  (global-set-key (kbd "M-p") 'backward-word)
+  (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
+  (global-set-key (kbd "M-d") 'kill-word)
+#+END_SRC
+  
+*** Sexp-based
+#+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "C-M-n") 'forward-sexp)
+    (global-set-key (kbd "C-M-p") 'backward-sexp)
+    (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+    (global-set-key (kbd "C-M-d") 'kill-sexp)
+#+END_SRC
+*** Sentence-based 
+Adapt sentence syntax.
+#+BEGIN_SRC emacs-lisp
+  (setq sentence-end-double-space nil)
+#+END_SRC
+*** Line based 
+Enable killing to begin of line.
+#+BEGIN_SRC emacs-lisp
+  (defun cg/kill-start-of-line ()
+    "kill from point to start of line"
+    (interactive)
+    (kill-line 0)
+    )
+  (global-set-key (kbd "M-k") 'cg/kill-start-of-line)
+#+END_SRC
+
+*** Possible keys for motion / deletion / copying  
+C-f
+C-b
+C-n -> good
+C-p -> good
+M-f -> bad
+M-b -> bad
+M-n -> good
+M-p -> good
+C-M-n -> good
+C-M-p -> good
+S-M-p -> good
+S-M-n -> good
+S-C-f -> good
+S-C-b -> good
+S-C-n -> good
+S-C-p -> good
+
+
+
+* Windows and buffers
+
+** Source code block
+Since I encounter source code blocks very often, I changed the
+step-in / step-out keybind, since the default C-c '-setting is too
+long for me.
+#+BEGIN_SRC emacs-lisp  
+  (define-key org-mode-map (kbd "C-ü") 'org-edit-special)
+  (define-key org-src-mode-map (kbd "C-ü") 'org-edit-src-exit)
+#+END_SRC
+
+** Other window
+Also one of my most frequently used functions.  Hence, faster
+keybinding is used, as well as for inverse direction.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-SPC") 'other-window)
+  (defun cg/inverse-other-window ()
+    "window cycling in inverse direction"
+    (other-window -1)
+    )
+  (global-set-key (kbd "M-S-SPC") 'cg/inverse-other-window)
+#+END_SRC
+
+** Window resize operations
+Often it is necessary to resize, create and delete windows. 
+*** Current window
+Increase current window by two lines, either horizontally or
+vertically. 
+#+BEGIN_SRC emacs-lisp
+  (defun cg/increase-current-window ()
+    "Increase current window by two lines"
+    (interactive)
+    (enlarge-window 2)
+    )
+  (global-set-key (kbd "S-+") 'cg/increase-current-window)
+#+END_SRC
+Decrease current window.
+#+BEGIN_SRC emacs-lisp
+  (defun cg/decrease-current-window ()
+    "Decrease current window by two lines"
+    (interactive)
+    (other-window 1)
+    (enlarge-window 2)
+    (other-window -1)
+    )
+  (global-set-key (kbd "M-+") 'cg/decrease-current-window)
+#+END_SRC
+Toogle major window: given that two windows exist, alternately
+increase other window. This function is helpful for when one window
+contains a code script, while the second one contains a console.
+#+BEGIN_SRC emacs-lisp
+  (defun toggle-major-window ()
+    "Set focus on second window, and enlargen it
+  to cover about 3/4 of overall area"
+    (interactive)
+    (if (not (one-window-p))              ; if more than one window
+        (progn
+          (other-window 1)                ; switch to other window
+          (balance-windows)               ; split overall area equally
+          (enlarge-window 8))))           ; enlargen current window by 8 lines
+      (global-set-key (kbd "C-M-+") 'toggle-major-window)
+#+END_SRC
+
+*** Operations on other-window
+The operations here could be: open buffer, file or directory in other
+window. Scroll other window, set focus in other window, kill other
+window, kill buffer in other window, kill both.
+#+BEGIN_SRC emacs-lisp
+(defun set-focus-lower-window ()
+  "Move focus of lower window so that last line of buffer
+exactly matches last line of frame"
+    (interactive)
+    (if (not (one-window-p))		; if more than one window
+    (progn
+      (other-window 1)			; move point to second window
+      (end-of-buffer)			; go to end of buffer
+      (recenter -1)			; move point to last line of frame
+      (other-window 1))))		; move point back again
+(global-set-key (kbd "C-x C-l") 'set-focus-lower-window)
+#+END_SRC
+
+
+
+
+
+(global-set-key (kbd "C-x t") 'kill-buffer-and-window)
+
+(defun kill-other-buffer-and-window ()
+  "Kill other window with buffer also."
+  (interactive)
+  (other-window 1)
+  (kill-buffer-and-window))
+
+(global-set-key (kbd "C-x C-t") 'kill-other-buffer-and-window)
+
+(defun open-pic-at-point ()
+  "Open link to pic in horizontally splitted window."
+  (interactive)
+  (split-window-horizontally)
+  (org-open-at-point))
+
+(global-set-key (kbd "C-x C-o") 'open-pic-at-point)
+(image-mode)
+(define-key image-mode-map (kbd "k") 'kill-buffer-and-window)
+(emacs-lisp-mode)
+
+** Buffers
+Since I only very seldomly use list-buffers, I rebound the key to
+the command ido-switch-buffer-other-window, which allows to choose a
+buffer for the second window. If no other window exists, a
+horizontal split will be conducted, and the chosen buffer will be
+inserted in the newly opened window.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ido-switch-buffer-other-window)
+  (global-set-key (kbd "C-x C-d") 'dired-other-window)
+  (global-set-key (kbd "C-x C-f") 'ido-find-file-other-window)
+  (global-set-key (kbd "C-x 4 b") 'list-buffers)
+#+END_SRC
+
+*** File opening
+As already have set default settings for auto-fill-mode, which I
+adjust only very seldomly, there is no need for me to keep
+set-fill-column as key binding. Hence, to comply with my buffer
+settings, I rebind ido-find-file.
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x f") 'ido-find-file)
+#+END_SRC
+This way, after some familiarization, I can bind
+ido-find-file-other-window to "C-x C-f".
+
+* Commenting
+Although emacs already is equipped quite sophisticated
+do-what-I-mean commenting powers, I still want to be able to toggle
+between commented and uncommented for the current line or highlighted
+region. I bound the command to "C-#" since many command languages
+use # as comment symbol. Another natural choice would be "M-," which
+is more in resemblance to the emacs commenting binding "S-M-;".
+#+BEGIN_SRC emacs-lisp
+  (defun comment-or-uncomment-line ()
+    (interactive)
+    (comment-or-uncomment-region (line-beginning-position)
+                                 (line-end-position)))
+  (global-set-key (kbd "C-#") 'comment-or-uncomment-line)
+  (define-key org-mode-map (kbd "C-#") 'comment-or-uncomment-line)
+#+END_SRC
+Keep in mind that in order to extend existing comments into the next
+line you can use indent-new-comment-line bound to "M-S-RET".
+
+* Misc
+
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(canlock-password "7c5426993fd9b0f7c6f57a98e8fed4b718bc46ba")
+ '(org-agenda-ndays 14)
+ '(org-agenda-show-all-dates t)
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-deadline-warning-days 14)
+ '(org-fast-tag-selection-single-key nil)
+ '(org-reverse-note-order nil))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )

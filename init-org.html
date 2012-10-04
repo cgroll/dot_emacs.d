@@ -1,0 +1,738 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Initialization of org-mode settings</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="Initialization of org-mode settings"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-10-03T20:01+0200"/>
+<meta name="author" content="chris"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012  Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js">
+/**
+ *
+ * @source: http://orgmode.org/mathjax/MathJax.js
+ *
+ * @licstart  The following is the entire license notice for the
+ *  JavaScript code in http://orgmode.org/mathjax/MathJax.js.
+ *
+ * Copyright (C) 2012  MathJax
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @licend  The above is the entire license notice
+ * for the JavaScript code in http://orgmode.org/mathjax/MathJax.js.
+ *
+ */
+
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code below.
+
+Copyright (C) 2012  Free Software Foundation, Inc.
+
+The JavaScript code below is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code below.
+*/
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">Initialization of org-mode settings</h1>
+
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Set global key bindings</a></li>
+<li><a href="#sec-2">2 Org-mode file formats</a></li>
+<li><a href="#sec-3">3 Org task manager</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Determine files for org agenda</a></li>
+<li><a href="#sec-3-2">3.2 Todo states</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1 State definitions</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-3">3.3 Org-capture</a>
+<ul>
+<li><a href="#sec-3-3-1">3.3.1 Capturing events</a></li>
+<li><a href="#sec-3-3-2">3.3.2 Capturing notes</a></li>
+<li><a href="#sec-3-3-3">3.3.3 Capturing tasks</a></li>
+<li><a href="#sec-3-3-4">3.3.4 Capturing habits</a></li>
+<li><a href="#sec-3-3-5">3.3.5 Refile targets</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-4">3.4 OrgMobile</a></li>
+<li><a href="#sec-3-5">3.5 Customize variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Set global key bindings</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>At first, we want to set the most important key bindings.
+</p>
+
+
+<pre class="example">(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Org-mode file formats</h2>
+<div class="outline-text-2" id="text-2">
+
+<p>Automatically use org-mode for .org files, .txt files and org_archive files
+</p>
+
+
+<pre class="example">(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)) 
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Org task manager</h2>
+<div class="outline-text-2" id="text-3">
+
+<p>This chapter determines all customized settings for using org-mode as task
+planer. The settings are chosen in compliance with the Getting things done
+methodology.
+</p>
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Determine files for org agenda</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<p>First, we have to define which files to use when searching for tasks. In this
+setting, all paths in the <i>~/org</i> directory are on the path list, and the file
+used as inbox bucket for captured notes is set to <i>~/org/refile.org</i>.
+</p>
+
+
+<pre class="example">(setq org-agenda-files (quote ("~/org/")))
+(setq org-default-notes-file "~/org/refile.org") 
+</pre>
+
+<p>
+In addition to all files regarding my daily tasks and appointments, I also use
+org-mode to capture short notes about things I read. Especially, I collect
+short information about software and coding tricks that I stumble upon, and
+capture them in my computational science directory. In this directory, there is
+a folder called <i>notes</i> where plain text files with notes regarding to all
+different topics are stored. So far, these are
+</p><dl>
+<dt>bash_notes.org</dt><dd>contains notes on bash programming and all important
+                    commands for the linux shell
+</dd>
+<dt>emacs_notes.org</dt><dd>notes about emacs installation procedures, as well as
+     installation procedures for all emacs extensions. Also, the structure of
+     my emacs configuration is explained, together with descriptions on keeping
+     my emacs as git repository for simple syncronization between multiple
+     computers.
+</dd>
+<dt>git_notes.org</dt><dd>notes on subversion control with git and github (which is
+                   also how I backup my emacs system settings publicly).
+</dd>
+<dt>gtd_notes.org</dt><dd>more elaborate description of the structure and
+                   possibilities of the org task managing features. gtd refers
+                   to "Getting things done", which is a book regarding a
+                   detailled task management procedure.
+</dd>
+<dt>e_lisp_notes.org</dt><dd>notes on emacs lisp
+</dd>
+<dt>e_wanderlust_notes.org</dt><dd>wanderlust email notes
+</dd>
+<dt>e_bbdb_notes.org</dt><dd>using big brother database
+</dd>
+<dt>R_notes.org</dt><dd>notes on statistical computing with R
+</dd>
+<dt>matlab_notes.org</dt><dd>notes on using matlab
+</dd>
+<dt>julia_notes.org</dt><dd>notes on using julia language
+</dd>
+<dt>literature_notes.org</dt><dd>notes on digital literature management - comprises
+     mendeleydesktop, JabRef, Citavi, etc.
+</dd>
+<dt>e_latex_notes.org</dt><dd>notes on latex, with focus on latex in emacs
+</dd>
+</dl>
+
+
+<p>
+<b>Remark: all these files shall be available publicly, so that none of them may contain any sensitive private data!!</b>
+The respective public git-repo should be easily forked, so that everybody can
+extend it with private notes.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Todo states</h3>
+<div class="outline-text-3" id="text-3-2">
+
+<p>I keep the following todo states:
+</p><dl>
+<dt>TODO</dt><dd>every individual task generally gets a TODO mark
+</dd>
+<dt>NEXT</dt><dd>if any higher-level task or projects brings forth any subtask, then
+          this is marked as NEXT. This way I shift tasks from my external
+          projects to my agenda, without immediately integrating the complete
+          major project. Furthermore, long-term targets are forced to be
+          splitted into minor tasks, which are much better to focus on.
+</dd>
+<dt>DONE</dt><dd>the classic label for finished tasks
+</dd>
+<dt>WAITING</dt><dd>if a task is still prevailing, but can not be processed right now
+             since it depends on someone else's action. Could be used to
+             indicate some chronological temporal dependency on a different
+             task. However, chronological ordering at best should be
+             implemented directly.
+</dd>
+<dt>CANCELLED</dt><dd>any task that suddenly is not required anymore
+</dd>
+<dt>SOMEDAYS</dt><dd>captures any concrete long-term targets or just things that
+              probably would be nice to having it doing
+</dd>
+</dl>
+
+
+</div>
+
+<div id="outline-container-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> State definitions</h4>
+<div class="outline-text-4" id="text-3-2-1">
+
+<p>Entering any todo state automatically will create at timestamp. While
+the timestamp for TODO and NEXT will be made at its creation, all
+other states are told to log the entry time with "!" sign in the
+state definition. Additionally, WAITING and CANCELLED will call for a
+note, so that an explanation can be added. Also, most states will log
+exiting times as well.
+Fast access for todo states are guaranteed with shortcut letters for
+each state, will also have to be enabled:
+</p>
+
+
+<pre class="example">(setq org-use-fast-todo-selection t)
+</pre>
+
+
+<pre class="example">(setq org-todo-keywords
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+              (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)" "SOMEDAY(s!/!)"))))
+</pre>
+
+<p>
+Here I determine custom face colors for my task state keywords.
+</p>
+
+
+<pre class="example">(setq org-todo-keyword-faces
+      (quote (("TODO" :foreground "red" :weight bold)
+              ("NEXT" :foreground "blue" :weight bold)
+              ("DONE" :foreground "forest green" :weight bold)
+              ("WAITING" :foreground "orange" :weight bold)
+              ("SOMEDAY" :foreground "magenta" :weight bold)
+              ("CANCELLED" :foreground "forest green" :weight bold))))
+</pre>
+
+<p>
+When skipping through todo states for minor corrections with shift
+key, log processing will be disabled. Otherwise we will get to many
+timestamps.
+</p>
+
+
+<pre class="example">(setq org-treat-S-cursor-todo-selection-as-state-change nil)
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Org-capture</h3>
+<div class="outline-text-3" id="text-3-3">
+
+<p>The process of capturing tasks and notes is probably one of the most
+important parts of the complete system. It is absolutely crucial to
+the system that any information can be temporarily captured and
+shoved away fast and without disturbing the current workflow. That
+means, with very few shortcuts any information can be captured in a
+highly adapted template tailored to the specific information
+requirements.
+At a header level, information is classified as one of three main
+topics:
+</p><ul>
+<li>TODO task
+</li>
+<li>event, appointment, date
+</li>
+<li>note
+</li>
+</ul>
+
+<p>At the second layer, more specific patterns are distinguished, like
+storage location, prompts, tags and the like.
+</p>
+</div>
+
+<div id="outline-container-3-3-1" class="outline-4">
+<h4 id="sec-3-3-1"><span class="section-number-4">3.3.1</span> Capturing events</h4>
+<div class="outline-text-4" id="text-3-3-1">
+
+
+
+
+<pre class="example"> (setq org-capture-templates
+  (quote (
+   ("e" "Templates for events")
+
+   ;; Birthday entry into anniversaries calendar with prompt for date;
+   ;; date is active -&gt; appears in agenda
+  ("ea" "annually repeating event"  entry (file "~/org/annuals.org")
+   "* %? \nDate: %^{Do not forget to add +1y!}t\n"
+   :clock-in t :clock-resume t)
+
+   ;; Future event: prompt for date without time
+   ("ed" "daily event without time" entry (file "~/org/refile.org") 
+   "* %? :calendar: \n%^{Which date?}t \nAdded: %U\n"
+   :clock-in t :clock-resume t)
+
+   ;; Future event: prompt for date WITH time
+   ("et" "event with time specification" entry (file "~/org/refile.org") 
+   "* %? :calendar: %^{Which date and time?}T \nAdded: %U\n"
+   :clock-in t :clock-resume t)
+
+   ;; Future event lasting for multiple days
+   ("ee" "enduring event" entry (file "~/org/refile.org") 
+   "* %? :calendar: %^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
+   :clock-in t :clock-resume t)
+
+
+   ;; Entry in log: at current time finished activity with completion
+   ("el" "logbook: finished activities"  entry (file+datetree "~/org/log.org")
+   "** %U - %^{Activity?|lunch|break|buy|program|read|work} "
+   :clock-in t :clock-resume t)
+
+   ;; Stopwatch activity without prompt
+   ("es" "stopwatch" entry (file+datetree "~/org/log.org") 
+   "* Stopwatch %? \nStarted: %U\n"
+   :clock-in t :clock-resume t)
+
+   ;; Entry in creditcard with prompt for sum and cursor for item specification
+   ("ec" "credit-card info" entry (file+datetree "~/org/creditcard.org") 
+   "* %? - %^{Amount?} \nAdded: %U\n"
+   :clock-in t :clock-resume t)
+
+) ))
+</pre>
+
+<p>
+;; Capture templates for: TODO tasks, Notes, appointments, phone
+calls, and org-protocol
+</p></div>
+
+</div>
+
+<div id="outline-container-3-3-2" class="outline-4">
+<h4 id="sec-3-3-2"><span class="section-number-4">3.3.2</span> Capturing notes</h4>
+<div class="outline-text-4" id="text-3-3-2">
+
+
+
+
+<pre class="example">(setq org-capture-templates  (append org-capture-templates
+
+    (quote (
+
+    ;; note
+    ("N" "Templates for notes with code")
+    ("Ng" "code-entry to git_notes" entry (file+headline "~/comp_science/notes/git_notes.org" "Captured notes")
+    "* %? \n#+begin_src \n%^C\n#+end_src \n%a\n%U\n")
+    ("Ne" "code-entry to emacs_notes" entry (file+headline "~/comp_science/notes/emacs_notes.org" "Captured notes")
+    "* %? \n#+begin_src \n%^C\n#+end_src \n%a\n%U\n")
+
+    ("c" "Templates for notes from copyboard without code")
+    ("cg" "entry to git_notes" entry (file+headline "~/comp_science/notes/git_notes.org" "Captured notes")
+    "* %? %^C\n%a\n%U\n")
+    ("ce" "entry to emacs_notes" entry (file+headline "~/comp_science/notes/emacs_notes.org" "Captured notes")
+    "* %? %^C\n%a\n%U\n")
+
+
+    ;;  store bash command / emacs function / R command / Matlab command
+    ;;  store shortcut / emacs command / explanation
+    ;; things to track: vacation days, vacation costs
+
+
+    ;; (("p" "password") entry (file "~/org/refile.org"))
+
+
+                 ))))
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3-3" class="outline-4">
+<h4 id="sec-3-3-3"><span class="section-number-4">3.3.3</span> Capturing tasks</h4>
+<div class="outline-text-4" id="text-3-3-3">
+
+
+
+
+<pre class="example">(setq org-capture-templates  (append org-capture-templates
+(quote (
+  ("t" "Templates for tasks")
+  ("tt" "task, manual scheduling" entry (file "~/org/refile.org") ; TODO entry, inactive timestamp, 
+    "* TODO %? \nAdded: %U\n"
+    :clock-in t :clock-resume t) ; heading needs to be inserted, manual scheduling
+
+    ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
+    ("tT" "task, tag prompt" entry (file "~/org/refile.org") 
+    "* TODO %? %^G \nAdded: %U\n"
+    :clock-in t :clock-resume t)
+
+  ;; TODO entry, inactive timestamp, prompt for tag and clipboard entry
+    ("tK" "task, tag, clipboard" entry (file "~/org/refile.org") 
+    "* TODO %? %^G \n%^C\nAdded: %U\n"
+    :clock-in t :clock-resume t)
+
+    ("tk" "task, clipboard" entry (file "~/org/refile.org") 
+    "* TODO %? %^G \n%^C\nAdded: %U\n"
+    :clock-in t :clock-resume t)
+
+    ;; New research project: create project heading in todo.org under research projects
+    ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
+  ; project related tasks with link to origin
+    ("tP" "project with automatic origin" entry (file+headline "~/org/todo.org" "Research") 
+    "* NEXT %? %^{TAGS}p \n%a\nAdded: %U\n %?"
+    :clock-in t :clock-resume t)
+
+  ("tp" "project task" entry (file+headline "~/org/todo.org" "Research") 
+    "* NEXT %? %^{TAGS}p \nAdded: %U\n %?"
+    :clock-in t :clock-resume t)         
+
+  ; write function to shift todo tasks from project file to agenda !
+
+    ("tb" "buy item" entry (file "~/org/refile.org")
+    "* TODO %? %^{Arcade or shop?}g   \n%U\n" :clock-in t :clock-resume t) 
+
+    ("r" "email response" entry (file "~/org/refile.org")
+    "* TODO Respond to %:from on %:subject :EMAIL:\n%t\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+) )))
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3-4" class="outline-4">
+<h4 id="sec-3-3-4"><span class="section-number-4">3.3.4</span> Capturing habits</h4>
+<div class="outline-text-4" id="text-3-3-4">
+
+
+
+
+<pre class="example">  (add-to-list 'org-capture-templates
+   (quote
+    ("h" "habit" entry (file "~/org/refile.org")
+    "* NEXT %?\n%U\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+))
+
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3-5" class="outline-4">
+<h4 id="sec-3-3-5"><span class="section-number-4">3.3.5</span> Refile targets</h4>
+<div class="outline-text-4" id="text-3-3-5">
+
+
+
+
+<pre class="example">;; refile targets
+(setq org-refile-targets (quote (("~/org/todo.org" :maxlevel . 1)
+                              ("~/org/log.org" :maxlevel . 1)
+                              ("~/org/creditcard.org" :maxlevel . 1)
+                              ("~/org/annuals.org" :maxlevel . 1))))
+(defun cg/org-refile ()
+  (interactive)
+  (add-file-local-variable 'org-refile-targets t)
+  (setq org-refile-targets (quote (("~/org/todo.org" :maxlevel . 1)
+                                   ("~/org/log.org" :maxlevel . 1)
+                                   ("~/org/creditcard.org" :maxlevel . 1)
+                                   ("~/org/annuals.org" :maxlevel . 1))))
+    )
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> OrgMobile</h3>
+<div class="outline-text-3" id="text-3-4">
+
+
+
+
+<pre class="example">(setq org-mobile-directory "~/Dropbox/MobileOrg")
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> Customize variables</h3>
+<div class="outline-text-3" id="text-3-5">
+
+
+
+
+<pre class="example">(custom-set-variables
+ '(org-agenda-ndays 14)
+ '(org-deadline-warning-days 14)
+ '(org-agenda-show-all-dates t)
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil) ; start agenda at current day
+ '(org-reverse-note-order nil) ; append new nodes
+ '(org-fast-tag-selection-single-key nil) ; you have to press RET to exit tag menu 
+ )
+ (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((emacs-lisp . t)
+        (R . t)))
+
+</pre>
+
+<p>
+(org-agenda-custom-commands
+   (quote (("d" todo "DELEGATED" nil)
+       ("c" todo "DONE|DEFERRED|CANCELLED" nil)
+       ("w" todo "WAITING" nil)
+       ("W" agenda "" ((org-agenda-ndays 21)))
+       ("A" agenda ""
+        ((org-agenda-skip-function
+          (lambda nil
+        (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]")))
+         (org-agenda-ndays 1)
+         (org-agenda-overriding-header "Today's Priority #A tasks: ")))
+       ("u" alltodo ""
+        ((org-agenda-skip-function
+          (lambda nil
+        (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
+                      (quote regexp) "\n]+&gt;")))
+         (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
+</p></div>
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2012-10-03T20:01+0200</p>
+<p class="author">Author: chris</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.2 with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 23</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

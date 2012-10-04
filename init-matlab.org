@@ -1,0 +1,68 @@
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       matlab
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(add-to-list 'load-path "~/efficient_workspace/emacs_extensions/matlab-emacs")
+(require 'matlab-load)
+;; (matlab-cedet-setup)			
+
+;; matlab shortcuts
+(fset 'setup-matlab
+   [?\M-> return ?\C-h ?v ?b ?u ?f ?f ?e ?r ?- ?f ?i ?l ?e ?- ?n ?a ?m ?e return ?\C-x ?o ?\C-s ?\" ?/ ?\C-m ?\C-  ?\C-e ?\C-b ?\M-w ?\C-x ?o ?\C-y ?\C-a ?\M-d ?\M-d ?/ ?h ?o ?m ?e ?/ ?g ?r ?o ?l ?l ?c ?\C-e C-backspace C-backspace backspace ?\C-  ?\C-a ?\C-w ?\M-x ?m ?a ?t ?l ?a ?b ?- ?s ?h ?e ?l ?l return ?c ?d ?\( ?\' ?\C-y ?\' return])
+
+(fset 'matlab-run-cell
+   [?\C-e ?\C-r ?% ?% ?\C-m ?\C-  ?\C-f ?\C-f ?\C-s ?% ?% ?\C-m ?\C-b ?\C-b ?\C-c ?\C-r ?\C-  ?\C- ])
+
+(fset 'eval-line-and-step
+   [?\C-a ?\C-  ?\C-e ?\C-c ?\C-r ?\C-f ?\C-  ?\C- ])
+
+(fset 'matlab-go-to-previous-assignment
+   "\C-u\C-r\\(\371=[^=]\\)\\|\\(\371.*\\(\\.\\.\\..*\\Ca\\)*[^=]=[^=]\\)\\|\\(\371.*\\.\\.\\.\\Ca .*=[^=]\\)\C-x")
+
+(defun matlab-select-superior ()
+  "Select superior word encompassing point."
+  (interactive)
+  (search-backward-regexp "[^a-zA-Z0-9_.]") ; go back to first char not part of word
+  (forward-char)			     
+  (push-mark)				; push mark
+  (search-forward-regexp "[^a-zA-Z0-9_]") ; go forth to first char not part in superior word
+  (backward-char)
+  (copy-region-as-kill (point) (mark))	; copy region
+  )
+
+(defun matlab-select-inferior ()
+  "Select superior word encompassing point."
+  (interactive)
+  (search-backward-regexp "[^a-zA-Z0-9_.]") ; go back to first char not part of word
+  (forward-char)			     
+  (push-mark)				; push mark
+  (search-forward-regexp "[^a-zA-Z0-9_.]") ; go forth to first char not part in superior word
+  (backward-char)
+  (copy-region-as-kill (point) (mark))	; copy region
+  )
+
+
+(fset 'matlab-go-to-previous-assignment-clean
+   "\C-u\C-r\\(\371.*\\(\\.\\.\\..*\\Ca\\)*[^=]=[^=]\\)\C-x")
+
+(fset 'matlab-go-to-previous-assignment-unclean
+   "\C-u\C-r\371=[^=]\C-x")
+
+(fset 'matlab-go-to-previous-assignment-dirty
+   "\C-u\C-r\371.*\\.\\.\\.\\Ca\\s-.*=[^=]\C-x")
+
+;; (define-key matlab-mode-map (kbd "C-c C-<SPC>") 'matlab-select-superior) ; there is no matlab-mode-map
+;; (define-key matlab-mode-map (kbd "C-c <SPC>") 'matlab-select-inferior)
+
+
+
+;; alternatively remap keys: instead of word-forward, use command-forward
+;; (global-set-key "\C-c1" 'matlab-go-to-previous-assignment-clean)
+;; (global-set-key "\C-c2" 'matlab-go-to-previous-assignment-unclean)
+;; (global-set-key "\C-c3" 'matlab-go-to-previous-assignment-dirty)
+;; (global-set-key "\C-c\C-n" 'eval-line-and-step)
+

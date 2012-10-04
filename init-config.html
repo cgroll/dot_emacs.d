@@ -1,0 +1,745 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>init-config</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="init-config"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-10-03T17:09+0200"/>
+<meta name="author" content="chris"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012  Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">init-config</h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Text behaviour</a>
+<ul>
+<li><a href="#sec-1-1">1.1 Auto-fill: automount line breaks</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1 Enable ex-post paragraph formatting</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-2">1.2 Delete-selection-mode</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 Layout</a>
+<ul>
+<li><a href="#sec-2-1">2.1 Menus</a></li>
+<li><a href="#sec-2-2">2.2 Color-theme</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3 Indentation</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Enable manual indentation</a></li>
+<li><a href="#sec-3-2">3.2 Indentation according to org-outline</a></li>
+</ul>
+</li>
+<li><a href="#sec-4">4 Syntax-based motion</a></li>
+<li><a href="#sec-5">5 Syntax-based killing</a></li>
+<li><a href="#sec-6">6 Windows and buffers</a>
+<ul>
+<li><a href="#sec-6-1">6.1 Buffers</a>
+<ul>
+<li><a href="#sec-6-1-1">6.1.1 File opening</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-7">7 Commenting</a></li>
+<li><a href="#sec-8">8 Misc</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Text behaviour</h2>
+<div class="outline-text-2" id="text-1">
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Auto-fill: automount line breaks</h3>
+<div class="outline-text-3" id="text-1-1">
+
+<p>Auto-fill-mode enables automatic line breaks. I will set the
+automatic line break to a value of 69, thereby omitting line
+wrapping even on small screen-widths like at a netbook, or at
+screens with low resolution. 
+</p>
+<p>
+Auto-fill-mode should basicly be started automatically for any major
+mode. However, some special modes like minibuffer mode should be
+excluded, so that the way to go here is with mode hooks for
+basically any mode that is relevant for me.
+</p>
+
+
+<pre class="example">(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+(add-hook 'fundamental-mode-hook 'turn-on-auto-fill)
+(add-hook 'ess-mode-hook 'turn-on-auto-fill)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-auto-fill)
+(add-hook 'message-mode-hook 'turn-on-auto-fill)
+(setq fill-column 69)
+</pre>
+
+
+</div>
+
+<div id="outline-container-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> <span class="todo TODO">TODO</span> Enable ex-post paragraph formatting</h4>
+<div class="outline-text-4" id="text-1-1-1">
+
+<p>A nice property would be to automatically reformat a paragraph where
+for example one word has been included afterwards, thereby
+corrupting the block format.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Delete-selection-mode</h3>
+<div class="outline-text-3" id="text-1-2">
+
+<p>With default settings, emacs behaves different during copy-pasting
+than commonly known programs like word, lyx, etc. In order to be
+able to paste something directly replacing a highlighted region
+delete-selection-mode has to be enabled. I will use this behaviour
+globally.
+</p>
+
+
+<pre class="example">(delete-selection-mode 1)               
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Layout</h2>
+<div class="outline-text-2" id="text-2">
+
+
+</div>
+
+<div id="outline-container-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Menus</h3>
+<div class="outline-text-3" id="text-2-1">
+
+<p>In order to save precious display space, toolbars and scroll bars
+shall be disabled. Moving by keybindings is faster anyways.
+</p>
+
+
+<pre class="example">(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Color-theme</h3>
+<div class="outline-text-3" id="text-2-2">
+
+<p>Following the practice of most heavy-weight programmers, I adjust my
+emacs face-colors in order to have a dark-colored background and
+colored letters. This allegedly should be less exhausting to the
+eyes.
+</p>
+
+
+<pre class="example">(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
+(require 'color-theme)
+(color-theme-initialize)
+(color-theme-jsc-dark)
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Indentation</h2>
+<div class="outline-text-2" id="text-3">
+
+<p>Basically all indentation should be done automatically with one
+single keystroke, here "C-j". This usually will call the function
+indent-for-tab-command, which claims to "indent line or region in a
+proper way regarding the current major mode or insert tab."
+For some special modes, however, special extensions of the function
+exist. 
+</p>
+<p>
+First, I will set the length of indentation, and the indentation
+stops.  
+</p>
+
+
+<pre class="example">(setq tab-width 3)
+(setq tab-stop-list '(3 6 9 12 15 18 21 24))
+</pre>
+
+<p>
+Now, set indentation key.
+</p>
+
+
+<pre class="example">(global-set-key (kbd "C-j") 'indent-for-tab-command)
+(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+</pre>
+
+<p>
+Furthermore, when relying completely on automatic indentation, it
+usually is more appropriate to being the next line adequate
+indentation. Hence, my standard settings for new lines will be with
+indentation.
+</p>
+
+
+<pre class="example">(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-M-&lt;return&gt;") 'newline)
+(global-set-key (kbd "C-M-S-&lt;return&gt;") 'indent-new-comment-line)
+</pre>
+
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> <span class="todo TODO">TODO</span> Enable manual indentation</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<p>For some settings, however, I want to be able to manually include a
+tab on a complete highlighted region or line. For example, code in
+babel code blocks usually is indented. The active org-mode major
+mode does not recognize language specific indentation inside of code
+blocks automatically. One way always would be to use quotation on
+TAB: press "C-q TAB".
+Manual indentation should be bound to M-j and C-M-j.
+</p>
+<p>
+The following code should originally force emacs to use real TABs
+instead of spaces. Furthermore, tab-to-tab-stop allows only stop at
+the stops given by tab-stop-list. The function cg/insert-tab inserts
+TAB at point. More sophisticated behaviour like on regions still has
+to be inserted, as well as an inverting command.
+</p>
+
+
+<pre class="example">(setq-default indent-tabs-mode nil)
+(setq indent-tabs-mode nil)
+(tab-to-tab-stop t)
+  (defun cg/insert-tab ()
+    "insert TAB at point"
+    (interactive)
+    (insert-tab)
+    )
+  (global-set-key (kbd "M-j") 'cg/insert-tab) 
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Indentation according to org-outline</h3>
+<div class="outline-text-3" id="text-3-2">
+
+<p>Org documents can be indented according to their underlying outline
+structure. That means, lower-level subtrees will be indented
+more. However, I will rely on the default setting here, since
+org-indent-mode will waste precious display space.
+</p>
+
+
+<pre class="example">(org-indent-mode nil)
+</pre>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Syntax-based motion</h2>
+<div class="outline-text-2" id="text-4">
+
+<p>I want to distinguish between the following syntax components:
+</p><dl>
+<dt>pointwise</dt><dd>one step only
+</dd>
+<dt>word</dt><dd>
+</dd>
+<dt>???</dt><dd>line
+</dd>
+<dt>???</dt><dd>sentence
+</dd>
+<dt>???</dt><dd>sexp
+</dd>
+<dt>???</dt><dd>non-white-space chars
+</dd>
+<dt>???</dt><dd>paragraphs
+</dd>
+<dt>???</dt><dd>(code-) blocks
+</dd>
+</dl>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+<tr><th scope="col" class="left">item</th><th scope="col" class="left">command</th><th scope="col" class="left">shortcut</th></tr>
+</thead>
+<tbody>
+<tr><td class="left">pointwise</td><td class="left"></td><td class="left"></td></tr>
+</tbody>
+<tbody>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">C-f</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">C-b</td></tr>
+<tr><td class="left"></td><td class="left">up</td><td class="left">C-p</td></tr>
+<tr><td class="left"></td><td class="left">down</td><td class="left">C-n</td></tr>
+<tr><td class="left">deletion</td><td class="left"></td><td class="left"></td></tr>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">C-d</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">C-DEL</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">DEL</td></tr>
+</tbody>
+<tbody>
+<tr><td class="left">words</td><td class="left"></td><td class="left"></td></tr>
+</tbody>
+<tbody>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">M-n</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">M-p</td></tr>
+<tr><td class="left">deletion</td><td class="left"></td><td class="left"></td></tr>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">M-d</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">M-DEL</td></tr>
+</tbody>
+<tbody>
+<tr><td class="left">line</td><td class="left"></td><td class="left"></td></tr>
+</tbody>
+<tbody>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">C-e</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">C-a</td></tr>
+<tr><td class="left">deletion</td><td class="left"></td><td class="left"></td></tr>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">C-k</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">C-DEL</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">M-k</td></tr>
+</tbody>
+<tbody>
+<tr><td class="left">sentence</td><td class="left"></td><td class="left"></td></tr>
+</tbody>
+<tbody>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">M-e</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">M-a</td></tr>
+<tr><td class="left">deletion</td><td class="left"></td><td class="left"></td></tr>
+<tr><td class="left"></td><td class="left">forw</td><td class="left"></td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left"></td></tr>
+</tbody>
+<tbody>
+<tr><td class="left">sexp</td><td class="left"></td><td class="left"></td></tr>
+</tbody>
+<tbody>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">C-M-n</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">C-M-p</td></tr>
+<tr><td class="left">deletion</td><td class="left"></td><td class="left"></td></tr>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">C-M-d</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">C-M-DEL</td></tr>
+</tbody>
+<tbody>
+<tr><td class="left">non-white-space</td><td class="left"></td><td class="left"></td></tr>
+</tbody>
+<tbody>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">S-C-f</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">S-C-b</td></tr>
+<tr><td class="left">deletion</td><td class="left"></td><td class="left"></td></tr>
+<tr><td class="left"></td><td class="left">forw</td><td class="left">S-C-D</td></tr>
+<tr><td class="left"></td><td class="left">backw</td><td class="left">S-C-DEL</td></tr>
+</tbody>
+</table>
+
+
+
+
+
+<pre class="example">  (global-set-key (kbd "C-M-n") 'forward-sexp)
+  (global-set-key (kbd "C-M-p") 'backward-sexp)
+  (global-set-key (kbd "C-M-&lt;backspace&gt;") 'backward-kill-sexp)
+  (global-set-key (kbd "C-M-d") 'kill-sexp)
+
+  (defun cg/kill-start-of-line ()
+    "kill from point to start of line"
+    (interactive)
+    (kill-line 0)
+    )
+  (global-set-key (kbd "M-k") 'cg/kill-start-of-line)
+  (modify-syntax-entry ?. "." org-mode-syntax-table)
+  (modify-syntax-entry ?. ".")
+(setq sentence-end-double-space nil)
+(global-set-key (kbd "M-SPC") 'other-window)
+</pre>
+
+
+
+<p>  
+C-f
+C-b
+C-n -&gt; good
+C-p -&gt; good
+M-f -&gt; bad
+M-b -&gt; bad
+M-n -&gt; good
+M-p -&gt; good
+C-M-n -&gt; good
+C-M-p -&gt; good
+S-M-p -&gt; good
+S-M-n -&gt; good
+S-C-f -&gt; good
+S-C-b -&gt; good
+S-C-n -&gt; good
+S-C-p -&gt; good
+</p>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Syntax-based killing</h2>
+<div class="outline-text-2" id="text-5">
+
+
+
+
+<pre class="example">(global-set-key (kbd "C-S-f") 'forward-word)
+
+</pre>
+
+
+<p>
+(global-set-key (kbd "M-DEL") 'backward-kill-word)
+(global-set-key (kbd "C-c C-k")'kill-start-of-line)
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Windows and buffers</h2>
+<div class="outline-text-2" id="text-6">
+
+
+
+
+<pre class="example">(define-key org-mode-map (kbd "C-+") 'org-edit-special)
+(define-key org-src-mode-map (kbd "C-+") 'org-edit-src-exit)
+</pre>
+
+
+<p>
+(defun increase-current-window ()
+  "Increase current window by two lines"
+  (interactive)
+  (enlarge-window 2))
+</p>
+<p>
+(global-set-key (kbd "M-+") 'increase-current-window)
+</p>
+<p>
+(defun set-focus-lower-window ()
+  "Move focus of lower window so that last line of buffer
+exactly matches last line of frame"
+    (interactive)
+    (if (not (one-window-p))            ; if more than one window
+    (progn
+      (other-window 1)                  ; move point to second window
+      (end-of-buffer)                   ; go to end of buffer
+      (recenter -1)                     ; move point to last line of frame
+      (other-window 1))))               ; move point back again
+</p>
+<p>
+(global-set-key (kbd "C-x C-l") 'set-focus-lower-window)
+</p>
+
+<p>
+(defun toggle-major-window ()
+  "Set focus on second window, and enlargen it
+to cover about 3/4 of overall area"
+  (interactive)
+  (if (not (one-window-p))              ; if more than one window
+      (progn
+        (other-window 1)                ; switch to other window
+        (balance-windows)               ; split overall area equally
+        (enlarge-window 8))))           ; enlargen current window by 8 lines
+</p>
+<p>
+;; (define-key ess-mode-map (kbd "C-x +") 'toggle-major-window)
+(global-set-key (kbd "C-x +") 'toggle-major-window)
+</p>
+<p>
+(global-set-key (kbd "C-x t") 'kill-buffer-and-window)
+</p>
+<p>
+(defun kill-other-buffer-and-window ()
+  "Kill other window with buffer also."
+  (interactive)
+  (other-window 1)
+  (kill-buffer-and-window))
+</p>
+<p>
+(global-set-key (kbd "C-x C-t") 'kill-other-buffer-and-window)
+</p>
+<p>
+(defun open-pic-at-point ()
+  "Open link to pic in horizontally splitted window."
+  (interactive)
+  (split-window-horizontally)
+  (org-open-at-point))
+</p>
+<p>
+(global-set-key (kbd "C-x C-o") 'open-pic-at-point)
+(image-mode)
+(define-key image-mode-map (kbd "k") 'kill-buffer-and-window)
+(emacs-lisp-mode)
+</p>
+
+</div>
+
+<div id="outline-container-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> Buffers</h3>
+<div class="outline-text-3" id="text-6-1">
+
+<p>Since I only very seldomly use list-buffers, I rebound the key to
+the command ido-switch-buffer-other-window, which allows to choose a
+buffer for the second window. If no other window exists, a
+horizontal split will be conducted, and the chosen buffer will be
+inserted in the newly opened window.
+</p>
+
+
+<pre class="example">(global-set-key (kbd "C-x C-b") 'ido-switch-buffer-other-window)
+(global-set-key (kbd "C-x 4 b") 'list-buffers)
+</pre>
+
+
+
+</div>
+
+<div id="outline-container-6-1-1" class="outline-4">
+<h4 id="sec-6-1-1"><span class="section-number-4">6.1.1</span> File opening</h4>
+<div class="outline-text-4" id="text-6-1-1">
+
+<p>As already have set default settings for auto-fill-mode, which I
+adjust only very seldomly, there is no need for me to keep
+set-fill-column as key binding. Hence, to comply with my buffer
+settings, I rebind ido-find-file.
+</p>
+
+
+<pre class="example">(global-set-key (kbd "C-x f") 'ido-find-file)
+</pre>
+
+<p>
+This way, after some familiarization, I can bind
+ido-find-file-other-window to "C-x C-f".
+</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Commenting</h2>
+<div class="outline-text-2" id="text-7">
+
+<p>Although emacs already is equipped quite sophisticated
+do-what-I-mean commenting powers, I still want to be able to toggle
+between commented and uncommented for the current line or highlighted
+region. I bound the command to "C-#" since many command languages
+use # as comment symbol. Another natural choice would be "M-," which
+is more in resemblance to the emacs commenting binding "S-M-;".
+</p>
+
+
+<pre class="example">(defun comment-or-uncomment-line ()
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position)
+                               (line-end-position)))
+(global-set-key (kbd "C-#") 'comment-or-uncomment-line)
+(define-key org-mode-map (kbd "C-#") 'comment-or-uncomment-line)
+</pre>
+
+<p>
+Keep in mind that in order to extend existing comments into the next
+line you can use indent-new-comment-line bound to "M-S-RET".
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Misc</h2>
+<div class="outline-text-2" id="text-8">
+
+
+<p>
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(canlock-password "7c5426993fd9b0f7c6f57a98e8fed4b718bc46ba")
+ '(org-agenda-ndays 14)
+ '(org-agenda-show-all-dates t)
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-deadline-warning-days 14)
+ '(org-fast-tag-selection-single-key nil)
+ '(org-reverse-note-order nil))
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ )
+</p></div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2012-10-03T17:09+0200</p>
+<p class="author">Author: chris</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.2 with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 23</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

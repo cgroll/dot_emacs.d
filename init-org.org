@@ -1,0 +1,484 @@
+#+TITLE: Initialization of org-mode settings
+#+OPTIONS: ^:nil
+#+BEGIN_COMMENT
+Options: ^:nil avoids automatic subindex interpretation of
+underscores.
+#+END_COMMENT
+
+* Set global key bindings
+At first, we want to set the most important key bindings.
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+#+END_SRC
+
+* Org-mode file formats
+Automatically use org-mode for .org files, .txt files and org_archive
+files.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)) 
+#+END_SRC
+
+* Org task manager
+This chapter determines all customized settings for using org-mode as
+task planer. The settings are chosen in compliance with the Getting
+things done methodology.
+
+** Determine files for org agenda
+First, we have to define which files to use when searching for tasks.
+In this setting, all paths in the /~/org/ directory are on the path
+list, and the file used as inbox bucket for captured notes is set to
+/~/org/refile.org/. In order to synchronize these files privately
+over multiple computers, the complete /~/org/ directory is only a
+symbolic link to a folder stored in my dropbox.
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files (quote ("~/org/")))
+  (setq org-default-notes-file "~/org/refile.org") 
+#+END_SRC
+** Determine files for notes captured by org-mode
+In addition to all files regarding my daily tasks and appointments, I
+also use org-mode to capture short notes about things I read.
+Especially, I collect short information about software and coding
+tricks that I stumble upon, and capture them in my computational
+science directory /~/comp_science/, where plain text files with notes
+regarding to all different topics are stored. These files again are
+publicly available through at git repository stored at github. So far,
+my notes files are:
+- bash_notes.org :: contains notes on bash programming and all
+                    important commands for the linux shell
+- emacs_notes.org :: notes about emacs installation procedures, as
+     well as installation procedures for all emacs extensions. Also,
+     the structure of my emacs configuration is explained, together
+     with descriptions on keeping my emacsen as git repository for
+     simple syncronization between multiple computers.
+- git_notes.org :: notes on subversion control with git and github
+                   (which is also how I backup my emacs system
+                   settings publicly).
+- gtd_notes.org :: more elaborate description of the structure and
+                   possibilities of the org task managing features.
+                   gtd refers to "Getting things done", which is a
+                   book regarding a detailled task management
+                   procedure.
+- e_lisp_notes.org :: notes on emacs lisp
+- e_wanderlust_notes.org :: wanderlust email notes
+- e_bbdb_notes.org :: using big brother database
+- R_notes.org :: notes on statistical computing with R
+- matlab_notes.org :: notes on using matlab
+- julia_notes.org :: notes on using julia language
+- literature_notes.org :: notes on digital literature management -
+     comprises mendeleydesktop, JabRef, Citavi, etc.
+- e_latex_notes.org :: notes on latex, with focus on latex in emacs
+
+The respective public git-repo should be easily forked, so that everybody can
+extend it with private notes.
+
+*Remark: all these files shall be available publicly, so that none of them may
+contain any sensitive private data!!*
+
+** Todo states
+I keep the following todo states:
+- TODO :: every individual task generally gets a TODO mark
+- NEXT :: if any higher-level task or project brings forth any
+          subtask, then this is marked as NEXT. This way I shift tasks
+          from my external projects to my agenda, without immediately
+          integrating the complete major project. Furthermore,
+          long-term targets are forced to be splitted into minor
+          tasks, which are much better to focus on.
+- DONE :: the classic label for finished tasks
+- WAITING :: if a task is still prevailing, but can not be processed
+             right now since it depends on someone else's action.
+             Could be used to indicate some chronological temporal
+             dependency on a different task. However, chronological
+             ordering at best should be implemented directly.
+- CANCELLED :: any task that suddenly is not required anymore
+- SOMEDAYS :: captures any unconcrete long-term targets or just things
+              that probably would be nice to having it doing
+*** State definitions
+Entering any todo state automatically will create a timestamp. While
+the timestamp for TODO and NEXT will be made at its creation, all
+other states are told to log the entry time with a "!" sign in the
+state definition. Additionally, WAITING and CANCELLED will call for a
+note, so that an explanation can be added. Also, most states will log
+exiting times as well. Fast access for todo states are guaranteed with
+shortcut letters for each state, which also have to be enabled:
+#+BEGIN_SRC emacs-lisp
+  (setq org-use-fast-todo-selection t)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keywords
+     (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+               (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)" "SOMEDAY(s!/!)"))))
+#+END_SRC
+Here I determine custom face colors for my task state keywords.
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keyword-faces
+     (quote (("TODO" :foreground "red" :weight bold)
+               ("NEXT" :foreground "blue" :weight bold)
+               ("DONE" :foreground "forest green" :weight bold)
+               ("WAITING" :foreground "orange" :weight bold)
+               ("SOMEDAY" :foreground "magenta" :weight bold)
+               ("CANCELLED" :foreground "forest green" :weight bold))))
+#+END_SRC
+When skipping through todo states for minor corrections with shift
+key, log processing will be disabled. Otherwise we will get to many
+timestamps.
+#+BEGIN_SRC emacs-lisp
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+#+END_SRC
+
+** Org-capture
+The process of capturing tasks and notes is probably one of the most
+important parts of the complete system. It is absolutely crucial to
+the system that any information can be temporarily captured and shoved
+away fast and without disturbing the current workflow. That means,
+with very few shortcuts any information can be captured in a highly
+adapted template tailored to the specific information requirements. At
+a header level, information is classified as one of several main
+topics:
+- TODO task
+- email response
+- event, appointment, date
+- note
+At the second layer, more specific patterns are distinguished, like
+storage location, prompts, tags and the like.
+*** Capturing events
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+     (quote (
+               ("e" "Templates for events")
+               
+               ;; Birthday entry into anniversaries calendar with prompt
+               ;; for date; date is active -> appears in agenda
+               ("ea" "annually repeating event"
+               entry (file "~/org/annuals.org")
+                  "* %? \nDate: %^{Do not forget to add +1y!}t\n"
+                  :clock-in t :clock-resume t)
+               
+               ;; Future event: prompt for date without time
+               ("ed" "daily event without time"
+               entry (file "~/org/refile.org")
+                  "* %? :calendar: \n%^{Which date?}t \nAdded:%U\n"
+                  :clock-in t :clock-resume t)
+               
+               ;; Future event: prompt for date WITH time
+               ("et" "event with time specification"
+               entry (file "~/org/refile.org")
+                  "* %? :calendar: \n%^{Which date and time?}T \nAdded: %U\n"
+                  :clock-in t :clock-resume t)
+  
+               ;; Future event lasting for multiple days
+               ("ee" "enduring event"
+               entry (file "~/org/refile.org")
+                  "* %? :calendar: \n%^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
+                  :clock-in t :clock-resume t)
+               
+               ;; Entry in log: at current time finished activity with completion
+               ("el" "logbook: finished activities"
+               entry (file+datetree "~/org/log.org")
+                  "* %U - %^{Activity?|lunch|break|buy|program|read|work} "
+                  :clock-in t :clock-resume t)
+               
+               ;; Stopwatch activity without prompt
+               ("es" "stopwatch"
+               entry (file+datetree "~/org/log.org")
+                  "* Stopwatch %? \nStarted: %U\n"
+                  :clock-in t :clock-resume t)
+               
+               ;; Entry in creditcard with prompt for sum and cursor for item specification
+               ("ec" "credit-card info"
+               entry (file+datetree "~/org/creditcard.org")
+                  "* %? - %^{Amount?} \nAdded: %U\n"
+                  :clock-in t :clock-resume t)
+               
+               )
+        )
+     )
+#+END_SRC
+
+;; Capture templates for: TODO tasks, Notes, appointments, phone
+calls, and org-protocol
+*** Capturing notes
+Plain notes without any code, yanking or source file link.
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+     (append org-capture-templates
+        (quote (
+                  ;; notes without code or yanking
+                  ("N" "Plain notes without code or yanking")
+  
+                  ;; git-note
+                  ("Ng" "entry to git_notes"
+                     entry (file+headline "~/comp_science/git_notes.org" "Captured
+                  notes")
+                     "* %? ")
+  
+                  ;; emacs-note
+                  ("Ne" "entry to emacs_notes"
+                     entry (file+headline "~/comp_science/emacs_notes"
+                  "Captured notes")
+                     "* %? ")
+  
+                  ;; bash-note
+                  ("Nb" "entry to bash_notes"
+                     entry (file+headline "~/comp_science/bash_notes"
+                  "Captured notes")
+                     "* %? ")
+                  
+                  ;; gtd-note
+                  ("No" "entry to gtd_notes"
+                     entry (file+headline "~/comp_science/gtd_notes"
+                  "Captured notes")
+                     "* %? ")
+                  
+                  ;; ubuntu-note
+                  ("Nu" "entry to ubuntu_notes"
+                     entry (file+headline "~/comp_science/ubuntu_notes"
+                  "Captured notes")
+                     "* %? ")
+                  
+                  ;; matlab-note
+                  ("Nm" "entry to matlab_notes"
+                     entry (file+headline "~/comp_science/matlab_notes"
+                  "Captured notes")
+                     "* %? ")
+                  )
+           )
+        )
+)
+  
+#+END_SRC
+Notes with code snippet in clipboard or kill ring, and source file link.
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+     (append org-capture-templates
+        (quote (
+                  ;; notes with code yanking
+                  ("c" "Notes with code yanking")
+  
+                  ;; git-note
+                  ("cg" "entry to git_notes"
+                     entry (file+headline "~/comp_science/git_notes.org" "Captured
+                  notes")
+                     "* %? \n#+begin_src
+                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
+  
+                  ;; emacs-note
+                  ("ce" "entry to emacs_notes"
+                     entry (file+headline "~/comp_science/emacs_notes.org" "Captured
+                  notes")
+                     "* %? \n#+begin_src
+                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
+                  
+                  ;; bash-note
+                  ("cb" "entry to bash_notes"
+                     entry (file+headline "~/comp_science/bash_notes.org" "Captured
+                  notes")
+                     "* %? \n#+begin_src
+                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
+  
+                  ;; ubuntu-note
+                  ("cu" "entry to ubuntu_notes"
+                     entry (file+headline "~/comp_science/ubuntu_notes.org" "Captured
+                  notes")
+                     "* %? \n#+begin_src
+                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
+  
+                  ;; matlab-note
+                  ("cu" "entry to matlab_notes"
+                     entry (file+headline "~/comp_science/matlab_notes.org" "Captured
+                  notes")
+                     "* %? \n#+begin_src
+                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
+  
+                  )
+           )
+        )
+)
+    
+#+END_SRC
+Additional notes to store:
+- emacs command / with shortcut / explanation
+- track things:
+  - vacation days / costs
+  - handy balance
+- registration / password
+
+*** Capturing tasks
+#+BEGIN_SRC emacs-lisp
+    (setq org-capture-templates
+       (append org-capture-templates
+          (quote (
+                    ("t" "Templates for tasks")
+                    
+                    ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
+                    ("tt" "task, manual scheduling"
+                       entry (file "~/org/refile.org")
+                       "* TODO %? \nAdded: %U\n"
+                       :clock-in t :clock-resume t) 
+                    
+                    ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
+                    ("tT" "task, tag prompt"
+                       entry (file "~/org/refile.org")
+                       "* TODO %? %^G \nAdded: %U\n"
+                       :clock-in t :clock-resume t)
+    
+                    ;; TODO entry, inactive timestamp, prompt for yanking
+                    ("tk" "task with yanking" entry (file "~/org/refile.org") 
+                       "* TODO %? %^G \n%^C\nAdded: %U\n"
+                       :clock-in t :clock-resume t)
+                    
+                    ;; TODO entry, inactive timestamp, prompt for tag and clipboard entry
+                    ("tK" "task with tag and yanking"
+                       entry (file "~/org/refile.org")
+                       "* TODO %? %^G \n%^C\nAdded: %U\n"
+                       :clock-in t :clock-resume t)
+                    
+                    ;; New research project: create project heading in todo.org under research projects
+                    ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
+                                            ; project related tasks with link to origin
+                    ("tP" "project with tag, automatic source"
+                       entry (file+headline "~/org/todo.org" "Research")
+                       "* NEXT %? %^{TAGS}p \n%a\nAdded: %U\n %?"
+                       :clock-in t :clock-resume t)
+    
+                    
+                    ("tp" "project task"
+                       entry (file+headline "~/org/todo.org" "Research")
+                       "* NEXT %? %^{TAGS}p \nAdded: %U\n %?"
+                       :clock-in t :clock-resume t)         
+                    ;; write function to shift todo tasks from project file to agenda ! 
+                    
+                    ("tb" "buy item" entry (file "~/org/refile.org")
+                       "* TODO %? %^{Arcade or shop?}g   \n%U\n"
+                       :clock-in t :clock-resume t) 
+                    
+                    ("r" "email response"
+                       entry (file "~/org/refile.org")
+                       "* TODO Respond to %:from on %:subject :EMAIL:\n%t\n%a\n"
+                       :clock-in t :clock-resume t :immediate-finish t
+                       )
+                    
+                    ("h" "habit"
+                       entry (file "~/org/refile.org")
+                       "* NEXT %?\n%U\nSCHEDULED: %t .+1d/3d\n
+    :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+
+                    )
+             )
+          )
+       )
+#+END_SRC
+*** Capturing habits
+#+BEGIN_SRC emacs-lisp :tangle no 
+    (setq org-capture-templates
+         (append org-capture-templates
+            (quote 
+               ("Z" "habit"
+                  entry (file "~/org/refile.org")
+                  "* NEXT %?\n%U\nSCHEDULED: %t ")
+  
+  ;.+1d/3d\n
+   ; :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
+               )
+            )
+  )
+  
+    
+#+END_SRC
+*** Refile targets
+#+BEGIN_SRC emacs-lisp  (setq org-refile-use-outline-path t)
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps t)
+  (setq org-refile-allow-creating-parent-nodes (quote confirm))
+  ;; (setq org-completion-use-ido t)
+  ;; (setq ido-everywhere t)
+  ;; (setq ido-max-directory-size 100000)
+  ;; (ido-mode (quote both))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; (setq org-refile-targets
+  ;;    (quote
+  ;;       (("~/comp_science/bash_notes.org" :maxlevel . 4)
+  ;;          ;;(nil :maxlevel . 3)          
+  ;;          ;;(org-agenda-files :maxlevel . 4)
+  
+  ;;          ("~/comp_science/e_auto-complete_notes.org" :maxlevel . 4)         
+  ;;          ("~/comp_science/emacs_notes.org" :maxlevel . 4)
+  ;;                   
+  ;;          
+  ;;          
+  ;;          )
+  ;;       )
+  ;;    )
+  
+  
+  ;; refile targets
+  (setq org-refile-targets
+     (quote
+        (("~/org/todo.org" :maxlevel . 1)
+           ("~/org/log.org" :maxlevel . 1)
+           ("~/org/creditcard.org" :maxlevel . 1)
+           ("~/comp_science/e_auto-complete_notes.org" :maxlevel . 3)
+           ("~/comp_science/emacs_notes.org" :maxlevel . 3)
+           ("~/comp_science/git_notes.org" :maxlevel . 3)
+           ("~/comp_science/gtd_notes.org" :maxlevel . 3)
+           ("~/comp_science/ubuntu_notes.org" :maxlevel . 3)
+           ("~/org/annuals.org" :maxlevel . 1))))
+  ;; (defun cg/org-refile ()
+  ;;    (interactive)
+  ;;    (add-file-local-variable 'org-refile-targets t)
+  ;;    (setq org-refile-targets
+  ;;       (quote
+  ;;          (("~/org/todo.org" :maxlevel . 1)
+  ;;             ("~/org/log.org" :maxlevel . 1)
+  ;;             ("~/org/creditcard.org" :maxlevel . 1)
+  ;;             ("~/org/annuals.org" :maxlevel . 1))))
+  ;;    )
+#+END_SRC
+
+
+
+** OrgMobile
+#+BEGIN_SRC emacs-lisp
+  (setq org-mobile-directory "~/Dropbox/MobileOrg")
+#+END_SRC
+
+** Customize variables
+#+BEGIN_SRC emacs-lisp
+  (custom-set-variables
+     '(org-agenda-ndays 14)
+     '(org-deadline-warning-days 14)
+     '(org-agenda-show-all-dates t)
+     '(org-agenda-skip-deadline-if-done t)
+     '(org-agenda-skip-scheduled-if-done t)
+     '(org-agenda-start-on-weekday nil) ; start agenda at current day
+     '(org-reverse-note-order nil) ; append new nodes
+     '(org-fast-tag-selection-single-key nil) ; you have to press RET to exit tag menu 
+     )
+  (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+         (sh . t)
+         (R . t)))
+  
+#+END_SRC
+(org-agenda-custom-commands
+   (quote (("d" todo "DELEGATED" nil)
+       ("c" todo "DONE|DEFERRED|CANCELLED" nil)
+       ("w" todo "WAITING" nil)
+       ("W" agenda "" ((org-agenda-ndays 21)))
+       ("A" agenda ""
+        ((org-agenda-skip-function
+          (lambda nil
+        (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]")))
+         (org-agenda-ndays 1)
+         (org-agenda-overriding-header "Today's Priority #A tasks: ")))
+       ("u" alltodo ""
+        ((org-agenda-skip-function
+          (lambda nil
+        (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
+                      (quote regexp) "\n]+>")))
+         (org-agenda-overriding-header "Unscheduled TODO entries: ")))))

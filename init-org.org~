@@ -1,0 +1,30 @@
+#+TITLE: Initialization of org-mode settings
+* Set global key bindings
+At first, we want to set the most important key bindings.
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+#+END_SRC
+
+* Org-mode file formats
+Automatically use org-mode for .org files, .txt files and org_archive files
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)) 
+#+END_SRC
+fill-column
+* Org task manager
+This chapter determines all customized settings for using org-mode as task
+planer. The settings 
+
+
+
+** Determine files for org agenda
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files (quote ("~/org/")))
+(setq org-default-notes-file "~/org/refile.org") ; inbox bucket for org-capture
+#+END_SRC
+;; set .org files used in agenda: individual projects have to be added separately each time
+

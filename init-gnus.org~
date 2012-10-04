@@ -1,0 +1,274 @@
+#+TITLE: Setup Gnus for Mail, RSS and News
+This file basically handles the setup of gnus. That is, while gnus
+usually falls back on ~/.gnus on startup, .gnus only contains a single
+line which loads in this init-gnus file.
+
+My personal requirements for gnus consist of:
+- handling private mails from gmail
+- handling work mails from lrz server
+- reading rss feeds
+- experimenting with scientific news servers
+
+* Email
+As already mentioned, my gnus settings has to be able to handle two
+accounts simultaneously.
+
+** Mail retrieval
+These are the settings for mail retrieval.
+*** GMX
+#+begin_src emacs-lisp 
+(add-to-list 'gnus-secondary-select-methods '(nnimap "gmx"
+				  (nnimap-address "imap.gmx.com")
+				  (nnimap-server-port 993)
+				  (nnimap-stream ssl)))
+#+end_src
+*** GMail
+#+begin_src emacs-lisp :tangle no
+(setq gnus-select-method '(nnimap "gmail"
+				  (nnimap-address "imap.gmail.com")
+				  (nnimap-server-port 993)
+				  (nnimap-stream ssl)))
+#+end_src
+In order to not ignore gmail folders, allegedly the following lines
+should be incorporated. However, I probably only want to subscribe to
+some folders anyway.
+#+begin_src emacs-lisp :tangle no
+(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+#+end_src
+
+
+
+*** LRZ
+These are the settings for mail retrieval from the LRZ server
+#+begin_src emacs-lisp
+(add-to-list 'gnus-secondary-select-methods '(nnimap "lrz"
+				  (nnimap-address "mailin.lrz.de")
+				  (nnimap-server-port 993)
+				  (nnimap-stream ssl)))
+#+end_src
+#+begin_src emacs-lisp 
+(add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
+				  (nnimap-address "imap.gmail.com")
+				  (nnimap-server-port 993)
+				  (nnimap-stream ssl)))
+#+end_src
+
+Some alternative gmail settings that I tried! /REMARK: KILL PERSONAL DATA/
+This form would be chosen if mail were not be processed via IMAP.
+#+begin_src emacs-lisp :tangle no
+(add-to-list 'gnus-secondary-select-methods '(nnml ""))
+  (setq mail-sources '((imap :server "imap.gmail.com"
+                             :user "cgroll.ger@gmail.com" 
+                             :port 993 
+                             :password "something_secret" 
+                             :stream "ssl"
+                             :authentification "login" 
+                             :mailbox "Inbox")))
+#+end_src
+
+** Sending mails
+By now, I only send emails via the LRZ account. However, in future I
+want to be able to switch between LRZ and gmail account, or
+automatically respond emails through the appropriate account.
+
+Problems: it was no problem to specify gmail as first mail output. With LRZ,
+however, I had a lot of problems. It seems, like if I had to set up an
+environment, where LRZ can ask for my identification when sending an
+email. Hence, the crucial point was to not hand over my authentification data
+completely with .authinfo, but to hand over my login name, but this only.
+
+*** General settings
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "Christian Groll")
+(setq smtpmail-debug-info t)
+(setq starttls-use-gnutls t)
+(require 'smtp)
+(setq user-login-name "lu95zor")
+#+END_SRC
+
+*** LRZ settings
+#+BEGIN_SRC emacs-lisp
+    (setq user-mail-address "Christian.Groll@stat.uni-muenchen.de")
+      (setq send-mail-function 'smtpmail-send-it
+            message-send-mail-function 'smtpmail-send-it
+            smtpmail-default-smtp-server "postout.lrz.de"
+            smtpmail-smtp-server "postout.lrz.de"
+            smtpmail-starttls-credentials '(("postout.lrz.de" 587 nil nil))
+            smtpmail-auth-credentials '(("postout.lrz.de" 587 "lu95zor" nil))
+            smtpmail-smtp-service 587
+            )
+  
+  ;; (setq user-login-name "lu95zor")
+  ;; (setq system-name "lu95zor")
+    ;;          smtpmail-auth-credentials '(("postout.lrz.de" "587" "lu95zor" "P2NN+u66"))
+  ;;          smtpmail-starttls-credentials '(("postout.lrz.de" 587 nil nil))
+  
+#+END_SRC
+
+Old settings: should not work, because of my password.
+#+begin_src emacs-lisp :tangle no
+(setq user-mail-address "Christian.Groll@stat.uni-muenchen.de")
+    (setq send-mail-function 'smtpmail-send-it
+          message-send-mail-function 'smtpmail-send-it
+          smtpmail-starttls-credentials '(("postout.lrz.de" 587 nil nil))
+          smtpmail-auth-credentials '(("postout.lrz.de" "587" "lu95zor" "P2NN+u66"))
+          smtpmail-default-smtp-server "postout.lrz.de"
+          smtpmail-smtp-server "postout.lrz.de"
+          smtpmail-smtp-service 587
+          smtpmail-local-domain
+          )
+(setq smtpmail-debug-info t)
+#+end_src
+The settings for mails via gmail are given below. The source code
+block property prevents evaluation.
+#+begin_src emacs-lisp :tangle no
+(setq user-mail-address "cgroll.ger@gmail.com")
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "cgroll.ger@gmail.com" "14youtube"))
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-local-domain)
+(setq smtpmail-debug-info t)
+#+end_src
+
+
+
+* News
+In order to get news from a news server, try something like:
+#+begin_src emacs-lisp :tangle no
+(setq gnus-select-method '(nntp "sci.stat.edu"))
+;; (setq gnus-select-method '(nntp "comp.soft-sys.matlab"))
+(setq gnus-select-method '(nntp "air.stat.consulting"))
+#+end_src
+Be careful not to overwrite previous settings, since email is handled
+with gnus-select-method, too.
+* Settings
+- do not check for new groups on startup -> saves startup time
+#+begin_src emacs-lisp
+(setq gnus-check-new-newgroups nil)
+#+end_src
+
+
+- turn off compatibility file helping switching to other newsreader -> saves closing time
+#+begin_src emacs-lisp
+(setq gnus-save-newsrc-file nil)
+#+end_src
+
+- allow loading of all  messages in inbox -> limit is 5000?
+#+begin_src emacs-lisp
+(setq gnus-large-newsgroup 5000)
+#+end_src
+
+- automatic article selection on group entering -> first unseen article
+#+begin_src emacs-lisp
+(setq gnus-auto-select-first 'unseen)
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(setq gnus-default-subscribed-newsgroups 
+      '("news.answers" "news.newusers.questions"
+	"rye.ee.general" "rye.general" "sci.eletronics" 
+	"rec.humor.funny"))
+#+end_src
+** Subscription commands
+- toggle subscription to the current group: S t or u
+- prompt for group to subscribe: S s or U
+- kill current group: C-k
+** Group levels
+Lower numbers mean being more subscribed.
+- set level of current group: S l
+- subscribed up to 5
+- unsubscribed up to 7
+- zombie 8
+- killed 9
+- show subscribed groups: l
+- show unsubscribed groups also: L
+- Gnus doesn't ask the news server for information for zombie and
+  killed groups
+- show all zombies (could be new groups): A z
+- 
+
+** Marking Groups
+- set mark on current group: # or M m
+- remove mark on current group: M-# or M u
+- mark groups matching regexp: M r
+** Foreign Groups
+- rename current group: G r
+- customize group parameters: G c
+- make a directory group: G d
+- make ephemeral group based on web search: G w
+- make group based on RSS: G R
+- make new virtual group: G V
+- add current group to virtual group: G v
+** Topics
+- enter topic mode: t
+- create new topic subfolder: T n behind upper topic
+- move folder to topic: T m
+** Summary buffer
+- toggle threading: T T 
+- fetch parent: ^
+- mark as read: c
+- mark as unread: M-u 
+** Draft
+- send mail: C-c C-c
+- save message as draft: C-c C-d
+- attach file: C-c C-m f
+- reformat paragraph: M-q
+** Deleting mails
+- by default messages older than 7 days are old enough for expiration
+- mark mail for expiration: E
+- show current key bindings: C-h b
+** Timeout
+#+begin_src emacs-lisp 
+(setq imap-ping-interval (* 10 60))
+(setq imap-ping-timer nil)
+
+(defun imap-ping-handler ()
+  ;; ping all active IMAP servers in `nnimap-server-buffer-alist'
+  (when (boundp 'nnimap-server-buffer-alist)
+    (let ((servers nil))
+      (mapc
+       (lambda (server-buffer)
+         (let ((server (car server-buffer))
+               (buffer (cadr server-buffer)))
+           (when (and (get-buffer buffer) (not (member server servers)))
+             (ignore-errors
+               (with-local-quit
+                 (with-temp-message
+                     (format "Pinging %s..." server)
+                   (imap-send-command-wait "NOOP" buffer)
+                   (message "Pinging %s...done" server))))
+             (setq servers (cons server servers)))))
+       nnimap-server-buffer-alist)))
+
+  (let* ((current (current-time))
+	 (timer imap-ping-timer)
+	 ;; compute the time when this timer will run again
+	 (next-time (timer-relative-time
+		     (list (aref timer 1) (aref timer 2) (aref timer 3))
+		     (* 5 (aref timer 4)) 0)))
+    ;; if the activation time is far in the past, skip executions
+    ;; until we reach a time in the future.  This avoids a long
+    ;; pause if Emacs has been suspended for hours.
+    (or (> (nth 0 next-time) (nth 0 current))
+	(and (= (nth 0 next-time) (nth 0 current))
+	     (> (nth 1 next-time) (nth 1 current)))
+	(and (= (nth 0 next-time) (nth 0 current))
+	     (= (nth 1 next-time) (nth 1 current))
+	     (> (nth 2 next-time) (nth 2 current)))
+	(progn
+	  (timer-set-time timer (timer-next-integral-multiple-of-time
+				 current imap-ping-interval)
+			  imap-ping-handler)
+	  (timer-activate timer)))))
+
+(setq imap-ping-timer
+      (run-at-time t imap-ping-interval 'imap-ping-handler))
+#+end_src
+#+begin_src emacs-lisp :tangle no
+  (setq starttls-use-gnutls t)
+  (setq starttls-gnutls-program "gnutls-cli")
+  (setq starttls-extra-arguments nil)
+#+end_src

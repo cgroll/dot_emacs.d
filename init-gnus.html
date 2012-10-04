@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Setup Gnus for Mail, RSS and News</title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="Setup Gnus for Mail, RSS and News"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-10-03T20:11+0200"/>
+<meta name="author" content="Christian Groll"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012  Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">Setup Gnus for Mail, RSS and News</h1>
+
+<p>This file basically handles the setup of gnus. That is, while gnus
+usually falls back on ~/.gnus on startup, .gnus only contains a single
+line which loads in this init-gnus file.
+</p>
+<p>
+My personal requirements for gnus consist of:
+</p><ul>
+<li>handling private mails from gmail
+</li>
+<li>handling work mails from lrz server
+</li>
+<li>reading rss feeds
+</li>
+<li>experimenting with scientific news servers
+</li>
+</ul>
+
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Email</a>
+<ul>
+<li><a href="#sec-1-1">1.1 Mail retrieval</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1 GMX</a></li>
+<li><a href="#sec-1-1-2">1.1.2 LRZ</a></li>
+<li><a href="#sec-1-1-3">1.1.3 GMail</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-2">1.2 Sending mails</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1 General settings</a></li>
+<li><a href="#sec-1-2-2">1.2.2 LRZ settings</a></li>
+</ul></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 News</a></li>
+<li><a href="#sec-3">3 Settings</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Subscription commands</a></li>
+<li><a href="#sec-3-2">3.2 Group levels</a></li>
+<li><a href="#sec-3-3">3.3 Marking Groups</a></li>
+<li><a href="#sec-3-4">3.4 Foreign Groups</a></li>
+<li><a href="#sec-3-5">3.5 Topics</a></li>
+<li><a href="#sec-3-6">3.6 Summary buffer</a></li>
+<li><a href="#sec-3-7">3.7 Draft</a></li>
+<li><a href="#sec-3-8">3.8 Deleting mails</a></li>
+<li><a href="#sec-3-9">3.9 Timeout</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Email</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>As already mentioned, my gnus setting has to be able to handle two
+accounts simultaneously.
+</p>
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Mail retrieval</h3>
+<div class="outline-text-3" id="text-1-1">
+
+<p>These are the settings for mail retrieval.
+</p>
+</div>
+
+<div id="outline-container-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> GMX</h4>
+<div class="outline-text-4" id="text-1-1-1">
+
+
+
+
+<pre class="example">(add-to-list 'gnus-secondary-select-methods '(nnimap "gmx"
+                                  (nnimap-address "imap.gmx.com")
+                                  (nnimap-server-port 993)
+                                  (nnimap-stream ssl)))
+</pre>
+
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> LRZ</h4>
+<div class="outline-text-4" id="text-1-1-2">
+
+
+
+
+<pre class="example">(add-to-list 'gnus-secondary-select-methods '(nnimap "lrz"
+                                  (nnimap-address "mailin.lrz.de")
+                                  (nnimap-server-port 993)
+                                  (nnimap-stream ssl)))
+
+
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> GMail</h4>
+<div class="outline-text-4" id="text-1-1-3">
+
+
+
+
+<pre class="example">(add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
+                                  (nnimap-address "imap.gmail.com")
+                                  (nnimap-server-port 993)
+                                  (nnimap-stream ssl)))
+</pre>
+
+
+
+<pre class="example">(setq gnus-select-method '(nnimap "gmail"
+                                  (nnimap-address "imap.gmail.com")
+                                  (nnimap-server-port 993)
+                                  (nnimap-stream ssl)))
+</pre>
+
+<p>
+In order to not ignore gmail folders, allegedly the following lines
+should be incorporated. However, I probably only want to subscribe to
+some folders anyway.
+</p>
+
+
+<pre class="example">(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+</pre>
+
+
+<p>
+Some alternative gmail settings that I tried! This form would be
+chosen if mail were not be processed via IMAP.
+</p>
+
+
+<pre class="example">(add-to-list 'gnus-secondary-select-methods '(nnml ""))
+  (setq mail-sources '((imap :server "imap.gmail.com"
+                             :user "pdiddy.at@gmail.com" 
+                             :port 993 
+                             :password "something_secret" 
+                             :stream "ssl"
+                             :authentification "login" 
+                             :mailbox "Inbox")))
+</pre>
+
+
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Sending mails</h3>
+<div class="outline-text-3" id="text-1-2">
+
+<p>By now, I only send emails via the LRZ account. However, in future I
+want to be able to switch between LRZ and gmail account, or
+automatically respond to emails through the appropriate account.
+</p>
+<p>
+Problems: it was no problem to specify gmail as first mail output. With LRZ,
+however, I had a lot of problems. It seems, like if I had to set up an
+environment, where LRZ can ask for my identification when sending an
+email. Hence, the crucial point was to not hand over my authentification data
+completely with .authinfo, but to hand over my login name, but this only.
+</p>
+
+</div>
+
+<div id="outline-container-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> General settings</h4>
+<div class="outline-text-4" id="text-1-2-1">
+
+
+
+
+<pre class="example">(setq user-full-name "Christian Groll")
+;(setq smtpmail-debug-info t)
+(setq starttls-use-gnutls t)
+(require 'smtp)
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2"><span class="section-number-4">1.2.2</span> LRZ settings</h4>
+<div class="outline-text-4" id="text-1-2-2">
+
+<p>You must send email with gnus-group-mail, not simple compose-mail. Otherwise sent mail
+will not be shown in sent folder. That is, use "m" in Group buffer, instead of C-x m.
+</p>
+
+
+
+</div>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> News</h2>
+<div class="outline-text-2" id="text-2">
+
+<p>In order to get news from a news server, try something like:
+</p>
+
+
+<pre class="example">(setq gnus-select-method '(nntp "sci.stat.edu"))
+;; (setq gnus-select-method '(nntp "comp.soft-sys.matlab"))
+(setq gnus-select-method '(nntp "air.stat.consulting"))
+</pre>
+
+<p>
+Be careful not to overwrite previous settings, since email is handled
+with gnus-select-method, too.
+</p></div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Settings</h2>
+<div class="outline-text-2" id="text-3">
+
+<ul>
+<li>do not check for new groups on startup -&gt; saves startup time
+</li>
+</ul>
+
+
+
+
+<pre class="example">(setq gnus-check-new-newgroups nil)
+</pre>
+
+
+
+<ul>
+<li>turn off compatibility file helping switching to other newsreader -&gt; saves closing time
+</li>
+</ul>
+
+
+
+
+<pre class="example">(setq gnus-save-newsrc-file nil)
+</pre>
+
+
+<ul>
+<li>allow loading of all  messages in inbox -&gt; limit is 5000?
+</li>
+</ul>
+
+
+
+
+<pre class="example">(setq gnus-large-newsgroup 5000)
+</pre>
+
+
+<ul>
+<li>automatic article selection on group entering -&gt; first unseen article
+</li>
+</ul>
+
+
+
+
+<pre class="example">(setq gnus-auto-select-first 'unseen)
+</pre>
+
+
+
+<pre class="example">(setq gnus-default-subscribed-newsgroups 
+      '("news.answers" "news.newusers.questions"
+        "rye.ee.general" "rye.general" "sci.eletronics" 
+        "rec.humor.funny"))
+</pre>
+
+
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Subscription commands</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<ul>
+<li>toggle subscription to the current group: S t or u
+</li>
+<li>prompt for group to subscribe: S s or U
+</li>
+<li>kill current group: C-k
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> Group levels</h3>
+<div class="outline-text-3" id="text-3-2">
+
+<p>Lower numbers mean being more subscribed.
+</p><ul>
+<li>set level of current group: S l
+</li>
+<li>subscribed up to 5
+</li>
+<li>unsubscribed up to 7
+</li>
+<li>zombie 8
+</li>
+<li>killed 9
+</li>
+<li>show subscribed groups: l
+</li>
+<li>show unsubscribed groups also: L
+</li>
+<li>Gnus doesn't ask the news server for information for zombie and
+  killed groups
+</li>
+<li>show all zombies (could be new groups): A z
+</li>
+<li>
+</li>
+</ul>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> Marking Groups</h3>
+<div class="outline-text-3" id="text-3-3">
+
+<ul>
+<li>set mark on current group: # or M m
+</li>
+<li>remove mark on current group: M-# or M u
+</li>
+<li>mark groups matching regexp: M r
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> Foreign Groups</h3>
+<div class="outline-text-3" id="text-3-4">
+
+<ul>
+<li>rename current group: G r
+</li>
+<li>customize group parameters: G c
+</li>
+<li>make a directory group: G d
+</li>
+<li>make ephemeral group based on web search: G w
+</li>
+<li>make group based on RSS: G R
+</li>
+<li>make new virtual group: G V
+</li>
+<li>add current group to virtual group: G v
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> Topics</h3>
+<div class="outline-text-3" id="text-3-5">
+
+<ul>
+<li>enter topic mode: t
+</li>
+<li>create new topic subfolder: T n behind upper topic
+</li>
+<li>move folder to topic: T m
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-6" class="outline-3">
+<h3 id="sec-3-6"><span class="section-number-3">3.6</span> Summary buffer</h3>
+<div class="outline-text-3" id="text-3-6">
+
+<ul>
+<li>toggle threading: T T 
+</li>
+<li>fetch parent: ^
+</li>
+<li>mark as read: c
+</li>
+<li>mark as unread: M-u 
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-7" class="outline-3">
+<h3 id="sec-3-7"><span class="section-number-3">3.7</span> Draft</h3>
+<div class="outline-text-3" id="text-3-7">
+
+<ul>
+<li>send mail: C-c C-c
+</li>
+<li>save message as draft: C-c C-d
+</li>
+<li>attach file: C-c C-m f
+</li>
+<li>reformat paragraph: M-q
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-8" class="outline-3">
+<h3 id="sec-3-8"><span class="section-number-3">3.8</span> Deleting mails</h3>
+<div class="outline-text-3" id="text-3-8">
+
+<ul>
+<li>by default messages older than 7 days are old enough for expiration
+</li>
+<li>mark mail for expiration: E
+</li>
+<li>show current key bindings: C-h b
+</li>
+</ul>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-9" class="outline-3">
+<h3 id="sec-3-9"><span class="section-number-3">3.9</span> Timeout</h3>
+<div class="outline-text-3" id="text-3-9">
+
+
+
+
+<pre class="example">(setq imap-ping-interval (* 10 60))
+(setq imap-ping-timer nil)
+
+(defun imap-ping-handler ()
+  ;; ping all active IMAP servers in `nnimap-server-buffer-alist'
+  (when (boundp 'nnimap-server-buffer-alist)
+    (let ((servers nil))
+      (mapc
+       (lambda (server-buffer)
+         (let ((server (car server-buffer))
+               (buffer (cadr server-buffer)))
+           (when (and (get-buffer buffer) (not (member server servers)))
+             (ignore-errors
+               (with-local-quit
+                 (with-temp-message
+                     (format "Pinging %s..." server)
+                   (imap-send-command-wait "NOOP" buffer)
+                   (message "Pinging %s...done" server))))
+             (setq servers (cons server servers)))))
+       nnimap-server-buffer-alist)))
+
+  (let* ((current (current-time))
+         (timer imap-ping-timer)
+         ;; compute the time when this timer will run again
+         (next-time (timer-relative-time
+                     (list (aref timer 1) (aref timer 2) (aref timer 3))
+                     (* 5 (aref timer 4)) 0)))
+    ;; if the activation time is far in the past, skip executions
+    ;; until we reach a time in the future.  This avoids a long
+    ;; pause if Emacs has been suspended for hours.
+    (or (&gt; (nth 0 next-time) (nth 0 current))
+        (and (= (nth 0 next-time) (nth 0 current))
+             (&gt; (nth 1 next-time) (nth 1 current)))
+        (and (= (nth 0 next-time) (nth 0 current))
+             (= (nth 1 next-time) (nth 1 current))
+             (&gt; (nth 2 next-time) (nth 2 current)))
+        (progn
+          (timer-set-time timer (timer-next-integral-multiple-of-time
+                                 current imap-ping-interval)
+                          imap-ping-handler)
+          (timer-activate timer)))))
+
+(setq imap-ping-timer
+      (run-at-time t imap-ping-interval 'imap-ping-handler))
+</pre>
+
+
+<pre class="example">(setq starttls-use-gnutls t)
+(setq starttls-gnutls-program "gnutls-cli")
+(setq starttls-extra-arguments nil)
+</pre>
+
+</div>
+</div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2012-10-03T20:11+0200</p>
+<p class="author">Author: Christian Groll</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.2 with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 23</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

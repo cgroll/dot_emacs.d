@@ -1,0 +1,84 @@
+
+(setq default-major-mode 'org-mode)
+
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'org-mode-hook 'turn-on-auto-fill)
+(add-hook 'fundamental-mode-hook 'turn-on-auto-fill)
+(add-hook 'ess-mode-hook 'turn-on-auto-fill)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-auto-fill)
+(add-hook 'message-mode-hook 'turn-on-auto-fill)
+(setq fill-column 69)
+
+(delete-selection-mode 1)
+
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+
+(column-number-mode 1)
+
+(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
+(require 'color-theme)
+(color-theme-initialize)
+(color-theme-jsc-dark)
+
+(global-hl-line-mode 1)
+(set-cursor-color "red")
+
+(setq scroll-step 1)
+
+(setq tab-width 3)
+(setq tab-stop-list '(3 6 9 12 15 18 21 24))
+
+(global-set-key (kbd "C-j") 'indent-for-tab-command)
+(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-M-<return>") 'newline)
+(global-set-key (kbd "C-M-S-<return>") 'indent-new-comment-line)
+
+(setq-default indent-tabs-mode nil)
+(setq indent-tabs-mode nil)
+(tab-to-tab-stop t)
+  (defun cg/insert-tab ()
+    "insert TAB at point"
+    (interactive)
+    (insert-tab)
+    )
+  (global-set-key (kbd "M-j") 'cg/insert-tab)
+
+(org-indent-mode nil)
+
+(global-set-key (kbd "M-n") 'forward-word)
+(global-set-key (kbd "M-p") 'backward-word)
+(global-set-key (kbd "M-<backspace>") 'backward-kill-word)
+(global-set-key (kbd "M-d") 'kill-word)
+
+(global-set-key (kbd "C-M-n") 'forward-sexp)
+(global-set-key (kbd "C-M-p") 'backward-sexp)
+(global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+(global-set-key (kbd "C-M-d") 'kill-sexp)
+
+(setq sentence-end-double-space nil)
+
+(defun cg/kill-start-of-line ()
+  "kill from point to start of line"
+  (interactive)
+  (kill-line 0)
+  )
+(global-set-key (kbd "M-k") 'cg/kill-start-of-line)
+
+(define-key org-mode-map (kbd "C-+") 'org-edit-special)
+(define-key org-src-mode-map (kbd "C-+") 'org-edit-src-exit)
+
+(global-set-key (kbd "C-x C-b") 'ido-switch-buffer-other-window)
+(global-set-key (kbd "C-x 4 b") 'list-buffers)
+
+(global-set-key (kbd "C-x f") 'ido-find-file)
+
+(defun comment-or-uncomment-line ()
+  (interactive)
+  (comment-or-uncomment-region (line-beginning-position)
+                               (line-end-position)))
+(global-set-key (kbd "C-#") 'comment-or-uncomment-line)
+(define-key org-mode-map (kbd "C-#") 'comment-or-uncomment-line)
