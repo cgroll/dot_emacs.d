@@ -231,7 +231,7 @@
       )
    )
 
-(setq org-refile-use-outline-path "file")
+(setq org-refile-use-outline-path 'file)
 (setq org-outline-path-complete-in-steps t)
 (setq org-refile-allow-creating-parent-nodes (quote confirm))
 ;; (setq org-completion-use-ido t)
