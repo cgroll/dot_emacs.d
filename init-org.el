@@ -38,19 +38,19 @@
              
              ;; Future event: prompt for date without time
              ("ed" "daily event without time"
-             entry (file "~/org/refile.org")
+             entry (file+headline "~/org/refile.org" "tasks")
                 "* %? :calendar: \n%^{Which date?}t \nAdded:%U\n"
                 :clock-in t :clock-resume t)
              
              ;; Future event: prompt for date WITH time
              ("et" "event with time specification"
-             entry (file "~/org/refile.org")
+             entry (file+headline "~/org/refile.org" "tasks")
                 "* %? :calendar: \n%^{Which date and time?}T \nAdded: %U\n"
                 :clock-in t :clock-resume t)
 
              ;; Future event lasting for multiple days
              ("ee" "enduring event"
-             entry (file "~/org/refile.org")
+             entry (file+headline "~/org/refile.org" "tasks")
                 "* %? :calendar: \n%^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
                 :clock-in t :clock-resume t)
              
@@ -80,43 +80,30 @@
      (append org-capture-templates
         (quote (
                   ;; notes without code or yanking
-                  ("N" "Plain notes without code or yanking")
+                  ;("n" "Plain notes without code or yanking")
   
                   ;; git-note
-                  ("Ng" "entry to git_notes"
-                     entry (file+headline "~/comp_science/git_notes.org" "Captured
-                  notes")
+                  ("n" "plain note"
+                     entry (file+headline "~/org/refile.org" "notes")
                      "* %? ")
+
+                  ("N" "note with yanking"
+                     entry (file+headline "~/org/refile.org" "notes")
+                     "* %? \n%^C")
+
+                  
+                  ("o" "note with origin and yanking"
+                     entry (file+headline "~/org/refile.org" "notes")
+                     "* %? \nFrom: %A\n%^C")
+
+                  ("s" "shortcut"
+                       table-line (file+headline "~/org/refile.org" "shortcuts")
+                       "| %? | |")
+                  
+                  ("S" "shortcut with yanking"
+                       table-line (file+headline "~/org/refile.org" "shortcuts")
+                       "| ^C | |")
   
-                  ;; emacs-note
-                  ("Ne" "entry to emacs_notes"
-                     entry (file+headline "~/comp_science/emacs_notes"
-                  "Captured notes")
-                     "* %? ")
-  
-                  ;; bash-note
-                  ("Nb" "entry to bash_notes"
-                     entry (file+headline "~/comp_science/bash_notes"
-                  "Captured notes")
-                     "* %? ")
-                  
-                  ;; gtd-note
-                  ("No" "entry to gtd_notes"
-                     entry (file+headline "~/comp_science/gtd_notes"
-                  "Captured notes")
-                     "* %? ")
-                  
-                  ;; ubuntu-note
-                  ("Nu" "entry to ubuntu_notes"
-                     entry (file+headline "~/comp_science/ubuntu_notes"
-                  "Captured notes")
-                     "* %? ")
-                  
-                  ;; matlab-note
-                  ("Nm" "entry to matlab_notes"
-                     entry (file+headline "~/comp_science/matlab_notes"
-                  "Captured notes")
-                     "* %? ")
                   )
            )
         )
@@ -125,47 +112,20 @@
 (setq org-capture-templates
      (append org-capture-templates
         (quote (
-                  ;; notes with code yanking
-                  ("c" "Notes with code yanking")
-  
-                  ;; git-note
-                  ("cg" "entry to git_notes"
-                     entry (file+headline "~/comp_science/git_notes.org" "Captured
-                  notes")
+                  ;; code yanking
+                  ("c" "note with code"
+                     entry (file+headline "~/org/refile.org" "notes")
                      "* %? \n#+begin_src
-                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
-  
-                  ;; emacs-note
-                  ("ce" "entry to emacs_notes"
-                     entry (file+headline "~/comp_science/emacs_notes.org" "Captured
-                  notes")
+                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n")
+
+                  ;; code yanking with source recording for w3m
+                  ("w" "note with code, source "
+                     entry (file+headline "~/org/refile.org" "notes")
                      "* %? \n#+begin_src
-                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
-                  
-                  ;; bash-note
-                  ("cb" "entry to bash_notes"
-                     entry (file+headline "~/comp_science/bash_notes.org" "Captured
-                  notes")
-                     "* %? \n#+begin_src
-                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
-  
-                  ;; ubuntu-note
-                  ("cu" "entry to ubuntu_notes"
-                     entry (file+headline "~/comp_science/ubuntu_notes.org" "Captured
-                  notes")
-                     "* %? \n#+begin_src
-                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
-  
-                  ;; matlab-note
-                  ("cu" "entry to matlab_notes"
-                     entry (file+headline "~/comp_science/matlab_notes.org" "Captured
-                  notes")
-                     "* %? \n#+begin_src
-                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n%U\n")
-  
-                  )
+                  %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n")
            )
         )
+     )
 )
 
 (setq org-capture-templates
@@ -175,24 +135,25 @@
                 
                 ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
                 ("tt" "task, manual scheduling"
-                   entry (file "~/org/refile.org")
+                   entry (file+headline "~/org/refile.org" "tasks")
                    "* TODO %? \nAdded: %U\n"
                    :clock-in t :clock-resume t) 
                 
                 ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
                 ("tT" "task, tag prompt"
-                   entry (file "~/org/refile.org")
+                   entry (file+headline "~/org/refile.org" "tasks")
                    "* TODO %? %^G \nAdded: %U\n"
                    :clock-in t :clock-resume t)
 
                 ;; TODO entry, inactive timestamp, prompt for yanking
-                ("tk" "task with yanking" entry (file "~/org/refile.org") 
+                ("tk" "task with yanking" entry (file+headline
+                "~/org/refile.org" "tasks") 
                    "* TODO %? %^G \n%^C\nAdded: %U\n"
                    :clock-in t :clock-resume t)
                 
                 ;; TODO entry, inactive timestamp, prompt for tag and clipboard entry
                 ("tK" "task with tag and yanking"
-                   entry (file "~/org/refile.org")
+                   entry (file+headline "~/org/refile.org" "tasks")
                    "* TODO %? %^G \n%^C\nAdded: %U\n"
                    :clock-in t :clock-resume t)
                 
@@ -211,18 +172,19 @@
                    :clock-in t :clock-resume t)         
                 ;; write function to shift todo tasks from project file to agenda ! 
                 
-                ("tb" "buy item" entry (file "~/org/refile.org")
+                ("tb" "buy item" entry (file+headline
+                                          "~/org/refile.org" "tasks")
                    "* TODO %? %^{Arcade or shop?}g   \n%U\n"
                    :clock-in t :clock-resume t) 
                 
                 ("r" "email response"
-                   entry (file "~/org/refile.org")
+                   entry (file+headline "~/org/refile.org" "tasks")
                    "* TODO Respond to %:from on %:subject :EMAIL:\n%t\n%a\n"
                    :clock-in t :clock-resume t :immediate-finish t
                    )
                 
                 ("h" "habit"
-                   entry (file "~/org/refile.org")
+                   entry (file+headline "~/org/refile.org" "tasks")
                    "* NEXT %?\n%U\nSCHEDULED: %t .+1d/3d\n
 :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
 
@@ -231,7 +193,7 @@
       )
    )
 
-(setq org-refile-use-outline-path "file")
+(setq org-refile-use-outline-path 'file)
 (setq org-outline-path-complete-in-steps t)
 (setq org-refile-allow-creating-parent-nodes (quote confirm))
 ;; (setq org-completion-use-ido t)

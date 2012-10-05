@@ -1,5 +1,7 @@
-((("org-refile-use-outline-path" .
-     [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
+((("shortcuts" .
+     [1 0 0 0 0 0 0 0 0])
+    ("org-refile-use-outline-path" .
+       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
     ("org-outline-path-complete-in-steps" .
        [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
     ("ido-find-file-other-window" .
@@ -123,4 +125,6 @@
     ("server" .
        [0 0 0 1 0 1])
     ("~/.emacs.d/extensions/" .
-       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0])))
+       [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0])
+    ("source" .
+       [1 0 0 0 0 0])))
