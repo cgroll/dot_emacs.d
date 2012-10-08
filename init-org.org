@@ -192,6 +192,12 @@ storage location, prompts, tags and the like.
                   "* %? - %^{Amount?} \nAdded: %U\n"
                   :clock-in t :clock-resume t)
                
+               ;; Entry in tracking file
+               ("eh" "tracking history event"
+               entry (file+datetree "~/org/tracker.org")
+                    "* %^{Activity?|haircut|handy_charge|dentist|grandparents} %?"
+                    :clock-in t :clock-resume t)
+               
                )
         )
      )
@@ -423,6 +429,7 @@ Additional notes to store:
   (org-babel-do-load-languages
      'org-babel-load-languages
      '((emacs-lisp . t)
+         (latex . t)
          (sh . t)
          (R . t)))
   

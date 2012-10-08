@@ -1,0 +1,6 @@
+#+TITLE: Initialization of latex and alike
+
+#+BEGIN_SRC emacs-lisp
+  (load "auctex.el" nil t t)
+  (load "preview-latex.el" nil t t)
+#+END_SRC
