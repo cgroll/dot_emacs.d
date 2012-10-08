@@ -43,6 +43,9 @@
 (global-set-key (kbd "<f7>") 'wicked/toggle-w3m)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  (define-key w3m-mode-map (kbd "M-n") 'forward-word)
+#+END_SRC
 
 
 ;; ;; added for translate-and-export macro
