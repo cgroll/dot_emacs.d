@@ -1,9 +1,11 @@
 #+TITLE: Initialization of latex and alike
 
+Load auctex and preview latex.
 #+BEGIN_SRC emacs-lisp
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
 #+END_SRC
+
 Use article class as standard, and define, how headers will be
   translated into sections.
 #+BEGIN_SRC emacs-lisp
@@ -78,4 +80,8 @@ curly brackets.
                                  "pdflatex -interaction nonstopmode %b"
                                  "pdflatex -interaction nonstopmode %b"))
 
+
+
+#+BEGIN_SRC emacs-lisp
+  (setq preview-image-type 'dvipng)
 #+END_SRC
