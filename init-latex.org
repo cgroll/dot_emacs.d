@@ -1,6 +1,11 @@
 #+TITLE: Initialization of latex and alike
 
+Load auctex and preview latex.
 #+BEGIN_SRC emacs-lisp
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (setq preview-image-type 'dvipng)
 #+END_SRC
