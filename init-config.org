@@ -35,7 +35,14 @@ behaviour globally.
 #+BEGIN_SRC emacs-lisp
   (delete-selection-mode 1)               
 #+END_SRC
-
+** Copy/paste 
+In order to enable emacs to interact with the standard linux
+clipboard, include the following lines. Otherwise you are not able
+e.g. to copy from emacs to firefox.
+#+BEGIN_SRC emacs-lisp
+  (setq x-select-enable-clipboard t)
+  (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+#+END_SRC
 * Layout
 ** Fonts
 Depending on the screen resolution I use different default fonts. For

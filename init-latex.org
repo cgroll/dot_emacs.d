@@ -4,3 +4,78 @@
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
 #+END_SRC
+Use article class as standard, and define, how headers will be
+  translated into sections.
+#+BEGIN_SRC emacs-lisp
+  (require 'org-latex)
+  (unless (boundp 'org-export-latex-classes)
+    (setq org-export-latex-classes nil))
+  (add-to-list 'org-export-latex-classes
+               '("article"
+                 "\\documentclass{article}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+  
+#+END_SRC
+
+* live display
+In order to display minor visual help, we enable UTF-8 displaying for
+greek letter and subindices and exponents. However, I tend to use
+underscores frequently in variable and file names, so that
+underscores will be related to subindices only in conjunction with
+curly brackets.
+#+BEGIN_SRC emacs-lisp
+  (setq org-pretty-entities t)
+  (setq org-export-with-sub-superscripts "{}")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-export-with-LaTeX-fragments t)
+#+END_SRC
+
+* bibtex
+#+BEGIN_SRC emacs-lisp
+  (require 'reftex)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+  (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
+  (add-hook 'org-mode-hook 'turn-on-reftex)
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+  (defun org-mode-reftex-setup ()
+    (load-library "reftex")
+    (and (buffer-file-name)
+         (file-exists-p (buffer-file-name))
+         (reftex-parse-all))
+    (define-key org-mode-map (kbd "C-c )") 'reftex-citation))
+  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;;; use reftex and other article helper modes in org-mode
+  ;;; (but only in files with a WRITE todo keyword)
+  (defun org-mode-article-modes ()
+    (reftex-mode t)
+    (bib-cite-minor-mode t)
+    (and (buffer-file-name)
+         (file-exists-p (buffer-file-name))
+         (reftex-parse-all))
+    (define-key org-mode-map (kbd "C-c )") 'reftex-citation))
+  
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (if (member "WRITE" org-todo-keywords-1)
+                  (org-mode-article-modes))))
+ ; (setq reftex-default-bibliography
+  ;      '("~/Dropbox/work/seminar_12_13/org/ba_literature.bib"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-latex-to-pdf-process '("pdflatex -interaction nonstopmode %b"
+                                 "/usr/bin/bibtex %b"
+                                 "pdflatex -interaction nonstopmode %b"
+                                 "pdflatex -interaction nonstopmode %b"))
+
+#+END_SRC
