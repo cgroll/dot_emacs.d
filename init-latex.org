@@ -33,7 +33,10 @@ curly brackets.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-export-with-LaTeX-fragments t)
+  (setq org-export-with-LaTeX-fragments t)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq preview-image-type 'dvipng)
 #+END_SRC
 
 * bibtex
@@ -41,7 +44,6 @@ curly brackets.
   (require 'reftex)
   (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
   (add-hook 'latex-mode-hook 'turn-on-reftex)   ; with Emacs latex mode
-  (add-hook 'org-mode-hook 'turn-on-reftex)
 #+END_SRC
 
 
@@ -51,11 +53,13 @@ curly brackets.
     (and (buffer-file-name)
          (file-exists-p (buffer-file-name))
          (reftex-parse-all))
-    (define-key org-mode-map (kbd "C-c )") 'reftex-citation))
+    (define-key org-mode-map (kbd "C-c (") 'reftex-citation))
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+END_SRC
+global-auto-revert-mode
+reftex-parse-all
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   ;;; use reftex and other article helper modes in org-mode
   ;;; (but only in files with a WRITE todo keyword)
   (defun org-mode-article-modes ()
@@ -75,13 +79,49 @@ curly brackets.
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(setq org-latex-to-pdf-process '("pdflatex -interaction nonstopmode %b"
-                                 "/usr/bin/bibtex %b"
-                                 "pdflatex -interaction nonstopmode %b"
-                                 "pdflatex -interaction nonstopmode %b"))
+  (setq org-latex-to-pdf-process '("pdflatex -interaction nonstopmode %b"
+                                   "/usr/bin/bibtex %b"
+                                   "pdflatex -interaction nonstopmode %b"
+                                   "pdflatex -interaction nonstopmode %b"))
+#+END_SRC
 
+
+* settings from [[http://tincman.wordpress.com/2011/01/04/research-paper-management-with-emacs-org-mode-and-reftex/][research paper management with emacs]]
+#+BEGIN_SRC emacs-lisp
+(setq org-link-abbrev-alist
+      '(("bib" . "~/literature/refs.bib::%s")
+	("notes" . "~/literature/org/notes.org::#%s")
+	("papers" . "~/literature/papers/%s.pdf")))
+
+
+(defun org-mode-reftex-search ()
+  ;;jump to the notes for the paper pointed to at from reftex search
+  (interactive)
+  (org-open-link-from-string (format "[[notes:%s]]" (reftex-citation t))))
+
+(defun org-mode-reftex-setup ()
+  (load-library "reftex")
+  (and (buffer-file-name) (file-exists-p (buffer-file-name))
+       (progn
+	 ;enable auto-revert-mode to update reftex when bibtex file changes on disk
+	 (global-auto-revert-mode t) 
+	 (reftex-parse-all)
+	 ;add a custom reftex cite format to insert links
+	 (reftex-set-cite-format
+	  '((?b . "[[bib:%l][%l-bib]]")
+	    (?n . "[[notes:%l][%l-notes]]")
+	    (?p . "[[papers:%l][%l-paper]]")
+	    (?t . "%t")
+	    (?h . "** %t\n:PROPERTIES:\n:Custom_ID: %l\n:END:\n[[papers:%l][%l-paper]]")))))
+  (define-key org-mode-map (kbd "C-c )") 'reftex-citation)
+  (define-key org-mode-map (kbd "C-c (") 'org-mode-reftex-search))
+
+(add-hook 'org-mode-hook 'org-mode-reftex-setup)
+#+END_SRC
 
 
 #+BEGIN_SRC emacs-lisp
-  (setq preview-image-type 'dvipng)
+(setq org-remember-templates
+   '(( "* READ %?\n\n%a\n\n%:author (%:year): %:title\n   \
+          In %:journal, %:pages.")))
 #+END_SRC

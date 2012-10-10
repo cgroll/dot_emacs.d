@@ -1,5 +1,6 @@
 #+TITLE: Initialization of org-mode settings
 #+OPTIONS: ^:nil
+#+STARTUP: CONTENTS
 #+BEGIN_COMMENT
 Options: ^:nil avoids automatic subindex interpretation of
 underscores.
@@ -354,6 +355,40 @@ Additional notes to store:
   )
   
     
+#+END_SRC
+*** Capturing bibtex entries
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+     (append org-capture-templates
+        (quote (
+                  
+                  ("b" "BibTeX Entry")
+  
+                  ("ba"
+                     "Bibtex Article"
+                     entry
+                     (file+headline "~/literature_management/bibliography.org" "unsorted entries")
+                     "* %:title   %^G
+    :PROPERTIES:
+    :entered: %U
+    :END:
+  
+    Bibtex entry: %a
+    Bibtex key:   %:key
+    pdf file: [file:~/literature_papers/%a.pdf]
+  
+    %:author
+    %:title
+    %:year
+    %:journal
+  
+    Comment: %?
+    " :empty-lines 2)
+                  )
+           )
+        )
+     )
+  
 #+END_SRC
 *** Refile targets
 #+BEGIN_SRC emacs-lisp  (setq org-refile-use-outline-path t)
