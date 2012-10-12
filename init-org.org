@@ -375,7 +375,7 @@ Additional notes to store:
   
     Bibtex entry: %a
     Bibtex key:   %:key
-    pdf file: [file:~/literature_papers/%a.pdf]
+    pdf file: [file:~/literature_papers/%:key.pdf]
   
     %:author
     %:title

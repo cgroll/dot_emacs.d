@@ -86,27 +86,7 @@ Set math prefix.
     (define-key org-mode-map (kbd "C-c (") 'reftex-citation))
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+END_SRC
-global-auto-revert-mode
-reftex-parse-all
 
-#+BEGIN_SRC emacs-lisp :tangle no
-  ;;; use reftex and other article helper modes in org-mode
-  ;;; (but only in files with a WRITE todo keyword)
-  (defun org-mode-article-modes ()
-    (reftex-mode t)
-    (bib-cite-minor-mode t)
-    (and (buffer-file-name)
-         (file-exists-p (buffer-file-name))
-         (reftex-parse-all))
-    (define-key org-mode-map (kbd "C-c )") 'reftex-citation))
-  
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (if (member "WRITE" org-todo-keywords-1)
-                  (org-mode-article-modes))))
- ; (setq reftex-default-bibliography
-  ;      '("~/Dropbox/work/seminar_12_13/org/ba_literature.bib"))
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   (setq org-latex-to-pdf-process '("pdflatex -interaction nonstopmode %b"
@@ -115,9 +95,28 @@ reftex-parse-all
                                    "pdflatex -interaction nonstopmode %b"))
 #+END_SRC
 
+** Keybindings
+Change key bindings: C-c C-p does replace value of current field with
+value of same field of next entry. Something that doesn't make any
+sense in my alphabetically order bibtex setup. However, moving
+exactly from one entry to the next is not defined, which is something
+I find a very natural operation. Hence, this will be changed.
+#+BEGIN_SRC emacs-lisp
+(require 'bibtex)
+  (defun cg/bibtex-next-entry ()
+     "Move to next @ at beginning of line"
+     (interactive)
+     (search-forward-regexp "^@"))
+  (defun cg/bibtex-previous-entry ()
+     "Move to previous @ at beginning of line"
+     (interactive)
+     (search-backward-regexp "^@"))
+  (define-key bibtex-mode-map (kbd "C-c C-n") 'cg/bibtex-next-entry)
+  (define-key bibtex-mode-map (kbd "C-c C-p") 'cg/bibtex-previous-entry)
+#+END_SRC
 
 * settings from [[http://tincman.wordpress.com/2011/01/04/research-paper-management-with-emacs-org-mode-and-reftex/][research paper management with emacs]]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq org-link-abbrev-alist
       '(("bib" . "~/literature/refs.bib::%s")
 	("notes" . "~/literature/org/notes.org::#%s")
@@ -149,9 +148,3 @@ reftex-parse-all
 (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+END_SRC
 
-
-#+BEGIN_SRC emacs-lisp
-(setq org-remember-templates
-   '(( "* READ %?\n\n%a\n\n%:author (%:year): %:title\n   \
-          In %:journal, %:pages.")))
-#+END_SRC
