@@ -39,6 +39,36 @@ curly brackets.
   (setq preview-image-type 'dvipng)
 #+END_SRC
 
+* key bindings
+#+BEGIN_SRC emacs-lisp
+  (defun cg/insert_underscore ()
+     "insert underscore with opening curly bracket for latex"
+     (interactive)
+     (insert "_{"))
+  (defun cg/insert_exponent ()
+     "insert exponent with opening curly bracket for latex"
+     (interactive)
+     (insert "^{"))
+  
+  (global-set-key (kbd "C--") 'cg/insert_exponent)
+  (global-set-key (kbd "M--") 'cg/insert_underscore)
+#+END_SRC
+
+** greek letters
+#+BEGIN_SRC emacs-lisp
+  ;(defun cg/set_math_abbrev_prefix ()
+  ;   "set LaTeX-math-abbrev-prefix"
+  ;   (interactive)
+  ;   (setq LaTex-math-abbrev-prefix "M-g"))
+  (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+  ;(add-hook 'LaTeX-mode-hook 'cg/set_math_abbrev_prefix)
+#+END_SRC
+Set math prefix.
+#+BEGIN_SRC emacs-lisp
+(custom-set-variables
+ '(LaTeX-math-abbrev-prefix "M-g"))
+#+END_SRC
+
 * bibtex
 #+BEGIN_SRC emacs-lisp
   (require 'reftex)
