@@ -1,3 +1,11 @@
+#+TITLE: Matlab settings
+
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/extensions/matlab-emacs")
+  (require 'matlab-load)
+  ;; (matlab-cedet-setup)
+#+END_SRC
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -5,10 +13,6 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-(add-to-list 'load-path "~/efficient_workspace/emacs_extensions/matlab-emacs")
-(require 'matlab-load)
-;; (matlab-cedet-setup)			
 
 ;; matlab shortcuts
 (fset 'setup-matlab
