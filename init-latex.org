@@ -118,3 +118,10 @@ I find a very natural operation. Hence, this will be changed.
 (add-hook 'org-mode-hook 'org-mode-reftex-setup)
 #+END_SRC
 
+* LaTeX Mode
+If latex is not accessed through org-mode, I want to enable pdf-mode
+on startup.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'latex-mode-hook 'TeX-PDF-mode)
+  (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
+#+END_SRC
