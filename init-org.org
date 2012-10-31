@@ -486,3 +486,26 @@ Additional notes to store:
         (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
                       (quote regexp) "\n]+>")))
          (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
+
+
+* Org babel
+Disable confirmation query for code evaluation and evaluation on export.
+#+BEGIN_SRC emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-export-babel-evaluate nil)
+#+END_SRC
+
+Load languages.
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+         (R . t)
+         (matlab . t)
+         (sh . t)))
+#+END_SRC
+
+Open edit-src-block in same window.
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
