@@ -282,25 +282,25 @@ Additional notes to store:
                   ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
                   ("tt" "task, manual scheduling"
                      entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO %? \nAdded: %U\n"
+                     "* TODO %? \nSCHEDULED: %t \nAdded: %U\n"
                      :clock-in t :clock-resume t) 
                   
                   ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
                   ("tT" "task, tag prompt"
                      entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO %? %^G \nAdded: %U\n"
+                     "* TODO %? %^G \nSCHEDULED: %t \nAdded: %U\n"
                      :clock-in t :clock-resume t)
   
                   ;; TODO entry, inactive timestamp, prompt for yanking
                   ("tk" "task with yanking" entry (file+headline
                   "~/org/refile.org" "tasks") 
-                     "* TODO %? %^G \n%^C\nAdded: %U\n"
+                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
                      :clock-in t :clock-resume t)
                   
                   ;; TODO entry, inactive timestamp, prompt for tag and clipboard entry
                   ("tK" "task with tag and yanking"
                      entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO %? %^G \n%^C\nAdded: %U\n"
+                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
                      :clock-in t :clock-resume t)
                   
                   ;; New research project: create project heading in todo.org under research projects
@@ -308,19 +308,19 @@ Additional notes to store:
                                           ; project related tasks with link to origin
                   ("tP" "project with tag, automatic source"
                      entry (file+headline "~/org/todo.org" "Research")
-                     "* NEXT %? %^{TAGS}p \n%a\nAdded: %U\n %?"
+                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\n%a\nAdded: %U\n "
                      :clock-in t :clock-resume t)
   
                   
                   ("tp" "project task"
                      entry (file+headline "~/org/todo.org" "Research")
-                     "* NEXT %? %^{TAGS}p \nAdded: %U\n %?"
+                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\nAdded: %U\n "
                      :clock-in t :clock-resume t)         
                   ;; write function to shift todo tasks from project file to agenda ! 
                   
                   ("tb" "buy item" entry (file+headline
                                             "~/org/refile.org" "tasks")
-                     "* TODO %? %^{Arcade or shop?}g   \n%U\n"
+                     "* TODO %? %^{Arcade or shop?}g \nSCHEDULED: %t \n%U\n"
                      :clock-in t :clock-resume t) 
                   
                   ("r" "email response"
@@ -479,3 +479,14 @@ Additional notes to store:
         (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
                       (quote regexp) "\n]+>")))
          (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
+* Org babel
+#+BEGIN_SRC emacs-lisp
+  (setq org-export-babel-evaluate nil)
+  (setq org-confirm-babel-evaluate nil)
+  (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . nil)
+         (R . t)
+         (matlab . t)
+         (sh . t)))
+#+END_SRC
