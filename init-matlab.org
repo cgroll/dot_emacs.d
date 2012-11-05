@@ -1,11 +1,26 @@
 #+TITLE: Matlab settings
 
-
-#+BEGIN_SRC emacs-lisp
+#+name: settings_for_remote_matlab
+#+BEGIN_SRC emacs-lisp :tangle no
   (add-to-list 'load-path "~/.emacs.d/extensions/matlab-emacs")
   (require 'matlab-load)
   ;; (matlab-cedet-setup)
 #+END_SRC
+
+#+name: settings_as_described_on_webpage
+#+BEGIN_SRC emacs-lisp
+  ;; CEDET settings
+  (load-file "~/.emacs.d/extensions/cedet-1.0.1/common/cedet.el")
+  (global-ede-mode 1)                      ; Enable the Project management system
+  (semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
+  (global-srecode-minor-mode 1)            ; Enable template insertion menu
+  
+  ;; Matlab settings
+  (add-to-list 'load-path "~/.emacs.d/extensions/matlab-emacs")
+  (require 'matlab-load)
+  (matlab-cedet-setup)
+#+END_SRC
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;

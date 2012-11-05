@@ -426,6 +426,10 @@ Keep in mind that in order to extend existing comments into the next
 line you can use indent-new-comment-line bound to "M-S-RET".
 
 * Misc
+Enable emacsclient
+#+BEGIN_SRC emacs-lisp
+(server-start)
+#+END_SRC
 
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
