@@ -363,7 +363,7 @@ Additional notes to store:
         (quote (
                   ("b" "Bibtex Entry"
                      entry
-                     (file+headline "~/Dropbox/literature_management/bibliography.org" "unsorted entries")
+                     (file+headline "~/literature/management/bibliography.org" "unsorted entries")
                      "* %:title   %^G
     :PROPERTIES:
     :author: %:author
@@ -371,8 +371,8 @@ Additional notes to store:
     :journal: %:journal
     :Bibtex key: %:key
     :link to bibtex entry: %a 
-    :link to pdf: [file:~/literature_papers/%:key.pdf]
-    :link to notes: 
+    :link to pdf: [file:~/literature/%:author_%:year.pdf]
+    :link to notes: [file:~/literature/notes/%:author_%:year.org]
     :entered: %U
     :END:
     Comment: %?
