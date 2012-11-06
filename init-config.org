@@ -227,13 +227,24 @@ the best accessible keys.
   
 *** Sexp-based
 #+BEGIN_SRC emacs-lisp
+  (defun sacha/search-word-backward ()
+    "Find the previous occurrence of the current word."
+    (interactive)
+    (let ((cur (point)))
+      (skip-syntax-backward "w_")
+      (goto-char
+       (if (re-search-backward (concat "\\_<" (current-word) "\\_>") nil t)
+           (match-beginning 0)
+         cur))))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
     (global-set-key (kbd "C-M-n") 'forward-sexp)
     (global-set-key (kbd "C-M-p") 'backward-sexp)
     (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
     (global-set-key (kbd "C-M-d") 'kill-sexp)
 #+END_SRC
 *** Sentence-based 
-Adapt sentence syntax.
+Adapt sentence syntax to end with single space.
 #+BEGIN_SRC emacs-lisp
   (setq sentence-end-double-space nil)
 #+END_SRC

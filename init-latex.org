@@ -11,13 +11,15 @@ Use article class as standard, and define, how headers will be
 #+BEGIN_SRC emacs-lisp
   (require 'org-latex)
   (unless (boundp 'org-export-latex-classes)
-    (setq org-export-latex-classes nil))
+     (setq org-export-latex-classes nil))
   (add-to-list 'org-export-latex-classes
-               '("article"
-                 "\\documentclass{article}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+     '("article"
+         "\\documentclass{article}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   
 #+END_SRC
 
