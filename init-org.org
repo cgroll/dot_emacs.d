@@ -35,7 +35,7 @@ list, and the file used as inbox bucket for captured notes is set to
 over multiple computers, the complete /~/org/ directory is only a
 symbolic link to a folder stored in my dropbox.
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (quote ("~/org/")))
+  (setq org-agenda-files (quote ("~/org/todo.org")))
   (setq org-default-notes-file "~/org/refile.org") 
 #+END_SRC
 ** Determine files for notes captured by org-mode
@@ -109,18 +109,20 @@ shortcut letters for each state, which also have to be enabled:
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords
-     (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!/!)")
+     (quote ((sequence "TODO(t)" "STEADY(s)" "HABIT(h)" "NEXT(n)" "|" "DONE(d!/!)")
                (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)" "SOMEDAY(s!/!)"))))
 #+END_SRC
 Here I determine custom face colors for my task state keywords.
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keyword-faces
      (quote (("TODO" :foreground "red" :weight bold)
+               ("STEADY" :foreground "yellow")
+               ("HABIT" :foreground "deep pink" :weight bold)
                ("NEXT" :foreground "blue" :weight bold)
                ("DONE" :foreground "forest green" :weight bold)
                ("WAITING" :foreground "orange" :weight bold)
-               ("SOMEDAY" :foreground "magenta" :weight bold)
-               ("CANCELLED" :foreground "forest green" :weight bold))))
+               ("SOMEDAY" :foreground "spring green" :weight bold)
+               ("CANCELLED" :foreground "sea green" :weight bold))))
 #+END_SRC
 When skipping through todo states for minor corrections with shift
 key, log processing will be disabled. Otherwise we will get to many
@@ -144,21 +146,92 @@ topics:
 - note
 At the second layer, more specific patterns are distinguished, like
 storage location, prompts, tags and the like.
-*** Capturing events
+*** Capturing tasks
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
+        (quote (
+                  ("t" "TASK: multiple templates")
+                  
+                  ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
+                  ("tt" "task, manual scheduling"
+                     entry (file+headline "~/org/refile.org" "tasks")
+                     "* TODO %? \nAdded: %U\n"
+                     :clock-in t :clock-resume t) 
+                  
+                  ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
+                  ("tT" "task, tag prompt"
+                     entry (file+headline "~/org/refile.org" "tasks")
+                     "* TODO %? %^G \nAdded: %U\n"
+                     :clock-in t :clock-resume t)
+  
+                  ;; Checklist entries to steady challenges
+                  ("tc" "checkitem: COMPUTER improvements"
+                     checkitem (file+headline "~/org/todo.org"
+                     "Computational science" "Computer improvements")
+                     " [ ] %?")
+  
+                  ("te" "checkitem: EMACS improvements"
+                     checkitem (file+headline "~/org/todo.org"
+                     "Computational science" "Emacs improvements")
+                     " [ ] %?")
+  
+                  ("tk" "checkitem: KNOWLEDGE improvements"
+                     checkitem (file+headline "~/org/todo.org"
+                     "Education" "Knowledge improvements")
+                     " [ ] %?") 
+    
+                  ;; TODO entry, inactive timestamp, prompt for yanking
+                  ("ty" "task with yanking" entry (file+headline
+                  "~/org/refile.org" "tasks") 
+                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
+                     :clock-in t :clock-resume t)
+                  
+                  ;; TODO entry, inactive timestamp, prompt for tag and clipboard entry
+                  ("tY" "task with tag and yanking"
+                     entry (file+headline "~/org/refile.org" "tasks")
+                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
+                     :clock-in t :clock-resume t)
+                  
+                  ;; New research project: create project heading in todo.org under research projects
+                  ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
+                                          ; project related tasks with link to origin
+                  ("tP" "project with tag, automatic source"
+                     entry (file+headline "~/org/todo.org" "Research")
+                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\n%a\nAdded: %U\n "
+                     :clock-in t :clock-resume t)
+  
+                  
+                  ("tp" "project task"
+                     entry (file+headline "~/org/todo.org" "Research")
+                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\nAdded: %U\n "
+                     :clock-in t :clock-resume t)         
+                  ;; write function to shift todo tasks from project file to agenda ! 
+                  
+                  ("r" "EMAIL response"
+                     entry (file+headline "~/org/refile.org" "tasks")
+                     "* TODO Respond to %:from on %:subject :EMAIL:\n%t\n%a\n"
+                     :clock-in t :clock-resume t :immediate-finish t
+                     )
+                  
+                  ("h" "HABIT"
+                     entry (file+headline "~/org/refile.org" "tasks")
+                     "* HABIT %?\n%U\nSCHEDULED: %t .+1d/3d\n
+  :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: HABIT\n:END:\n")
+  
+                  )
+           )
+     )
+#+END_SRC
+
+*** Capturing events
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates  
+(append org-capture-templates
      (quote (
                ("e" "Templates for events")
                
-               ;; Birthday entry into anniversaries calendar with prompt
-               ;; for date; date is active -> appears in agenda
-               ("ea" "annually repeating event"
-               entry (file "~/org/annuals.org")
-                  "* %? \nDate: %^{Do not forget to add +1y!}t\n"
-                  :clock-in t :clock-resume t)
-               
                ;; Future event: prompt for date without time
-               ("ed" "daily event without time"
+               ("ee" "daily event without time"
                entry (file+headline "~/org/refile.org" "tasks")
                   "* %? :calendar: \n%^{Which date?}t \nAdded:%U\n"
                   :clock-in t :clock-resume t)
@@ -170,15 +243,28 @@ storage location, prompts, tags and the like.
                   :clock-in t :clock-resume t)
   
                ;; Future event lasting for multiple days
-               ("ee" "enduring event"
+               ("ed" "enduring event"
                entry (file+headline "~/org/refile.org" "tasks")
                   "* %? :calendar: \n%^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
+                  :clock-in t :clock-resume t)
+
+               ;; Entry in tracking file
+               ("eh" "tracking history event"
+               entry (file+datetree "~/org/tracker.org")
+                    "* %^{Activity?|haircut|handy_charge|dentist|grandparents} %?"
+                    :clock-in t :clock-resume t)
+
+               ;; Birthday entry into anniversaries calendar with prompt
+               ;; for date; date is active -> appears in agenda
+               ("ea" "annually repeating event"
+               entry (file+headline "~/org/todo.org" "Anniversaries")
+                  "%%(org-anniversary %?) %{Which event?} %d"
                   :clock-in t :clock-resume t)
                
                ;; Entry in log: at current time finished activity with completion
                ("el" "logbook: finished activities"
                entry (file+datetree "~/org/log.org")
-                  "* %U - %^{Activity?|lunch|break|buy|program|read|work} "
+                  "* %U - %^{Activity?|lunch|break|buy|program|read|work|research|torture} "
                   :clock-in t :clock-resume t)
                
                ;; Stopwatch activity without prompt
@@ -193,23 +279,45 @@ storage location, prompts, tags and the like.
                   "* %? - %^{Amount?} \nAdded: %U\n"
                   :clock-in t :clock-resume t)
                
-               ;; Entry in tracking file
-               ("eh" "tracking history event"
-               entry (file+datetree "~/org/tracker.org")
-                    "* %^{Activity?|haircut|handy_charge|dentist|grandparents} %?"
-                    :clock-in t :clock-resume t)
-               
                )
         )
      )
+)
 #+END_SRC
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone
 calls, and org-protocol
+*** Capturing desired products
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates  
+(append org-capture-templates
+     (quote (
+               ("b" "BUY product: multiple templates")
+    
+               ;; append to shop list
+               ("bs" "product from SHOP"
+                  checkitem (file+olp "~/org/todo.org" "Buy" "Shop")
+                  " [ ] %? ") 
+    
+               ;; append to mall list
+               ("bm" "product from MALL"
+                  checkitem (file+olp "~/org/todo.org" "Buy" "Mall")
+                  " [ ] %? ") 
+    
+               ;; append to regular list
+               ("br" "REGULAR product"
+                  checkitem (file+olp "~/org/todo.org" "Buy" "Regulars")
+                  " [ ] %? ") 
+      
+               )
+        )
+     )
+)
+#+END_SRC
 *** Capturing notes
 Plain notes without any code, yanking or source file link.
 #+BEGIN_SRC emacs-lisp
-    (setq org-capture-templates
+  (setq org-capture-templates
        (append org-capture-templates
           (quote (
                     ;; notes without code or yanking
@@ -240,13 +348,13 @@ Plain notes without any code, yanking or source file link.
                     )
              )
           )
-  )
+)
     
 #+END_SRC
 Notes with code snippet in clipboard or kill ring, and source file link.
 #+BEGIN_SRC emacs-lisp
-    (setq org-capture-templates
-       (append org-capture-templates
+  (setq org-capture-templates       
+(append org-capture-templates
           (quote (
                     ;; code yanking
                     ("c" "note with code"
@@ -262,8 +370,7 @@ Notes with code snippet in clipboard or kill ring, and source file link.
              )
           )
        )
-  )
-      
+)      
 #+END_SRC
 Additional notes to store:
 - emacs command / with shortcut / explanation
@@ -271,97 +378,12 @@ Additional notes to store:
   - vacation days / costs
   - handy balance
 - registration / password
-
-*** Capturing tasks
-#+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
-     (append org-capture-templates
-        (quote (
-                  ("t" "Templates for tasks")
-                  
-                  ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
-                  ("tt" "task, manual scheduling"
-                     entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO %? \nSCHEDULED: %t \nAdded: %U\n"
-                     :clock-in t :clock-resume t) 
-                  
-                  ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
-                  ("tT" "task, tag prompt"
-                     entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO %? %^G \nSCHEDULED: %t \nAdded: %U\n"
-                     :clock-in t :clock-resume t)
-  
-                  ;; TODO entry, inactive timestamp, prompt for yanking
-                  ("tk" "task with yanking" entry (file+headline
-                  "~/org/refile.org" "tasks") 
-                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
-                     :clock-in t :clock-resume t)
-                  
-                  ;; TODO entry, inactive timestamp, prompt for tag and clipboard entry
-                  ("tK" "task with tag and yanking"
-                     entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
-                     :clock-in t :clock-resume t)
-                  
-                  ;; New research project: create project heading in todo.org under research projects
-                  ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
-                                          ; project related tasks with link to origin
-                  ("tP" "project with tag, automatic source"
-                     entry (file+headline "~/org/todo.org" "Research")
-                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\n%a\nAdded: %U\n "
-                     :clock-in t :clock-resume t)
-  
-                  
-                  ("tp" "project task"
-                     entry (file+headline "~/org/todo.org" "Research")
-                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\nAdded: %U\n "
-                     :clock-in t :clock-resume t)         
-                  ;; write function to shift todo tasks from project file to agenda ! 
-                  
-                  ("tb" "buy item" entry (file+headline
-                                            "~/org/refile.org" "tasks")
-                     "* TODO %? %^{Arcade or shop?}g \nSCHEDULED: %t \n%U\n"
-                     :clock-in t :clock-resume t) 
-                  
-                  ("r" "email response"
-                     entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO Respond to %:from on %:subject :EMAIL:\n%t\n%a\n"
-                     :clock-in t :clock-resume t :immediate-finish t
-                     )
-                  
-                  ("h" "habit"
-                     entry (file+headline "~/org/refile.org" "tasks")
-                     "* NEXT %?\n%U\nSCHEDULED: %t .+1d/3d\n
-  :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
-  
-                  )
-           )
-        )
-     )
-#+END_SRC
-*** Capturing habits
-#+BEGIN_SRC emacs-lisp :tangle no 
-    (setq org-capture-templates
-         (append org-capture-templates
-            (quote 
-               ("Z" "habit"
-                  entry (file+headline "~/org/refile.org" "tasks")
-                  "* NEXT %?\n%U\nSCHEDULED: %t ")
-  
-  ;.+1d/3d\n
-   ; :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")
-               )
-            )
-  )
-  
-    
-#+END_SRC
 *** Capturing bibtex entries
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
      (append org-capture-templates
         (quote (
-                  ("b" "Bibtex Entry"
+                  ("b" "BIBTEX entry"
                      entry
                      (file+headline "~/literature/management/bibliography.org" "unsorted entries")
                      "* %:title   %^G
@@ -377,6 +399,21 @@ Additional notes to store:
     :END:
     Comment: %?
     " :empty-lines 2)
+                  )
+           )
+        )
+     )
+  
+#+END_SRC
+*** Capturing present ideas
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+     (append org-capture-templates
+        (quote (
+                  ("p" "PRESENT idea"
+                     checkitem
+                     (file+headline "~/org/todo.org" "Presents")
+                     " [ ] %? " :prepend)
                   )
            )
         )
@@ -437,10 +474,16 @@ Additional notes to store:
 
 
 ** Org-agenda
+Restore window settings as they were before the call of org-agenda.
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-restore-windows-after-quit t)
 #+END_SRC
-
+Agenda-view:
+#+BEGIN_SRC emacs-lisp  
+  (setq org-agenda-todo-ignore-scheduled t)
+  (setq org-agenda-todo-ignore-deadlines t)
+  (setq org-agenda-todo-ignore-timestamp 'all)
+#+END_SRC
 ** OrgMobile
 #+BEGIN_SRC emacs-lisp
   (setq org-mobile-directory "~/Dropbox/MobileOrg")
@@ -484,7 +527,6 @@ Additional notes to store:
                       (quote regexp) "\n]+>")))
          (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
 <<<<<<< HEAD
-
 
 * Org babel
 Disable confirmation query for code evaluation and evaluation on export.

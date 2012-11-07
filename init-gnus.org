@@ -160,6 +160,10 @@ Lower numbers mean being more subscribed.
 - enter topic mode: t
 - create new topic subfolder: T n behind upper topic
 - move folder to topic: T m
+- enable topic mode
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+#+END_SRC
 ** Summary buffer
 - toggle threading: T T 
 - fetch parent: ^
