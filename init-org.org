@@ -436,6 +436,10 @@ Additional notes to store:
 #+END_SRC
 
 
+** Org-agenda
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-restore-windows-after-quit t)
+#+END_SRC
 
 ** OrgMobile
 #+BEGIN_SRC emacs-lisp
