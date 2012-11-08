@@ -35,7 +35,7 @@ list, and the file used as inbox bucket for captured notes is set to
 over multiple computers, the complete /~/org/ directory is only a
 symbolic link to a folder stored in my dropbox.
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (quote ("~/org/todo.org")))
+  (setq org-agenda-files (quote ("~/org/todo.org" "~/org/refile.org")))
   (setq org-default-notes-file "~/org/refile.org") 
 #+END_SRC
 ** Determine files for notes captured by org-mode
@@ -109,16 +109,16 @@ shortcut letters for each state, which also have to be enabled:
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords
-     (quote ((sequence "TODO(t)" "STEADY(s)" "HABIT(h)" "NEXT(n)" "|" "DONE(d!/!)")
+     (quote ((sequence "HABIT(h)" "TODO(t)" "NEXT(n)" "STEADY(s)" "|" "DONE(d!/!)")
                (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)" "SOMEDAY(s!/!)"))))
 #+END_SRC
 Here I determine custom face colors for my task state keywords.
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keyword-faces
      (quote (("TODO" :foreground "red" :weight bold)
-               ("STEADY" :foreground "yellow")
-               ("HABIT" :foreground "deep pink" :weight bold)
                ("NEXT" :foreground "blue" :weight bold)
+               ("HABIT" :foreground "deep pink" :weight bold)
+               ("STEADY" :foreground "yellow")
                ("DONE" :foreground "forest green" :weight bold)
                ("WAITING" :foreground "orange" :weight bold)
                ("SOMEDAY" :foreground "spring green" :weight bold)
@@ -180,13 +180,13 @@ storage location, prompts, tags and the like.
                      "Education" "Knowledge improvements")
                      " [ ] %?") 
     
-                  ;; TODO entry, inactive timestamp, prompt for yanking
+                  ;; TODO entry, active timestamp, prompt for yanking
                   ("ty" "task with yanking" entry (file+headline
                   "~/org/refile.org" "tasks") 
                      "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
                      :clock-in t :clock-resume t)
                   
-                  ;; TODO entry, inactive timestamp, prompt for tag and clipboard entry
+                  ;; TODO entry, active timestamp, prompt for tag and clipboard entry
                   ("tY" "task with tag and yanking"
                      entry (file+headline "~/org/refile.org" "tasks")
                      "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
@@ -549,15 +549,51 @@ steadily. Hence, I will use search commands.
 #+END_SRC
 
 ** Org-agenda
+Set number of days ahead shown in agenda view:
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-ndays 8)
+#+END_SRC
 Restore window settings as they were before the call of org-agenda.
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-restore-windows-after-quit t)
 #+END_SRC
-Agenda-view:
+Treat any tasks with associated timestamp as irrelevant for todo-list.
 #+BEGIN_SRC emacs-lisp  
   (setq org-agenda-todo-ignore-scheduled t)
   (setq org-agenda-todo-ignore-deadlines t)
   (setq org-agenda-todo-ignore-timestamp 'all)
+#+END_SRC
+Set order in agenda views.
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-sorting-strategy 
+     '(
+         (agenda time-up  todo-state-up habit-up category-keep)
+         (todo priority-down todo-state-up category-keep)
+         )
+     )
+#+END_SRC
+Determine additional files for text search.
+#+BEGIN_SRC emacs-lisp  
+  (setq org-agenda-text-search-extra-files
+     '("~/Dropbox/knowledge_base/oracle.org"
+         "~/comp_science/git_notes.org"
+         "~/comp_science/ssh_notes.org"
+"~/comp_science/bash_notes.org"
+"~/comp_science/gtd_notes.org"
+"~/comp_science/emacs_notes.org"
+"~/comp_science/ubuntu_notes.org"
+"~/.emacs.d/init-org.org"))
+#+END_SRC
+Customized searches:
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-custom-commands
+     '(
+         ("k" "agenda and todo-list"
+            ((todo "")
+            (agenda "")))
+         ("o" tags-tree "+vip+documentation")
+         )
+     )
 #+END_SRC
 ** OrgMobile
 #+BEGIN_SRC emacs-lisp
@@ -567,7 +603,6 @@ Agenda-view:
 ** Customize variables
 #+BEGIN_SRC emacs-lisp
   (custom-set-variables
-     '(org-agenda-ndays 14)
      '(org-deadline-warning-days 14)
      '(org-agenda-show-all-dates t)
      '(org-agenda-skip-deadline-if-done t)
