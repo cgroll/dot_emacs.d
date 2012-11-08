@@ -166,17 +166,17 @@ storage location, prompts, tags and the like.
   
                   ;; Checklist entries to steady challenges
                   ("tc" "checkitem: COMPUTER improvements"
-                     checkitem (file+headline "~/org/todo.org"
+                     checkitem (file+olp "~/org/todo.org"
                      "Computational science" "Computer improvements")
                      " [ ] %?")
   
                   ("te" "checkitem: EMACS improvements"
-                     checkitem (file+headline "~/org/todo.org"
+                     checkitem (file+olp "~/org/todo.org"
                      "Computational science" "Emacs improvements")
                      " [ ] %?")
   
                   ("tk" "checkitem: KNOWLEDGE improvements"
-                     checkitem (file+headline "~/org/todo.org"
+                     checkitem (file+olp "~/org/todo.org"
                      "Education" "Knowledge improvements")
                      " [ ] %?") 
     
@@ -472,6 +472,81 @@ Additional notes to store:
   ;;    )
 #+END_SRC
 
+** Push line to agenda
+Here I want to enable an easy way to push any header, plain list item
+or checkbox item as a NEXT task to the agenda. Reason for this is
+that a do not want to scan all individual project files directly for
+tasks each time I evaluate the agenda. Furthermore, I have large
+lists of things that I want to perform anywhere in the future, and
+these lists shall not appear in the agenda itself. Only individual
+entries of these lists shall become present temporarily.
+
+First, I need a lisp-function that will push point to any given line
+of text in any arbitrary file. Of course, the text line only can be
+specified through its content, since line numbers will change
+steadily. Hence, I will use search commands.
+#+BEGIN_SRC emacs-lisp  
+    (defun cg/move-to-file-and-content (file text)
+       "function performs search for TEXT in FILE"
+       (push-mark)
+       ;; open file
+       (find-file file)
+       ;; go to result of search for content
+    
+       (goto-char (point-min))
+       (goto-char
+          (search-forward text)
+          )
+       )
+    
+    (defun cg/push-as-next-to-agenda ()
+       "create NEXT task from current line"
+       (interactive)
+       (let (text_content beg_line beg_content end_line file_name
+               link_part complete_link)
+          (save-excursion
+             ;; get line begin
+             (move-beginning-of-line nil)
+             (setq beg_line (point))
+    
+             ;; get content begin
+             (search-forward-regexp "[a-zA-Z0-9]")
+             (backward-char)
+             (setq beg_content (point))
+    
+             ;; get line end
+             (move-end-of-line nil)
+             (setq end_line (point))
+    
+             ;; get content
+             (setq text_content
+                (buffer-substring beg_content end_line)
+                )
+    
+             ;;  get file
+             (setq file_name (buffer-file-name))
+    
+             ;; create link
+             (setq link_part
+                (concat "elisp:(cg/move-to-file-and-content \"" file_name "\" \"" text_content "\")")
+                )
+    
+             (setq complete_link
+                (concat "* NEXT [["link_part"]["text_content"]]")
+                )
+    
+             ;; create entry at end of file
+             (end-of-buffer)
+             (newline)
+             (insert complete_link)
+  
+             (org-refile)
+             )
+                                
+          )
+       
+       )
+#+END_SRC
 
 ** Org-agenda
 Restore window settings as they were before the call of org-agenda.
