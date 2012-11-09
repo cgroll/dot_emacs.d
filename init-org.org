@@ -109,8 +109,8 @@ shortcut letters for each state, which also have to be enabled:
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (setq org-todo-keywords
-     (quote ((sequence "HABIT(h)" "TODO(t)" "NEXT(n)" "STEADY(s)" "|" "DONE(d!/!)")
-               (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)" "SOMEDAY(s!/!)"))))
+     (quote ((sequence "HABIT(h)" "TODO(t)" "NEXT(n)" "STEADY(a)" "|" "DONE(d!/!)")
+               (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)" "SOMEDAY(s!/!)" "PROJECT(p)"))))
 #+END_SRC
 Here I determine custom face colors for my task state keywords.
 #+BEGIN_SRC emacs-lisp
@@ -121,6 +121,7 @@ Here I determine custom face colors for my task state keywords.
                ("STEADY" :foreground "yellow")
                ("DONE" :foreground "forest green" :weight bold)
                ("WAITING" :foreground "orange" :weight bold)
+               ("PROJECT" :foreground "yellow" :weight bold)
                ("SOMEDAY" :foreground "spring green" :weight bold)
                ("CANCELLED" :foreground "sea green" :weight bold))))
 #+END_SRC
@@ -383,7 +384,7 @@ Additional notes to store:
   (setq org-capture-templates
      (append org-capture-templates
         (quote (
-                  ("b" "BIBTEX entry"
+                  ("B" "BIBTEX entry"
                      entry
                      (file+headline "~/literature/management/bibliography.org" "unsorted entries")
                      "* %:title   %^G
@@ -593,6 +594,12 @@ Customized searches:
             (agenda "")))
          ("o" tags-tree "+vip+documentation")
          )
+     )
+#+END_SRC
+Stuck projects:
+#+BEGIN_SRC emacs-lisp
+  (setq org-stuck-projects
+     '("-ANY/+PROJECT|SOMEDAY" ("NEXT" "TODO"))
      )
 #+END_SRC
 ** OrgMobile
