@@ -551,7 +551,7 @@ steadily. Hence, I will use search commands.
 ** Org-agenda
 Set number of days ahead shown in agenda view:
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-ndays 8)
+  (setq org-agenda-span 8)
 #+END_SRC
 Restore window settings as they were before the call of org-agenda.
 #+BEGIN_SRC emacs-lisp
@@ -623,7 +623,7 @@ Customized searches:
    (quote (("d" todo "DELEGATED" nil)
        ("c" todo "DONE|DEFERRED|CANCELLED" nil)
        ("w" todo "WAITING" nil)
-       ("W" agenda "" ((org-agenda-ndays 21)))
+       ("W" agenda "" ((org-agenda-span 21)))
        ("A" agenda ""
         ((org-agenda-skip-function
           (lambda nil
