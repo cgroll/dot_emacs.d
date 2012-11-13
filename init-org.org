@@ -36,7 +36,7 @@ over multiple computers, the complete /~/org/ directory is only a
 symbolic link to a folder stored in my dropbox.
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files (quote ("~/org/todo.org" "~/org/refile.org")))
-  (setq org-default-notes-file "~/org/refile.org") 
+;;  (setq org-default-notes-file "~/org/refile.org") 
 #+END_SRC
 ** Determine files for notes captured by org-mode
 In addition to all files regarding my daily tasks and appointments, I
@@ -258,8 +258,8 @@ storage location, prompts, tags and the like.
                ;; Birthday entry into anniversaries calendar with prompt
                ;; for date; date is active -> appears in agenda
                ("ea" "annually repeating event"
-               entry (file+headline "~/org/todo.org" "Anniversaries")
-                  "%%(org-anniversary %?) %{Which event?} %d"
+               plain (file+headline "~/org/todo.org" "Anniversaries")
+                  "(org-anniversary %?) %^{Which event?} %d"
                   :clock-in t :clock-resume t)
                
                ;; Entry in log: at current time finished activity with completion
