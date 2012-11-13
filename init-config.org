@@ -43,6 +43,28 @@ e.g. to copy from emacs to firefox.
   (setq x-select-enable-clipboard t)
   (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 #+END_SRC
+* Spell checking
+Enable flyspell for all org-mode buffers.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook
+  (lambda()
+    (flyspell-mode 1)))
+(setq ispell-current-dictionary "english")
+#+END_SRC
+
+Enable switching through languages:
+#+BEGIN_SRC emacs-lisp
+  (defun fd-switch-dictionary()
+     (interactive)
+     (let* ((dic ispell-current-dictionary) 
+              (change (if (string= dic "de_DE") "english" "de_DE")))
+        (ispell-change-dictionary change)
+        (message "Dictionary switched from %s to %s" dic change)
+        ))
+  
+  (global-set-key (kbd "<f8>")   'fd-switch-dictionary) 
+#+END_SRC
+
 * Layout
 ** Fonts
 Depending on the screen resolution I use different default fonts. For

@@ -1,14 +1,14 @@
 #+TITLE: Matlab settings
 
 #+name: settings_for_remote_matlab
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/extensions/matlab-emacs")
   (require 'matlab-load)
   ;; (matlab-cedet-setup)
 #+END_SRC
 
 #+name: settings_as_described_on_webpage
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; CEDET settings
   (load-file "~/.emacs.d/extensions/cedet-1.1/common/cedet.el")
   (global-ede-mode 1)                      ; Enable the Project management system
