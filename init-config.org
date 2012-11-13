@@ -43,6 +43,89 @@ e.g. to copy from emacs to firefox.
   (setq x-select-enable-clipboard t)
   (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 #+END_SRC
+* Spell checking
+Enable flyspell for all org-mode buffers.
+#+BEGIN_SRC emacs-lisp
+(ispell-change-dictionary "american")
+  (add-hook 'org-mode-hook
+     (lambda()
+        (ac-flyspell-workaround) ; to avoid interference with ac-mode
+        (flyspell-mode t)
+        )
+     )
+#+END_SRC
+
+Enable switching through languages:
+#+BEGIN_SRC emacs-lisp
+  (defvar language)
+  (setq language "english")
+  
+  (defun cg/switch-language ()
+     "switch language for google-translate, autocomplete and ispell"
+     (interactive)
+     (if (string= language "english")
+        (progn 
+           (setq language "deutsch")
+           ;(ispell-change-dictionary "deutsch")
+           (flyspell-mode nil)
+           (setq ac-user-dictionary-files
+              '("~/.emacs.d/extensions/auto-complete/dict/german_words"))
+           ; include google translate
+           )
+        ;; else-part
+        (setq language "english")
+        (flyspell-mode t)
+        (ispell-change-dictionary "american")
+        (setq ac-user-dictionary-files
+           '("~/.emacs.d/extensions/auto-complete/dict/own_word_list"))
+        ; include google translate
+        )
+     (message "Language switched to %s" language) 
+     )
+  (global-set-key (kbd "<f8>")   'cg/switch-language)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun cg/switch-language ()
+     "switch language for ispell and autocomplete"
+     (interactive)
+     (let ((dic ispell-current-dictionary))
+        (if (string= dic "american")
+           (progn 
+              (message "in true-part")
+              (setq dic "de-common")
+              (ispell-change-dictionary "de_DE")
+              (setq ac-user-dictionary-files
+                '("~/.emacs.d/extensions/auto-complete/dict/german_words"))
+                 )
+           ;; else-part
+           (message "in else-part")
+           (setq dic "american")
+           (ispell-change-dictionary "american")
+           (setq ac-user-dictionary-files
+             '("~/.emacs.d/extensions/auto-complete/dict/own_word_list"))
+           )
+        (message "Language switched to %s" dic) 
+        )
+     )
+  (global-set-key (kbd "<f8>")   'cg/switch-language)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun fd-switch-dictionary()
+     (interactive)
+     (let* ((dic ispell-current-dictionary)
+              (change (if (string= dic "deutsch8") "english" "deutsch8")))
+        (ispell-change-dictionary change)
+        (message "Dictionary switched from %s to %s" dic change)
+        ))
+  
+  (global-set-key (kbd "<f8>")   'fd-switch-dictionary)
+#+END_SRC
+
+Specify personal spelling dictionary.
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-personal-dictionary "~/Dropbox/personal_data/.ispell_english")
+#+END_SRC
+
 * Layout
 ** Fonts
 Depending on the screen resolution I use different default fonts. For

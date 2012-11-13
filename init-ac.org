@@ -17,7 +17,7 @@
 * User word lists
 #+BEGIN_SRC 
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict/")
-(setq ac-user-dictionary-files '("~/.emacs.d/auto-complete/dict/own_word_list"))
+(setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete/dict/own_word_list"))
 #+END_SRC
 
 ** Enable language switching
@@ -33,14 +33,14 @@ be deleted upfront. This can be done by search for regexp ^.\{1,4\}$
   (defun cg/ac_toggle_language_german ()
     "Switch autocompletion language to german"
     (interactive)
-    (setq ac-user-dictionary-files '("~/.emacs.d/auto-complete/dict/german_words"))
+    (setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete/dict/german_words"))
     (ac-clear-dictionary-cache)
   )
   
   (defun cg/ac_toggle_language_english ()
     "Switch autocompletion language to english"
     (interactive)
-    (setq ac-user-dictionary-files '("~/.emacs.d/auto-complete/dict/own_word_list"))
+    (setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete/dict/own_word_list"))
     (ac-clear-dictionary-cache)
   )
 #+END_SRC

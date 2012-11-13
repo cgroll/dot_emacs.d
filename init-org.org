@@ -157,13 +157,13 @@ storage location, prompts, tags and the like.
                   ("tt" "task, manual scheduling"
                      entry (file+headline "~/org/refile.org" "tasks")
                      "* TODO %? \nAdded: %U\n"
-                     :clock-in t :clock-resume t) 
+                      :clock-resume t) 
                   
                   ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
                   ("tT" "task, tag prompt"
                      entry (file+headline "~/org/refile.org" "tasks")
                      "* TODO %? %^G \nAdded: %U\n"
-                     :clock-in t :clock-resume t)
+                      :clock-resume t)
   
                   ;; Checklist entries to steady challenges
                   ("tc" "checkitem: COMPUTER improvements"
@@ -185,13 +185,13 @@ storage location, prompts, tags and the like.
                   ("ty" "task with yanking" entry (file+headline
                   "~/org/refile.org" "tasks") 
                      "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
-                     :clock-in t :clock-resume t)
+                      :clock-resume t)
                   
                   ;; TODO entry, active timestamp, prompt for tag and clipboard entry
                   ("tY" "task with tag and yanking"
                      entry (file+headline "~/org/refile.org" "tasks")
                      "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
-                     :clock-in t :clock-resume t)
+                      :clock-resume t)
                   
                   ;; New research project: create project heading in todo.org under research projects
                   ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
@@ -199,19 +199,19 @@ storage location, prompts, tags and the like.
                   ("tP" "project with tag, automatic source"
                      entry (file+headline "~/org/todo.org" "Research")
                      "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\n%a\nAdded: %U\n "
-                     :clock-in t :clock-resume t)
+                      :clock-resume t)
   
                   
                   ("tp" "project task"
                      entry (file+headline "~/org/todo.org" "Research")
                      "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\nAdded: %U\n "
-                     :clock-in t :clock-resume t)         
+                      :clock-resume t)         
                   ;; write function to shift todo tasks from project file to agenda ! 
                   
                   ("r" "EMAIL response"
                      entry (file+headline "~/org/refile.org" "tasks")
                      "* TODO Respond to %:from on %:subject :EMAIL:\n%t\n%a\n"
-                     :clock-in t :clock-resume t :immediate-finish t
+                      :clock-resume t :immediate-finish t
                      )
                   
                   ("h" "HABIT"
@@ -226,64 +226,65 @@ storage location, prompts, tags and the like.
 
 *** Capturing events
 #+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates  
-(append org-capture-templates
-     (quote (
-               ("e" "Templates for events")
-               
-               ;; Future event: prompt for date without time
-               ("ee" "daily event without time"
-               entry (file+headline "~/org/refile.org" "tasks")
-                  "* %? :calendar: \n%^{Which date?}t \nAdded:%U\n"
-                  :clock-in t :clock-resume t)
-               
-               ;; Future event: prompt for date WITH time
-               ("et" "event with time specification"
-               entry (file+headline "~/org/refile.org" "tasks")
-                  "* %? :calendar: \n%^{Which date and time?}T \nAdded: %U\n"
-                  :clock-in t :clock-resume t)
+    (setq org-capture-templates  
+  (append org-capture-templates
+       (quote (
+                 ("e" "Templates for events")
+                 
+                 ;; Future event: prompt for date without time
+                 ("ee" "daily event without time"
+                 entry (file+headline "~/org/refile.org" "tasks")
+                    "* %? :calendar: \n%^{Which date?}t \nAdded:%U\n"
+                     :clock-resume t)
+                 
+                 ;; Future event: prompt for date WITH time
+                 ("et" "event with time specification"
+                 entry (file+headline "~/org/refile.org" "tasks")
+                    "* %? :calendar: \n%^{Which date and time?}T \nAdded: %U\n"
+                     :clock-resume t)
+    
+                 ;; Future event lasting for multiple days
+                 ("ed" "enduring event"
+                 entry (file+headline "~/org/refile.org" "tasks")
+                    "* %? :calendar: \n%^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
+                     :clock-resume t)
   
-               ;; Future event lasting for multiple days
-               ("ed" "enduring event"
-               entry (file+headline "~/org/refile.org" "tasks")
-                  "* %? :calendar: \n%^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
-                  :clock-in t :clock-resume t)
+                 ;; Entry in tracking file
+                 ("eh" "tracking history event"
+                 entry (file+datetree "~/org/tracker.org")
+                      "* %^{Activity?|haircut|handy_charge|dentist|grandparents} %?"
+                       :clock-resume t)
+  
+                 ;; Birthday entry into anniversaries calendar with prompt
+                 ;; for date; date is active -> appears in agenda
+                 ("ea" "annually repeating event"
+                 entry (file+headline "~/org/todo.org" "Anniversaries")
+                    "%%(org-anniversary %?) %{Which event?} %d"
+                     :clock-resume t)
+                 
+                 ;; Entry in log: at current time finished activity with completion
+                 ("el" "logbook: finished activities"
+                 entry (file+datetree "~/org/log.org")
+                    "* %U - %^{Activity?|lunch|break|buy|program|read|work|research|torture} "
+                     :clock-resume t)
+                 
+                 ;; Stopwatch activity without prompt
+                 ("es" "stopwatch"
+                 entry (file+datetree "~/org/log.org")
+                    "* Stopwatch %? \nStarted: %U\n"
+                     :clock-resume t)
+                 
+                 ;; Entry in creditcard with prompt for sum and cursor for item specification
+                 ("ec" "credit-card info"
+                 entry (file+datetree "~/org/creditcard.org")
+                    "* %? - %^{Amount?} \nAdded: %U\n"
+                     :clock-resume t)
+                 
+                 )
+          )
+       )
+  )
 
-               ;; Entry in tracking file
-               ("eh" "tracking history event"
-               entry (file+datetree "~/org/tracker.org")
-                    "* %^{Activity?|haircut|handy_charge|dentist|grandparents} %?"
-                    :clock-in t :clock-resume t)
-
-               ;; Birthday entry into anniversaries calendar with prompt
-               ;; for date; date is active -> appears in agenda
-               ("ea" "annually repeating event"
-               plain (file+headline "~/org/todo.org" "Anniversaries")
-                  "(org-anniversary %?) %^{Which event?} %d"
-                  :clock-in t :clock-resume t)
-               
-               ;; Entry in log: at current time finished activity with completion
-               ("el" "logbook: finished activities"
-               entry (file+datetree "~/org/log.org")
-                  "* %U - %^{Activity?|lunch|break|buy|program|read|work|research|torture} "
-                  :clock-in t :clock-resume t)
-               
-               ;; Stopwatch activity without prompt
-               ("es" "stopwatch"
-               entry (file+datetree "~/org/log.org")
-                  "* Stopwatch %? \nStarted: %U\n"
-                  :clock-in t :clock-resume t)
-               
-               ;; Entry in creditcard with prompt for sum and cursor for item specification
-               ("ec" "credit-card info"
-               entry (file+datetree "~/org/creditcard.org")
-                  "* %? - %^{Amount?} \nAdded: %U\n"
-                  :clock-in t :clock-resume t)
-               
-               )
-        )
-     )
-)
 #+END_SRC
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone
@@ -573,6 +574,10 @@ Set order in agenda views.
          )
      )
 #+END_SRC
+Show clock-report per default.
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-start-with-clockreport-mode t)
+#+END_SRC
 Determine additional files for text search.
 #+BEGIN_SRC emacs-lisp  
   (setq org-agenda-text-search-extra-files
@@ -612,6 +617,7 @@ Stuck projects:
   (custom-set-variables
      '(org-deadline-warning-days 14)
      '(org-agenda-show-all-dates t)
+     '(org-clock-into-drawer t)
      '(org-agenda-skip-deadline-if-done t)
      '(org-agenda-skip-scheduled-if-done t)
      '(org-agenda-start-on-weekday nil) ; start agenda at current day
