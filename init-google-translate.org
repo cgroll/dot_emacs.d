@@ -169,8 +169,13 @@ Implementation of export function for org-drill.
      (interactive)
   
      ;; get sentence and word
-     (let (word sentence word_class beg_sent end_sent vocab_entry answer)
-        (setq word (word-at-point))
+     (let (word sentence word_class beg_sent end_sent vocab_entry answer
+     syns last_three counter beg_line end_line multiple_words)
+        (setq multiple_words mark-active)
+        (if multiple_words
+           (setq word (buffer-substring-no-properties (point) (mark)))
+           (setq word (word-at-point))
+           )
   
         (save-excursion
            ;; get sentence
@@ -180,7 +185,7 @@ Implementation of export function for org-drill.
               (setq beg_sent (point))
               (forward-sentence)
               (setq end_sent (point))
-              (setq sentence (substring (buffer-string) beg_sent end_sent))
+              (setq sentence (buffer-substring-no-properties beg_sent end_sent))
               )
   
            (save-excursion
@@ -189,24 +194,39 @@ Implementation of export function for org-drill.
   
               ;; get word class
               (switch-to-buffer-other-window "*Google Translate*")
-              (goto-line 5)
-              (let (beg_line end_line)
-                 (setq beg_line (point))
-                 (forward-sexp)
-                 (setq end_line (- (point) 1))
-                 (setq word_class
-                    (substring (buffer-string) (- beg_line 1) end_line)  
+              (if (not multiple_words)
+                 (progn
+                    (goto-line 5)
+                    (let (beg_line end_line)
+                       (setq beg_line (point))
+                       (forward-sexp)
+                       (setq end_line (- (point) 1))
+                       (setq word_class
+                          (buffer-substring-no-properties (- beg_line 0) (+
+                                                                            end_line 1))  
+                          )
+                       )
                     )
+                 (setq word_class "unknown")
                  )
   
               ;; get main translation results
-              (goto-line 6)
+              (if multiple_words
+                 (goto-line 5)
+                 (goto-line 6)
+                 )
               (beginning-of-line)
-              (search-forward "1")
+              (condition-case ex
+                 (search-forward "1")
+                 ('error (goto-char (- (point-max) 1)))
+                 )
               (beginning-of-line)
               (push-mark)
-              (next-line 3)
-              (move-end-of-line nil)
+              (condition-case ex
+                 (next-line 3)
+                 ('error (goto-char (- (point-max) 1)))
+                 )
+              (move-end-of-line 1)
               (kill-ring-save (mark) (point))
   
               ;; insert word class and word into template
@@ -241,10 +261,13 @@ Implementation of export function for org-drill.
   
               ;; find synonyms for word
               (setq syns "| ")
-              (setq answer (thesaurus-get-synonyms "efficiency"))
-              (while answer               ; as long as answer is list of
+              (setq answer (thesaurus-get-synonyms word))
+              (setq counter 3)
+              (while (and answer (> counter 0))     ; as long as answer
+                                          ; is list of
+                 (print counter)
                                           ; list
-                 (print syns)
+                 ;; (print syns)
                  (if (atom (car answer))
                     (progn
                        (if (string= (car (cdr answer)) "syn")
@@ -254,22 +277,51 @@ Implementation of export function for org-drill.
                        )
                     ;; list of lists
                     (if (string= (car (cdr (car answer))) "syn")
-                        (setq syns
-                           (concat syns (car (cdr (cdr
-                                                          (car
-              answer)))) ", ")
-                           )
-                        )
+                       (progn
+                          (setq syns
+                             (concat syns (car (cdr (cdr
+                                                       (car
+                                                          answer)))) ", ")
+                             )
+                          (setq counter (- counter 1))
+                          )
+                       )
                     )
                  (setq answer (cdr answer))
                  )
   
+              ;; find word of interest in sentence
+              (goto-char (buffer-end 1))
+              (search-backward word)
+              (kill-forward-chars (+ (string-width word) 0))
+              (insert (concat "[" word syns"]"))
               
-  
+              ;; delete last "," if necessary
+              ;; (setq last_three (substring (buffer-string)
+              ;;                     (- (point) 4) (- (point) 1)))
+              ;; (print "last three are")
+              ;; (print last_three)
+              ;; (string= last_three ", ]")
+              
+              (setq beg_line (- (point) 3))
+              (setq end_line (- (point) 0))
+              (print (buffer-substring-no-properties
+                                  beg_line end_line))
+              
+              (if (string= (buffer-substring-no-properties
+                                  beg_line end_line) ", ]")
+                 (progn 
+                    (message "something gets deleted")
+                    (backward-char 1)
+                    (backward-delete-char 2)))
+              (fill-paragraph nil)
               
               (save-buffer)
               (kill-buffer "vocab_template.org")
-              (kill-buffer "*Google Translate*")
+              (switch-to-buffer "*Google Translate*")
+              (View-quit)
+              ;(kill-buffer "*Google Translate*")
+              (other-window -1)
               )
            )
         )

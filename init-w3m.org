@@ -14,6 +14,7 @@
 ;; set w3m as standard browser
 #+BEGIN_SRC 
 (setq browse-url-browser-function 'w3m-browse-url)
+(setq w3m-fill-column 69)
 #+END_SRC
 
 
