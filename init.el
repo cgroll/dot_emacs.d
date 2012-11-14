@@ -90,6 +90,26 @@
 
 (org-babel-load-file "~/.emacs.d/init-config.org")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       google-translate
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'google-translate)
+
+;; load settings
+(org-babel-load-file "~/.emacs.d/init-google-translate.org")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       thesaurus.el
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'thesaurus)
+(org-babel-load-file "~/Dropbox/personal_data/thesaurus_api_setup.org")
+(define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
 
 
 ;; new block
