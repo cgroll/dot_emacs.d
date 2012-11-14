@@ -36,7 +36,7 @@ over multiple computers, the complete /~/org/ directory is only a
 symbolic link to a folder stored in my dropbox.
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-files (quote ("~/org/todo.org" "~/org/refile.org")))
-  (setq org-default-notes-file "~/org/refile.org") 
+;;  (setq org-default-notes-file "~/org/refile.org") 
 #+END_SRC
 ** Determine files for notes captured by org-mode
 In addition to all files regarding my daily tasks and appointments, I
@@ -284,6 +284,7 @@ storage location, prompts, tags and the like.
           )
        )
   )
+
 #+END_SRC
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone
@@ -621,7 +622,11 @@ Stuck projects:
      '(org-agenda-skip-scheduled-if-done t)
      '(org-agenda-start-on-weekday nil) ; start agenda at current day
      '(org-reverse-note-order nil) ; append new nodes
-     '(org-fast-tag-selection-single-key nil) ; you have to press RET to exit tag menu 
+     '(org-fast-tag-selection-single-key nil) ; you have to press RET to
+                                          ; exit tag menu
+     '(calendar-longitude 11.580) ; Munich coordinates to get sunrise
+                                  ; /sunset times
+     '(calendar-latitude 48.139)
      )
   (org-babel-do-load-languages
      'org-babel-load-languages

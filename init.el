@@ -111,6 +111,50 @@
 (org-babel-load-file "~/Dropbox/personal_data/thesaurus_api_setup.org")
 (define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       matlab
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(org-babel-load-file "~/.emacs.d/init-matlab.org")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       org-drill
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'load-path "~/.emacs.d/extensions/org/contrib/lisp/")
+(require 'org-drill)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       google-translate
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'google-translate)
+(org-babel-load-file "~/.emacs.d/init-google-translate.org")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       thesaurus.el
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'thesaurus)
+(org-babel-load-file
+   "~/Dropbox/personal_data/thesaurus_api_setup.org")
+(define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       miscellaneous
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;; new block
 (defun new-block ()
@@ -154,11 +198,17 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
+ '(LaTeX-math-abbrev-prefix "M-g")
+ '(calendar-latitude 48.139)
+ '(calendar-longitude 11.58)
+ '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
  '(org-agenda-skip-scheduled-if-done t)
  '(org-agenda-start-on-weekday nil)
+ '(org-clock-into-drawer t)
  '(org-deadline-warning-days 14)
+ '(org-drill-optimal-factor-matrix (quote ((1 (2.36 . 3.86) (2.1799999999999997 . 3.72) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.58) (1.7000000000000002 . 3.44)))))
  '(org-fast-tag-selection-single-key nil)
  '(org-reverse-note-order nil))
 (custom-set-faces
@@ -167,11 +217,3 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       matlab
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(org-babel-load-file "~/.emacs.d/init-matlab.org")

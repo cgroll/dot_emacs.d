@@ -77,10 +77,208 @@ Define function for vocabulary exportation.
         )
      )
 #+END_SRC
+Implementation of export function for org-drill.
+#+BEGIN_SRC emacs-lisp
+  (defun cg/translate-and-export-2 ()
+     "google translation of english word and exportation to org-drill
+  format"
+     (interactive)
+  
+     ;; get sentence and word
+     (let (word sentence word_class beg_sent end_sent vocab_entry)
+        (setq word (word-at-point))
+  
+        (save-excursion
+           ;; get sentence
+           (save-excursion
+              (backward-sentence)
+              (backward-char)
+              (setq beg_sent (point))
+              (forward-sentence)
+              (setq end_sent (point))
+              (setq sentence (substring (buffer-string) beg_sent end_sent))
+              )
+  
+           (save-excursion
+              ;; translate word
+              (google-translate-at-point)
+  
+              ;; get word class
+              (switch-to-buffer-other-window "*Google Translate*")
+              (goto-line 5)
+              (let (beg_line end_line)
+                 (setq beg_line (point))
+                 (forward-sexp)
+                 (setq end_line (- (point) 1))
+                 (setq word_class
+                    (substring (buffer-string) (- beg_line 1) end_line)  
+                    )
+                 )
+  
+              ;; get main translation results
+              (goto-line 6)
+              (beginning-of-line)
+              (search-forward "1")
+              (beginning-of-line)
+              (push-mark)
+              (next-line 3)
+              (move-end-of-line nil)
+              (kill-ring-save (mark) (point))
+  
+              ;; insert word class and word into template
+              (find-file "~/Dropbox/personal_data/vocab_template.org")
+              (show-all)
+              (beginning-of-buffer)
+              (forward-char 3)
+              (kill-sexp)
+              (insert word_class)
+              (outline-next-heading)
+              (next-line)
+              (insert word)
+              (outline-next-heading)
+              (next-line)
+  
+              ;; insert translation
+              (yank 2)
+              (outline-next-heading)
+              (next-line)
+  
+              ;; insert context
+              (insert sentence)
+              (fill-paragraph nil)
+  
+              ;; move complete content to vocabulary file
+              (setq vocab_entry (buffer-string))
+              (revert-buffer t t t)
+              (find-file "~/org/vocabulary.org")
+              (goto-char (buffer-end 1))
+              (newline)
+              (insert vocab_entry)
+              (save-buffer)
+              (kill-buffer "vocab_template.org")
+              (kill-buffer "*Google Translate*")
+              )
+           )
+        )
+     )
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun cg/translate-and-export-3 ()
+     "google translation of english word and exportation to org-drill
+  format"
+     (interactive)
+  
+     ;; get sentence and word
+     (let (word sentence word_class beg_sent end_sent vocab_entry answer)
+        (setq word (word-at-point))
+  
+        (save-excursion
+           ;; get sentence
+           (save-excursion
+              (backward-sentence)
+              (backward-char)
+              (setq beg_sent (point))
+              (forward-sentence)
+              (setq end_sent (point))
+              (setq sentence (substring (buffer-string) beg_sent end_sent))
+              )
+  
+           (save-excursion
+              ;; translate word
+              (google-translate-at-point)
+  
+              ;; get word class
+              (switch-to-buffer-other-window "*Google Translate*")
+              (goto-line 5)
+              (let (beg_line end_line)
+                 (setq beg_line (point))
+                 (forward-sexp)
+                 (setq end_line (- (point) 1))
+                 (setq word_class
+                    (substring (buffer-string) (- beg_line 1) end_line)  
+                    )
+                 )
+  
+              ;; get main translation results
+              (goto-line 6)
+              (beginning-of-line)
+              (search-forward "1")
+              (beginning-of-line)
+              (push-mark)
+              (next-line 3)
+              (move-end-of-line nil)
+              (kill-ring-save (mark) (point))
+  
+              ;; insert word class and word into template
+              (find-file "~/Dropbox/personal_data/vocab_template.org")
+              (show-all)
+              (beginning-of-buffer)
+              (forward-char 3)
+              (kill-sexp)
+              (insert word_class)
+              (outline-next-heading)
+              (next-line)
+              (insert word)
+              (outline-next-heading)
+              (next-line)
+  
+              ;; insert translation
+              (yank 2)
+              (outline-next-heading)
+              (next-line)
+  
+              ;; insert context
+              (insert sentence)
+              (fill-paragraph nil)
+  
+              ;; move complete content to vocabulary file
+              (setq vocab_entry (buffer-string))
+              (revert-buffer t t t)
+              (find-file "~/org/vocabulary.org")
+              (goto-char (buffer-end 1))
+              (newline)
+              (insert vocab_entry)
+  
+              ;; find synonyms for word
+              (setq syns "| ")
+              (setq answer (thesaurus-get-synonyms "efficiency"))
+              (while answer               ; as long as answer is list of
+                                          ; list
+                 (print syns)
+                 (if (atom (car answer))
+                    (progn
+                       (if (string= (car (cdr answer)) "syn")
+                          (setq syns 
+                             (concat syns (car (cdr (cdr answer)))))
+                          )
+                       )
+                    ;; list of lists
+                    (if (string= (car (cdr (car answer))) "syn")
+                        (setq syns
+                           (concat syns (car (cdr (cdr
+                                                          (car
+              answer)))) ", ")
+                           )
+                        )
+                    )
+                 (setq answer (cdr answer))
+                 )
+  
+              
+  
+              
+              (save-buffer)
+              (kill-buffer "vocab_template.org")
+              (kill-buffer "*Google Translate*")
+              )
+           )
+        )
+     )
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   (global-unset-key "\C-t")
-  (global-set-key (kbd "C-t j") 'cg/translate-and-export)
+  (global-set-key (kbd "C-t j") 'cg/translate-and-export-3)
   (global-set-key (kbd "C-t l")
      'google-translate-query-translate-reverse)
   (global-set-key (kbd "C-t L") 'google-translate-query-translate)
