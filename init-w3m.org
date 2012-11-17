@@ -44,6 +44,19 @@
 (global-set-key (kbd "<f7>") 'wicked/toggle-w3m)
 #+END_SRC
 
+#+BEGIN_SRC emcas-lisp
+(defun wicked/w3m-open-current-page-in-firefox ()
+  "Open the current URL in Mozilla Firefox."
+  (interactive)
+  (browse-url-firefox w3m-current-url)) ;; (1)
+
+(defun wicked/w3m-open-link-or-image-in-firefox ()
+  "Open the current link or image in Firefox."
+  (interactive)
+  (browse-url-firefox (or (w3m-anchor) ;; (2)
+                          (w3m-image)))) ;; (3)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (define-key w3m-mode-map (kbd "M-n") 'forward-word)
 #+END_SRC

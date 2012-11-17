@@ -377,12 +377,13 @@ long for me.
 Also one of my most frequently used functions.  Hence, faster
 keybinding is used, as well as for inverse direction.
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-SPC") 'other-window)
-  (defun cg/inverse-other-window ()
-    "window cycling in inverse direction"
-    (other-window -1)
-    )
-  (global-set-key (kbd "M-S-SPC") 'cg/inverse-other-window)
+    (global-set-key (kbd "M-SPC") 'other-window)
+    (defun cg/inverse-other-window ()
+      "window cycling in inverse direction"
+       (interactive)
+      (other-window -1)
+      )
+    (global-set-key (kbd "M-S-SPC") 'cg/inverse-other-window)
 #+END_SRC
 
 ** Window resize operations
