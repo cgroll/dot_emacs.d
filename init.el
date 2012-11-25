@@ -210,7 +210,7 @@
  '(org-agenda-start-on-weekday nil)
  '(org-clock-into-drawer t)
  '(org-deadline-warning-days 14)
- '(org-drill-optimal-factor-matrix (quote ((1 (2.36 . 3.86) (2.1799999999999997 . 3.72) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.58) (1.7000000000000002 . 3.44)))))
+ '(org-drill-optimal-factor-matrix (quote ((2 (2.22 . 2.22) (2.36 . 2.36)) (1 (2.36 . 3.86) (2.1799999999999997 . 3.72) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.58) (1.7000000000000002 . 3.44)))))
  '(org-fast-tag-selection-single-key nil)
  '(org-reverse-note-order nil))
 (custom-set-faces
