@@ -39,6 +39,7 @@ curly brackets.
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (setq preview-image-type 'dvipng)
+  (setq preview-scale-function 1.5)
 #+END_SRC
 
 * key bindings

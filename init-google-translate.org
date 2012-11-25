@@ -168,6 +168,8 @@ Implementation of export function for org-drill.
   format"
      (interactive)
   
+     (display-buffer "vocabulary.org")
+     
      ;; get sentence and word
      (let (word sentence word_class beg_sent end_sent vocab_entry answer
      syns last_three counter beg_line end_line multiple_words)
@@ -305,23 +307,31 @@ Implementation of export function for org-drill.
               
               (setq beg_line (- (point) 3))
               (setq end_line (- (point) 0))
-              (print (buffer-substring-no-properties
-                                  beg_line end_line))
+              ;; (print (buffer-substring-no-properties
+              ;;                     beg_line end_line))
               
               (if (string= (buffer-substring-no-properties
                                   beg_line end_line) ", ]")
                  (progn 
-                    (message "something gets deleted")
+                    ;; (message "something gets deleted")
                     (backward-char 1)
                     (backward-delete-char 2)))
               (fill-paragraph nil)
+              (end-of-buffer)
+              ;; (recenter-top-bottom 2)
               
               (save-buffer)
               (kill-buffer "vocab_template.org")
               (switch-to-buffer "*Google Translate*")
-              (View-quit)
-              ;(kill-buffer "*Google Translate*")
+              (delete-window)
+  
+              (other-window 1)
+              (end-of-buffer)
+              (recenter -1)
               (other-window -1)
+  
+              ;(kill-buffer "*Google Translate*")
+              ; (other-window -1)
               )
            )
         )
