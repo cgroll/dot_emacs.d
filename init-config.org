@@ -182,12 +182,52 @@ stops.
   (setq-default tab-stop-list '(3 6 9 12 15 18 21 24))
   (setq-default lisp-indent-offset 3)
 #+END_SRC
+
 Now, set indentation key.
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-j") 'indent-for-tab-command)
   (define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
   (define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+  
+  (defun cg/ess-indent-buffer ()
+     "apply ess-indent to complete buffer"
+     (interactive)
+     (save-excursion
+        (let ((line-counter (line-number-at-pos (point-min)))
+                (number-of-lines (count-lines (point-min) (point-max))))
+           (goto-char (point-min))
+           (while (<= line-counter number-of-lines)
+              (progn
+                 (ess-indent-command)
+                 (forward-line)
+                 (setq line-counter (+ line-counter 1))
+                 )
+              )
+           )
+        )
+     )
+  (defun cg/ac-indent-buffer ()
+     "apply automatic indentation to complete buffer"
+     (interactive)
+     (save-excursion
+        (let ((line-counter (line-number-at-pos (point-min)))
+                (number-of-lines (count-lines (point-min) (point-max))))
+           (goto-char (point-min))
+           (while (<= line-counter number-of-lines)
+              (progn
+                 (indent-for-tab-command)
+                 (forward-line)
+                 (setq line-counter (+ line-counter 1))
+                 )
+              )
+           )
+        )
+     )
+  (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
+  (define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
+  (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
 #+END_SRC
+
 Furthermore, when relying completely on automatic indentation, it
 usually is more appropriate to automatically set the next line to
 adequate indentation. Hence, my standard settings for new lines will
@@ -205,13 +245,12 @@ to be inserted, as well as an inverting command.
 #+BEGIN_SRC emacs-lisp  
   (setq-default indent-tabs-mode nil)
   (setq indent-tabs-mode nil)
-  (tab-to-tab-stop)
-    (defun cg/insert-tab ()
-      "insert TAB at point"
-      (interactive)
-      (insert-tab)
-      )
-    (global-set-key (kbd "M-j") 'cg/insert-tab) 
+  (defun cg/insert-tab ()
+     "insert TAB at point"
+     (interactive)
+     (insert-tab)
+     )
+  (global-set-key (kbd "M-j") 'cg/insert-tab) 
 #+END_SRC
 
 ** TODO Enable manual indentation
@@ -306,6 +345,7 @@ the best accessible keys.
   (global-set-key (kbd "M-p") 'backward-word)
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "M-d") 'kill-word)
+  
 #+END_SRC
   
 *** Sexp-based
@@ -321,10 +361,92 @@ the best accessible keys.
          cur))))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
-    (global-set-key (kbd "C-M-n") 'forward-sexp)
-    (global-set-key (kbd "C-M-p") 'backward-sexp)
-    (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
-    (global-set-key (kbd "C-M-d") 'kill-sexp)
+  (require 'thingatpt)
+  (defun get-point (symbol &optional arg)
+     "get the point"
+     (funcall symbol arg)
+     (point)
+     )
+  (defun copy-thing (begin-of-thing end-of-thing &optional arg)
+     "copy thing between beg & end into kill ring"
+     (save-excursion
+        (let ((beg (get-point begin-of-thing 1))
+                (end (get-point end-of-thing arg)))
+           (copy-region-as-kill beg end)))
+     )
+  (defun copy-word (&optional arg)
+     "Copy words at point into kill-ring"
+     (interactive "P")
+     (copy-thing 'backward-word 'forward-word arg)
+     ;;(paste-to-mark arg)
+     )
+  (global-set-key (kbd "C-M-n") 'forward-sexp)
+  (global-set-key (kbd "C-M-p") 'backward-sexp)
+  (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+  (global-set-key (kbd "C-M-d") 'kill-sexp)
+  
+  
+  (defun cg/copy-current-word ()
+     "copy word at point"
+     (save-excursion
+        (kill-new (word-at-point))
+        (message (word-at-point)))
+     )
+  
+  (defun cg/copy-forward-word ()
+     "copy current or next word"
+     (save-excursion
+        (forward-word)
+        (backward-word)
+        (thing-at-point 'word)
+        (message (thing-at-point 'word))
+        )
+     )
+  
+  (defun cg/copy-backward-word ()
+     "copy current or previous word"
+     (save-excursion
+        (backward-word)
+        (forward-word)
+        (kill-new (word-at-point))
+        (message (word-at-point)))
+     )
+  
+  (defun cg/copy-word-with-direction-guess ()
+     "based on last movement, try to guess whether previous or next
+     word shall be copied to kill-ring"
+     (interactive)
+     
+     ;; init list of last motions for comparison
+     (setq last-motion-to-next-guess-alist
+     '((forward-char    . cg/copy-forward-word)
+         (forward-word     . cg/copy-forward-word)
+         (forward-sexp  . cg/copy-forward-word)   
+         (backward-char    . cg/copy-backward-word)
+         (backward-word  . cg/copy-backward-word)
+         (backward-sexp . cg/copy-backward-word)))
+     ;; remark: possibly extend to search commands
+  
+     ;; set default value, if motions don't match
+     (setq default-motion 'cg/copy-current-word)
+  
+     ;; store last command
+     (let ((input-motion last-command)
+             copy-function)
+  
+        ;; compare last command to list of possible motions
+        (if (assoc-string input-motion last-motion-to-next-guess-alist)
+           (setq copy-function (cdr (assoc-string input-motion
+        last-motion-to-next-guess-alist)))
+           ;; else: default motion
+           (setq copy-function default-motion)
+           )
+        ;;(print copy-function)
+        (funcall copy-function)
+        )
+     )
+  (global-set-key (kbd "C-1") 'cg/copy-word-with-direction-guess) 
+  
 #+END_SRC
 *** Sentence-based 
 Adapt sentence syntax to end with single space.

@@ -1,86 +1,96 @@
-(load "/usr/share/emacs/site-lisp/ESS/lisp/ess-site.el")
-(add-to-list 'load-path "~/efficient_workspace/emacs_extensions")
-(require 'ess-r-args)
-(require 'ess-R-object-tooltip)	     ; note: requires function tooltip-show-at-point, which was
-				     ; part of ess-r-args previously. however, it is called
-				     ; ess-tooltip-show-at-point now. this must be changed in
-				     ; ess-R-object-tooltip.el accordingly!
-;; added for ess-R-object-tooltip
+#+TITLE: Configuration for R project as well as for general programming commands
 
+Enable tooltips for R objects, hints to function arguments and debugging.
+#+BEGIN_SRC emacs-lisp
+  (require 'ess-r-args)
+  (require 'ess-R-object-tooltip)
+#+END_SRC
 
-;; (require 'ess-site)
+** Ess-tracebug:
+Enable ess-tracebug:
 
-;; ess-tracebug
-(setq ess-tracebug-prefix "\M-c")	; define debug-mode starting key
-(setq ess-use-tracebug t)
-;; (add-hook 'ess-post-run-hook 'ess-tracebug) ; activate ess-tracebug every time R session starts
+#+BEGIN_SRC emacs-lisp
+  (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
+  (setq ess-use-tracebug t)
+  (setq ess-tracebug-inject-source-p t)
+  ;; (add-hook 'ess-post-run-hook 'ess-tracebug) ; activate ess-tracebug every time R session starts
+#+END_SRC
 
-(defun r-debug-narrowed-region ()
-  "Debug narrowed region or current block remotely. Region must load previous
-workspace if require."
-  (interactive)
-  (let ((fileName buffer-file-name)	  ; store current file name
-	(processName ess-local-process-name)		 ; store current process name
-	)
-	
-	;; (goto-char (point-min))
-	(backward-block)
-	(push-mark)
-	;; (forward-block)
-	(goto-char (point-max))
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun r-debug-narrowed-region ()
+     "Debug narrowed region or current block remotely. Region must load previous
+  workspace if require."
+     (interactive)
+     (let ((fileName buffer-file-name)   ; store current file name
+             (processName ess-local-process-name)       ; store current process name
+             )
+        
+        ;; (goto-char (point-min))
+        (backward-block)
+        (push-mark)
+        ;; (forward-block)
+        (goto-char (point-max))
+  
+        (kill-ring-save (point) (mark))                     ; copy region
+  
+  
+        (if (get-buffer "tmp_debug_file.r")     ; if temp buffer already exists, kill it
+           (kill-buffer "tmp_debug_file.r")
+           )
+        (switch-to-buffer "tmp_debug_file.r")
+  
+        (yank)                               ; yank copied text
+        (write-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; save modified file in same directory
+        (ess-force-buffer-current " " processName) ; attach same process to tmp_debug_file
+                                          ; ess-local-process-name
+        (switch-to-buffer "tmp_debug_file.r")
+        (ess-tracebug 1)                        ; Enable ess-tracebug
+        ;; (ess-tracebug-source-current-file)
+        )
+     )
+  
+#+END_SRC
 
-	(kill-ring-save (point) (mark))							 ; copy region
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun cg/r-debug-org-edit-src-code ()
+     "Debug currently edited source code block of org-babel file."
+     (interactive)
+     (let ((fileName buffer-file-name)   ; store current file name
+             (buffName (buffer-name))
+             (processName ess-local-process-name)       ; store current process name
+             )
+  
+        ;; if temp buffer already exists, kill it
+        (if (get-buffer "tmp_debug_file.r") 
+           (kill-buffer "tmp_debug_file.r")
+           )
+        
+        (delete-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; delete old version of file
+        
+        (goto-char (point-min))
+        (push-mark)
+        (goto-char (point-max))
+        
+        (kill-ring-save (point) (mark))                    ; copy region
+        
+        (switch-to-buffer "tmp_debug_file.r")
+  
+        (yank)                              ; yank copied text
+        (write-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; save modified file in same directory
+        (ess-force-buffer-current " " processName) ; attach same process to tmp_debug_file
+                                          ; ess-local-process-name
+        ;; (switch-to-buffer buffName)
+        ;; (setq buffer-file-name (concat (file-name-directory fileName) "tmp_debug_file.r"))
+        ;; (kill-buffer "tmp_debug_file.r")
+        (ess-tracebug 1)                       ; Enable ess-tracebug
+        ;; (ess-tracebug-source-current-file)
+        )
+     )
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp
 
-	(if (get-buffer "tmp_debug_file.r")		 ; if temp buffer already exists, kill it
-	(kill-buffer "tmp_debug_file.r")
-	)
-	(switch-to-buffer "tmp_debug_file.r")
-
-	(yank)										 ; yank copied text
-	(write-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; save modified file in same directory
-	(ess-force-buffer-current " " processName) ; attach same process to tmp_debug_file
-					; ess-local-process-name
-	(switch-to-buffer "tmp_debug_file.r")
-	(ess-tracebug 1)								 ; Enable ess-tracebug
-	;; (ess-tracebug-source-current-file)
-	)
-)
-
-(defun r-debug-org-edit-src-code ()
-  "Debug currently edited source code block of org-babel file."
-  (interactive)
-  (let ((fileName buffer-file-name)	  ; store current file name
-	(buffName (buffer-name))
-	(processName ess-local-process-name)		 ; store current process name
-	)
-
-    (if (get-buffer "tmp_debug_file.r")		 ; if temp buffer already exists, kill it
-	(kill-buffer "tmp_debug_file.r")
-      )
-    
-    (delete-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; delete old version of file
-    
-    (goto-char (point-min))
-    (push-mark)
-    (goto-char (point-max))
-    
-    (kill-ring-save (point) (mark))							 ; copy region
-    
-    (switch-to-buffer "tmp_debug_file.r")
-
-    (yank)										 ; yank copied text
-    (write-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; save modified file in same directory
-    (ess-force-buffer-current " " processName) ; attach same process to tmp_debug_file
-					; ess-local-process-name
-    ;; (switch-to-buffer buffName)
-    ;; (setq buffer-file-name (concat (file-name-directory fileName) "tmp_debug_file.r"))
-    ;; (kill-buffer "tmp_debug_file.r")
-    (ess-tracebug 1)								 ; Enable ess-tracebug
-    ;; (ess-tracebug-source-current-file)
-    )
-  )
-
+#+END_SRC
 
 (defun r-select-superior ()
   "Select superior word encompassing point."
@@ -138,35 +148,21 @@ workspace if require."
 (define-key ess-mode-map (kbd "C-c 2") 'r-show-str)
 
 
-(defun R-assign ()
-	"Insert assignment sign of R language"
-	(interactive)
-	(insert " <- "))
-(define-key ess-mode-map (kbd "M--") 'R-assign)
 
-(define-key ess-mode-map (kbd "C-M-a") 'backward-block)
-(define-key ess-mode-map (kbd "C-M-e") 'forward-block)
+* underscore properties
+#+BEGIN_SRC emacs-lisp
+  (defun cg/R-assign ()
+     "Insert assignment sign of R language"
+     (interactive)
+     (insert " <- "))
+  
+  (define-key ess-mode-map (kbd "M--") 'cg/R-assign)
+  (define-key ess-mode-map (kbd "_") 'self-insert-command)
+#+END_SRC
 
-(defun ess-eval-block ()
-  "Eval current block in current (local) session."
-  (interactive)
-  (re-search-backward (concat "^" comment-start "\\{3\\}\n" comment-start "\\{6\\}") nil :no-error)
-  (if (not (eq (line-number-at-pos) 1))
-      (progn
-	(next-line)
-	(next-line)
-	)
-    )
-  (push-mark)
-  (re-search-forward (concat "^" comment-start "\\{3\\}\n" comment-start "\\{6\\}") nil :no-error)
-  (if (not (eq (line-number-at-pos) (line-number-at-pos (point-max))))
-      (next-line)
-    )
-  ;; (exchange-point-and-mark)
-  ;; (execute-extended-command "ess-eval-region")
-  (ess-eval-region (point) (mark) t)
-  )
-(define-key ess-mode-map (kbd "C-c C-c") 'ess-eval-block)
+* enable evaluation of syntactic units
+
+** enable evaluation of connected regions without empty lines
 
 (defun ess-eval-sentence ()
   "Eval sentence: regions without empty lines."
@@ -177,15 +173,5 @@ workspace if require."
   (forward-sentence)
   (ess-eval-region (point) (mark) t)
   )
+
 (define-key ess-mode-map (kbd "C-c M-e") 'ess-eval-sentence)
-(define-key ess-mode-map (kbd "_") 'self-insert-command)
-(define-key ess-mode-map (kbd "C-c C-k") 'kill-start-of-line)
-
-(defun edit-src-block ()
-  "Adapt window properties of "
-  ())
-
-(org-mode)
-(define-key org-mode-map (kbd "C-ö") 'org-edit-special)
-(define-key org-src-mode-map (kbd "C-ö") 'org-edit-src-exit)
-(emacs-lisp-mode)

@@ -80,7 +80,7 @@
 ;; ess: better is probably autoload in order to speed up starting procedure
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/")
 (require 'ess-site)
-
+(org-babel-load-file "~/.emacs.d/init-R.org")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
