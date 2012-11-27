@@ -346,6 +346,66 @@ the best accessible keys.
   (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
   (global-set-key (kbd "M-d") 'kill-word)
   
+  (defun cg/copy-current-word ()
+       "copy word at point"
+       (save-excursion
+          (kill-new (word-at-point))
+          (message (word-at-point)))
+       )
+    
+    (defun cg/copy-forward-word ()
+       "copy current or next word"
+       (save-excursion
+          (forward-word)
+          (backward-word)
+          (thing-at-point 'word)
+          (message (thing-at-point 'word))
+          )
+       )
+    
+    (defun cg/copy-backward-word ()
+       "copy current or previous word"
+       (save-excursion
+          (backward-word)
+          (forward-word)
+          (kill-new (word-at-point))
+          (message (word-at-point)))
+       )
+    
+    (defun cg/copy-word-with-direction-guess ()
+       "based on last movement, try to guess whether previous or next
+       word shall be copied to kill-ring"
+       (interactive)
+       
+       ;; init list of last motions for comparison
+       (setq last-motion-to-next-guess-alist
+       '((forward-char    . cg/copy-forward-word)
+           (forward-word     . cg/copy-forward-word)
+           (forward-sexp  . cg/copy-forward-word)   
+           (backward-char    . cg/copy-backward-word)
+           (backward-word  . cg/copy-backward-word)
+           (backward-sexp . cg/copy-backward-word)))
+       ;; remark: possibly extend to search commands
+    
+       ;; set default value, if motions don't match
+       (setq default-motion 'cg/copy-current-word)
+    
+       ;; store last command
+       (let ((input-motion last-command)
+               copy-function)
+    
+          ;; compare last command to list of possible motions
+          (if (assoc-string input-motion last-motion-to-next-guess-alist)
+             (setq copy-function (cdr (assoc-string input-motion
+          last-motion-to-next-guess-alist)))
+             ;; else: default motion
+             (setq copy-function default-motion)
+             )
+          ;;(print copy-function)
+          (funcall copy-function)
+          )
+       )
+  
 #+END_SRC
   
 *** Sexp-based
@@ -361,74 +421,58 @@ the best accessible keys.
          cur))))
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
-  (require 'thingatpt)
-  (defun get-point (symbol &optional arg)
-     "get the point"
-     (funcall symbol arg)
-     (point)
-     )
-  (defun copy-thing (begin-of-thing end-of-thing &optional arg)
-     "copy thing between beg & end into kill ring"
-     (save-excursion
-        (let ((beg (get-point begin-of-thing 1))
-                (end (get-point end-of-thing arg)))
-           (copy-region-as-kill beg end)))
-     )
-  (defun copy-word (&optional arg)
-     "Copy words at point into kill-ring"
-     (interactive "P")
-     (copy-thing 'backward-word 'forward-word arg)
-     ;;(paste-to-mark arg)
-     )
-  (global-set-key (kbd "C-M-n") 'forward-sexp)
-  (global-set-key (kbd "C-M-p") 'backward-sexp)
-  (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
-  (global-set-key (kbd "C-M-d") 'kill-sexp)
-  
-  
-  (defun cg/copy-current-word ()
-     "copy word at point"
-     (save-excursion
-        (kill-new (word-at-point))
-        (message (word-at-point)))
-     )
-  
-  (defun cg/copy-forward-word ()
-     "copy current or next word"
-     (save-excursion
-        (forward-word)
-        (backward-word)
-        (thing-at-point 'word)
-        (message (thing-at-point 'word))
-        )
-     )
-  
-  (defun cg/copy-backward-word ()
-     "copy current or previous word"
-     (save-excursion
-        (backward-word)
-        (forward-word)
-        (kill-new (word-at-point))
-        (message (word-at-point)))
-     )
-  
-  (defun cg/copy-word-with-direction-guess ()
+    (require 'thingatpt)
+    
+    (global-set-key (kbd "C-M-n") 'forward-sexp)
+    (global-set-key (kbd "C-M-p") 'backward-sexp)
+    (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+    (global-set-key (kbd "C-M-d") 'kill-sexp)
+    
+  (defun cg/copy-current-sexp ()
+       "copy sexp at point"
+       (save-excursion
+          (kill-new (sexp-at-point))
+          (message (sexp-at-point)))
+       )
+    
+    (defun cg/copy-forward-sexp ()
+       "copy current or next sexp"
+       (save-excursion
+          (forward-sexp)
+          (backward-sexp)
+          (kill-new (thing-at-point 'sexp))
+          (message (thing-at-point 'sexp))
+          )
+       )
+    
+    (defun cg/copy-backward-sexp ()
+       "copy current or previous sexp"
+       (save-excursion
+          (backward-sexp)
+          (forward-sexp)
+          (backward-char)
+          (kill-new (thing-at-point 'sexp))
+          (message (thing-at-point 'sexp))
+          )
+       )
+    
+    (defun cg/copy-sexp-with-direction-guess ()
      "based on last movement, try to guess whether previous or next
-     word shall be copied to kill-ring"
+     sexp shall be copied to kill-ring"
      (interactive)
      
      ;; init list of last motions for comparison
      (setq last-motion-to-next-guess-alist
-     '((forward-char    . cg/copy-forward-word)
-         (forward-word     . cg/copy-forward-word)
-         (forward-sexp  . cg/copy-forward-word)   
-         (backward-char    . cg/copy-backward-word)
-         (backward-word  . cg/copy-backward-word)
-         (backward-sexp . cg/copy-backward-word)))
+     '((forward-char    . cg/copy-forward-sexp)
+         (forward-word     . cg/copy-forward-sexp)
+         (forward-sexp  . cg/copy-forward-sexp)   
+         (backward-char    . cg/copy-backward-sexp)
+         (backward-word  . cg/copy-backward-sexp)
+         (backward-sexp . cg/copy-backward-sexp)))
      ;; remark: possibly extend to search commands
   
      ;; set default value, if motions don't match
-     (setq default-motion 'cg/copy-current-word)
+     (setq default-motion 'cg/copy-current-sexp)
   
      ;; store last command
      (let ((input-motion last-command)
@@ -445,8 +489,8 @@ the best accessible keys.
         (funcall copy-function)
         )
      )
-  (global-set-key (kbd "C-1") 'cg/copy-word-with-direction-guess) 
-  
+  (global-set-key (kbd "C-M-ä") 'cg/copy-sexp-with-direction-guess)
+    
 #+END_SRC
 *** Sentence-based 
 Adapt sentence syntax to end with single space.
@@ -471,8 +515,8 @@ C-n -> good
 C-p -> good
 M-f -> bad
 M-b -> bad
-M-n -> good
-M-p -> good
+M-n -> good: word
+M-p -> good: word
 C-M-n -> good
 C-M-p -> good
 S-M-p -> good
