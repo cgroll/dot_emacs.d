@@ -210,7 +210,7 @@ storage location, prompts, tags and the like.
                   
                   ("r" "EMAIL response"
                      entry (file+headline "~/org/refile.org" "tasks")
-                     "* TODO Respond to %:from on %:subject :EMAIL:\n%t\n%a\n"
+                     "* TODO Respond to %:from on %:subject :EMAIL:\n%a\n"
                       :clock-resume t :immediate-finish t
                      )
                   
@@ -258,8 +258,8 @@ storage location, prompts, tags and the like.
                  ;; Birthday entry into anniversaries calendar with prompt
                  ;; for date; date is active -> appears in agenda
                  ("ea" "annually repeating event"
-                 entry (file+headline "~/org/todo.org" "Anniversaries")
-                    "%%(org-anniversary %?) %{Which event?} %d"
+                 plain (file+headline "~/org/todo.org" "Anniversaries")
+                    "(org-anniversary %?) %^{Which event? Also, add %% in front} %d"
                      :clock-resume t)
                  
                  ;; Entry in log: at current time finished activity with completion
@@ -675,4 +675,35 @@ Load languages.
 Open edit-src-block in same window.
 #+BEGIN_SRC emacs-lisp
   (setq org-src-window-setup 'current-window)
+#+END_SRC
+** source code templates
+#+BEGIN_SRC emacs-lisp
+  (defun cg/insert-source-code (language name)
+     "interactively specify language, name and picture properties of
+  source code block"
+     (interactive "sSpecify language: \nsName of source block: ")
+     (let (src_str)
+        (setq src_str (concat "#+name: " name "\n"))
+        (if (y-or-n-p "Include picture?")
+           (progn
+              (setq src_str (concat src_str "#+BEGIN_SRC " language
+                               " :results graphics :file ./pics/" name
+                               ".pdf\n")) 
+              (setq src_str (concat src_str "\n#+END_SRC\n\n"))
+              (setq src_str (concat src_str "#+attr_latex:"
+                               " width=0.8\\textwidth,placement=[h!]\n"))
+              (setq src_str (concat src_str "#+label: fig:\n"))
+              (setq src_str (concat src_str "#+caption: \n"))
+              (setq src_str (concat src_str "#+RESULTS: " name "\n"))
+              )
+           (setq src_str (concat src_str "#+BEGIN_SRC " language "\n\n"))
+           (setq src_str (concat src_str "#+END_SRC"))
+           )
+        (insert src_str)
+        )
+     )
+  
+  (global-set-key (kbd "C-3") 'cg/insert-source-code)
+  
+  
 #+END_SRC

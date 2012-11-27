@@ -54,4 +54,39 @@
 ;; my default key map
 (define-key ess-mode-map "\C-c\C-g" 'ess-R-object-tooltip)
 
+(defun cg/ess-tooltip-heads ()
+   "Show heads info of last kill-ring object in tooltip"
+   (interactive)
+   (let ((proc (get-ess-process))
+           (objname (car kill-ring))
+           (curbuf (current-buffer))
+           (tmpbuf (get-buffer-create " *ess-R-object-tooltip*"))
+           bs)
+      (with-current-buffer tmpbuf
+         (ess-command (concat "head(" objname ")\n") tmpbuf
+                         nil nil nil proc)
+         (setq bs (buffer-string)))
+      (when bs
+         (ess-tooltip-show-at-point bs 0 30))))
+
+(defun cg/ess-tooltip-str ()
+   "Show str info of last kill-ring object in tooltip"
+   (interactive)
+   (let ((proc (get-ess-process))
+           (objname (car kill-ring))
+           (curbuf (current-buffer))
+           (tmpbuf (get-buffer-create " *ess-R-object-tooltip*"))
+           bs)
+      (with-current-buffer tmpbuf
+         (ess-command (concat "str(" objname ")\n") tmpbuf
+                         nil nil nil proc)
+         (setq bs (buffer-string)))
+      (when bs
+         (ess-tooltip-show-at-point bs 0 30))))
+
+(define-key ess-mode-map (kbd "C-1") 'cg/ess-tooltip-heads)
+(global-set-key (kbd "C-1") 'cg/ess-tooltip-heads)
+(define-key ess-mode-map (kbd "C-2") 'cg/ess-tooltip-str)
+(global-set-key (kbd "C-2") 'cg/ess-tooltip-str)
+
 (provide 'ess-R-object-tooltip)

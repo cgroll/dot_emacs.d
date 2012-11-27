@@ -212,11 +212,11 @@
  '(org-agenda-start-on-weekday nil)
  '(org-clock-into-drawer t)
  '(org-deadline-warning-days 14)
- '(org-drill-optimal-factor-matrix (quote ((3 (2.5 . 2.5) (2.36 . 2.36)) (2 (1.8199999999999998 . 2.159) (2.2199999999999998 . 2.328) (2.22 . 2.22) (2.46 . 2.497) (1.7000000000000002 . 2.15) (2.04 . 2.243) (1.96 . 2.238) (2.1799999999999997 . 2.325) (2.36 . 2.412) (2.5 . 2.5) (2.6 . 2.588) (1.56 . 2.074)) (1 (1.56 . 3.482) (2.2199999999999998 . 3.806) (2.04 . 3.59) (2.36 . 3.902) (2.1799999999999997 . 3.804) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.706) (1.7000000000000002 . 3.608)))))
+ '(org-drill-optimal-factor-matrix (quote ((3 (2.5 . 2.5) (2.36 . 2.36)) (2 (2.08 . 2.166) (1.8199999999999998 . 2.159) (2.2199999999999998 . 2.328) (2.22 . 2.22) (2.46 . 2.497) (1.7000000000000002 . 2.15) (2.04 . 2.243) (1.96 . 2.238) (2.1799999999999997 . 2.325) (2.36 . 2.439) (2.5 . 2.5) (2.6 . 2.588) (1.56 . 2.074)) (1 (1.56 . 3.482) (2.2199999999999998 . 3.806) (2.04 . 3.59) (2.36 . 3.902) (2.1799999999999997 . 3.804) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.706) (1.7000000000000002 . 3.608)))))
  '(org-fast-tag-selection-single-key nil)
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-reverse-note-order nil)
- '(safe-local-variable-values (quote ((org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export)))))
+ '(safe-local-variable-values (quote ((org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export)))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
