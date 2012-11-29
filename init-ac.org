@@ -11,7 +11,7 @@
 
 * Set all active completion modes
 #+BEGIN_SRC emacs-lisp
-(setq-default ac-sources '(ac-source-filename ac-source-features ac-source-functions ac-source-yasnippet ac-source-variables ac-source-symbols ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
+(setq-default ac-sources '(ac-source-filename ac-source-features ac-source-functions ac-source-variables ac-source-symbols ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
 #+END_SRC
 
 * User word lists
@@ -77,6 +77,10 @@ Use auto-complete in nearly every mode.
 (add-to-list 'ac-modes 'matlab-mode)
 (add-to-list 'ac-modes 'ess-mode)
 (add-to-list 'ac-modes 'emacs-lisp-mode)
+(add-to-list 'ac-modes 'LaTeX-mode)
+(add-to-list 'ac-modes 'latex-mode)
+(add-to-list 'ac-modes 'org-src-mode)
+(add-to-list 'ac-modes 'LaTeX-math-mode)
 (add-to-list 'ac-modes 'message-mode)
 (global-auto-complete-mode t)
 #+END_SRC

@@ -14,6 +14,36 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;;;;;       yasnippet
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'load-path
+              "~/.emacs.d/extensions/yasnippet")
+(require 'yasnippet)
+(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
+(add-hook 'LaTeX-mode-hook '(lambda ()
+                            (yas-minor-mode 1)))
+;; (add-hook 'LaTeX-math-mode-hook '(lambda ()
+;;                             (yas-minor-mode 1)))
+;; (add-hook 'LaTeX-mode '(lambda ()
+;;                             (yas-minor-mode)))
+;; (add-hook 'LaTeX-math-mode
+;;    '(lambda ()
+;;        (yas-minor-mode)))
+;; (add-hook 'org-mode '(lambda ()
+;;                             (yas-minor-mode)))
+
+(yas/reload-all)                                           
+(define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
+(define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
+(define-key yas-minor-mode-map (kbd "<tab>") 'auto-complete) ; restart ac-mode
+(define-key yas-minor-mode-map (kbd "<tab>") 'ac-complete) ; restart ac-mode
+(define-key yas-minor-mode-map (kbd "C-M-q") 'yas-expand)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;;;;       auctex
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -152,6 +182,7 @@
 (org-babel-load-file
    "~/Dropbox/personal_data/thesaurus_api_setup.org")
 (define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
