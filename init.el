@@ -24,6 +24,8 @@
 (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
 (add-hook 'LaTeX-mode-hook '(lambda ()
                             (yas-minor-mode 1)))
+(add-hook 'org-mode-hook '(lambda () (yas-minor-mode 1)))
+
 ;; (add-hook 'LaTeX-math-mode-hook '(lambda ()
 ;;                             (yas-minor-mode 1)))
 ;; (add-hook 'LaTeX-mode '(lambda ()
@@ -34,12 +36,13 @@
 ;; (add-hook 'org-mode '(lambda ()
 ;;                             (yas-minor-mode)))
 
-(yas/reload-all)                                           
+(yas/reload-all)
 (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
 (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
 (define-key yas-minor-mode-map (kbd "<tab>") 'auto-complete) ; restart ac-mode
 (define-key yas-minor-mode-map (kbd "<tab>") 'ac-complete) ; restart ac-mode
-(define-key yas-minor-mode-map (kbd "C-M-q") 'yas-expand)
+(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+(define-key yas-minor-mode-map (kbd "C-S-o") 'yas-prev-field)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,6 +61,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; auto-complete
+(add-to-list 'load-path "~/.emacs.d/extensions/")
 (org-babel-load-file "~/.emacs.d/init-ac.org")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -163,26 +167,6 @@
 (setq org-drill-maximum-duration 20)
 (setq org-drill-learn-fraction 0.35)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       google-translate
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'google-translate)
-(org-babel-load-file "~/.emacs.d/init-google-translate.org")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       thesaurus.el
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'thesaurus)
-(org-babel-load-file
-   "~/Dropbox/personal_data/thesaurus_api_setup.org")
-(define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -234,6 +218,7 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(LaTeX-math-abbrev-prefix "M-g")
+ '(ac-dictionary-files (quote ("~/.emacs.d/extensions/auto-complete/dict/own_word_list")))
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
@@ -247,7 +232,11 @@
  '(org-fast-tag-selection-single-key nil)
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-reverse-note-order nil)
- '(safe-local-variable-values (quote ((org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export)))))
+ '(safe-local-variable-values (quote ((org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export))))
+ '(yas-fallback-behavior (quote call-other-command))
+ '(yas-prompt-functions (quote (yas-ido-prompt yas-x-prompt yas-dropdown-prompt yas-completing-prompt yas-ido-prompt yas-no-prompt)))
+ '(yas-triggers-in-field t)
+ '(yas-wrap-around-region t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

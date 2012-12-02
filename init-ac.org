@@ -16,7 +16,7 @@
 
 * User word lists
 #+BEGIN_SRC 
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict/")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/extensions/auto-complete/dict/")
 (setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete/dict/own_word_list"))
 #+END_SRC
 
@@ -84,3 +84,5 @@ Use auto-complete in nearly every mode.
 (add-to-list 'ac-modes 'message-mode)
 (global-auto-complete-mode t)
 #+END_SRC
+
+

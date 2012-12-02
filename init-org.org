@@ -707,3 +707,98 @@ Open edit-src-block in same window.
   
   
 #+END_SRC
+* Org tex-commands
+Since all my scientific publications are written in org-babel, I
+often have to include tex-commands even in org-mode for inline
+mathematical formulas. Hence, Greek letters, sub- and super-indices
+and basic mathematical operators should be easily accessible. Only
+environmental commands are not required here.
+
+** Greek letters 
+Greek letters shall be set in compliance with auctex.
+Lowercase Greek letters.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-g a")
+     '(lambda () (interactive) (insert "\\alpha")))
+  (global-set-key (kbd "M-g b")
+     '(lambda () (interactive) (insert "\\beta")))
+  (global-set-key (kbd "M-g g")
+     '(lambda () (interactive) (insert "\\gamma")))
+  (global-set-key (kbd "M-g d")
+     '(lambda () (interactive) (insert "\\gamma")))
+  (global-set-key (kbd "M-g e")
+     '(lambda () (interactive) (insert "\\epsilon")))
+  (global-set-key (kbd "M-g z")
+     '(lambda () (interactive) (insert "\\zeta")))
+  (global-set-key (kbd "M-g h")
+     '(lambda () (interactive) (insert "\\eta")))
+  (global-set-key (kbd "M-g j")
+     '(lambda () (interactive) (insert "\\theta")))
+  (global-set-key (kbd "M-g k")
+     '(lambda () (interactive) (insert "\\kappa")))
+  (global-set-key (kbd "M-g l")
+     '(lambda () (interactive) (insert "\\lambda")))
+  (global-set-key (kbd "M-g m")
+     '(lambda () (interactive) (insert "\\mu")))
+  (global-set-key (kbd "M-g n")
+     '(lambda () (interactive) (insert "\\nu")))
+  (global-set-key (kbd "M-g x")
+     '(lambda () (interactive) (insert "\\xi")))
+  (global-set-key (kbd "M-g p")
+     '(lambda () (interactive) (insert "\\pi")))
+  (global-set-key (kbd "M-g r")
+     '(lambda () (interactive) (insert "\\rho")))
+  (global-set-key (kbd "M-g s")
+     '(lambda () (interactive) (insert "\\sigma")))
+  (global-set-key (kbd "M-g t")
+     '(lambda () (interactive) (insert "\\tau")))
+  (global-set-key (kbd "M-g u")
+     '(lambda () (interactive) (insert "\\upsilon")))
+  (global-set-key (kbd "M-g f")
+     '(lambda () (interactive) (insert "\\phi")))
+  (global-set-key (kbd "M-g q")
+     '(lambda () (interactive) (insert "\\chi")))
+  (global-set-key (kbd "M-g y")
+     '(lambda () (interactive) (insert "\\psi")))
+  (global-set-key (kbd "M-g w")
+     '(lambda () (interactive) (insert "\\omega")))
+  (global-set-key (kbd "M-g v e")
+     '(lambda () (interactive) (insert "\\varepsilon")))
+  (global-set-key (kbd "M-g v j")
+     '(lambda () (interactive) (insert "\\vartheta")))
+  (global-set-key (kbd "M-g v p")
+     '(lambda () (interactive) (insert "\\varpi")))
+  (global-set-key (kbd "M-g v r")
+     '(lambda () (interactive) (insert "\\varrho")))
+  (global-set-key (kbd "M-g v s")
+     '(lambda () (interactive) (insert "\\varsigma")))
+  (global-set-key (kbd "M-g v f")
+     '(lambda () (interactive) (insert "\\varphi")))
+#+END_SRC
+Greek uppercase letters.
+#+BEGIN_SRC emacs-lisp  
+  (global-set-key (kbd "M-g G")
+       '(lambda () (interactive) (insert "\\Gamma")))
+  (global-set-key (kbd "M-g D")
+       '(lambda () (interactive) (insert "\\Delta")))
+  (global-set-key (kbd "M-g J")
+       '(lambda () (interactive) (insert "\\Theta")))
+  (global-set-key (kbd "M-g L")
+       '(lambda () (interactive) (insert "\\Lambda")))
+  (global-set-key (kbd "M-g X")
+       '(lambda () (interactive) (insert "\\Xi")))
+  (global-set-key (kbd "M-g P")
+       '(lambda () (interactive) (insert "\\Pi")))
+  (global-set-key (kbd "M-g S")
+       '(lambda () (interactive) (insert "\\Sigma")))
+  (global-set-key (kbd "M-g U")
+       '(lambda () (interactive) (insert "\\Upsilon")))
+  (global-set-key (kbd "M-g F")
+       '(lambda () (interactive) (insert "\\Phi")))
+  (global-set-key (kbd "M-g Y")
+       '(lambda () (interactive) (insert "\\Psi")))
+  (global-set-key (kbd "M-g W")
+       '(lambda () (interactive) (insert "\\Omega")))
+#+END_SRC
+
+** Math-mode

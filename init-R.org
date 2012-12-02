@@ -156,12 +156,18 @@ Enable ess-tracebug:
      (interactive)
      (insert " <- "))
   
-  (define-key ess-mode-map (kbd "M--") 'cg/R-assign)
+  (define-key ess-mode-map (kbd "C-M--") 'cg/R-assign)
   (define-key ess-mode-map (kbd "_") 'self-insert-command)
-  (define-key inferior-ess-mode-map (kbd "M--") 'cg/R-assign)
+  (define-key inferior-ess-mode-map (kbd "C-M--") 'cg/R-assign)
   (define-key inferior-ess-mode-map (kbd "_") 'self-insert-command)
   (global-set-key (kbd "_") 'self-insert-command)
-  (global-set-key (kbd "M--") 'cg/R-assign)
+  (global-set-key (kbd "C-M--") 'cg/R-assign)
 #+END_SRC
+
+
+
+
+
+
 
 
