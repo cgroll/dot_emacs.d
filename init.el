@@ -1,4 +1,3 @@
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       org-mode
@@ -11,6 +10,27 @@
 
 ;; individual org-mode settings
 (org-babel-load-file "~/.emacs.d/init-org.org")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       auto-complete-mode
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; auto-complete
+(add-to-list 'load-path "~/.emacs.d/extensions/")
+(org-babel-load-file "~/.emacs.d/init-ac.org")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       gnus, additional to .gnus file
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;(org-babel-load-file "~/.emacs.d/init-gnus.org")
+  (add-to-list 'load-path "~/.emacs.d/extensions/bbdb/lisp/")
+  (require 'bbdb)
+  (bbdb-initialize 'gnus 'message)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -39,8 +59,8 @@
 (yas/reload-all)
 (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
 (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
-(define-key yas-minor-mode-map (kbd "<tab>") 'auto-complete) ; restart ac-mode
-(define-key yas-minor-mode-map (kbd "<tab>") 'ac-complete) ; restart ac-mode
+(define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
+(define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
 (define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
 (define-key yas-minor-mode-map (kbd "C-S-o") 'yas-prev-field)
 
@@ -54,15 +74,6 @@
 ;; auctex
 (org-babel-load-file "~/.emacs.d/init-latex.org")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       auto-complete-mode
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; auto-complete
-(add-to-list 'load-path "~/.emacs.d/extensions/")
-(org-babel-load-file "~/.emacs.d/init-ac.org")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -122,7 +133,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(org-babel-load-file "~/.emacs.d/init-config.org")
+(org-babel-load-file "~/.emacs.d/init-config.org")   
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -221,6 +232,7 @@
  '(ac-dictionary-files (quote ("~/.emacs.d/extensions/auto-complete/dict/own_word_list")))
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
+ '(global-auto-complete-mode t)
  '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
