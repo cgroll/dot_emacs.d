@@ -885,3 +885,4 @@ Enable emacsclient
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
+(setq x-select-enable-clipboard t)

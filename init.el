@@ -16,10 +16,42 @@
 ;;;;;       auto-complete-mode
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; auto-complete
-(add-to-list 'load-path "~/.emacs.d/extensions/")
+(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
+(add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
+(require 'auto-complete)
+(ac-set-trigger-key "C-o")
+(require 'yasnippet)
+(yas-global-mode 1)
+(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
 (org-babel-load-file "~/.emacs.d/init-ac.org")
+(global-set-key (kbd "C-o") 'yas-prev-field)
+(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+
+;; ;; auto-complete
+;; (add-to-list 'load-path "~/.emacs.d/extensions/")
+;; (org-babel-load-file "~/.emacs.d/init-ac.org")
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;
+;; ;;;;;       yasnippet
+;; ;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (add-to-list 'load-path
+;;               "~/.emacs.d/extensions/yasnippet")
+;; (require 'yasnippet)
+;; (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
+;; (add-hook 'LaTeX-mode-hook '(lambda ()
+;;                             (yas-minor-mode 1)))
+;; (add-hook 'org-mode-hook '(lambda () (yas-minor-mode 1)))
+
+;; (yas/reload-all)
+;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+;; (define-key yas-minor-mode-map (kbd "C-S-o") 'yas-prev-field)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -31,38 +63,6 @@
   (add-to-list 'load-path "~/.emacs.d/extensions/bbdb/lisp/")
   (require 'bbdb)
   (bbdb-initialize 'gnus 'message)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       yasnippet
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(add-to-list 'load-path
-              "~/.emacs.d/extensions/yasnippet")
-(require 'yasnippet)
-(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-(add-hook 'LaTeX-mode-hook '(lambda ()
-                            (yas-minor-mode 1)))
-(add-hook 'org-mode-hook '(lambda () (yas-minor-mode 1)))
-
-;; (add-hook 'LaTeX-math-mode-hook '(lambda ()
-;;                             (yas-minor-mode 1)))
-;; (add-hook 'LaTeX-mode '(lambda ()
-;;                             (yas-minor-mode)))
-;; (add-hook 'LaTeX-math-mode
-;;    '(lambda ()
-;;        (yas-minor-mode)))
-;; (add-hook 'org-mode '(lambda ()
-;;                             (yas-minor-mode)))
-
-(yas/reload-all)
-(define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
-(define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
-(define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
-(define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
-(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
-(define-key yas-minor-mode-map (kbd "C-S-o") 'yas-prev-field)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -230,6 +230,7 @@
   ;; If there is more than one, they won't work right.
  '(LaTeX-math-abbrev-prefix "M-g")
  '(ac-dictionary-files (quote ("~/.emacs.d/extensions/auto-complete/dict/own_word_list")))
+ '(ac-trigger-key "C-o")
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
@@ -240,7 +241,7 @@
  '(org-agenda-start-on-weekday nil)
  '(org-clock-into-drawer t)
  '(org-deadline-warning-days 14)
- '(org-drill-optimal-factor-matrix (quote ((3 (2.5 . 2.5) (2.36 . 2.36)) (2 (2.08 . 2.166) (1.8199999999999998 . 2.159) (2.2199999999999998 . 2.328) (2.22 . 2.22) (2.46 . 2.497) (1.7000000000000002 . 2.15) (2.04 . 2.243) (1.96 . 2.238) (2.1799999999999997 . 2.325) (2.36 . 2.439) (2.5 . 2.5) (2.6 . 2.588) (1.56 . 2.074)) (1 (1.56 . 3.482) (2.2199999999999998 . 3.806) (2.04 . 3.59) (2.36 . 3.902) (2.1799999999999997 . 3.804) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.706) (1.7000000000000002 . 3.608)))))
+ '(org-drill-optimal-factor-matrix (quote ((3 (2.46 . 2.46) (1.56 . 2.2) (2.04 . 2.244) (2.08 . 2.166) (2.6 . 2.6) (1.96 . 2.316) (2.2199999999999998 . 2.379) (1.9000000000000001 . 2.111) (1.8199999999999998 . 2.26) (2.5 . 2.5) (2.36 . 2.439)) (2 (2.08 . 2.166) (1.8199999999999998 . 2.26) (2.2199999999999998 . 2.379) (2.22 . 2.22) (2.46 . 2.497) (1.7000000000000002 . 2.255) (2.04 . 2.319) (1.96 . 2.238) (2.1799999999999997 . 2.325) (2.36 . 2.439) (2.5 . 2.5) (2.6 . 2.588) (1.56 . 2.2)) (1 (2.08 . 3.902) (1.8199999999999998 . 3.615) (1.56 . 3.52) (2.2199999999999998 . 3.806) (2.04 . 3.59) (2.36 . 3.902) (2.1799999999999997 . 3.804) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.706) (1.7000000000000002 . 3.608)))))
  '(org-fast-tag-selection-single-key nil)
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-reverse-note-order nil)

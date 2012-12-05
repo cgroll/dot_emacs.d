@@ -2,11 +2,10 @@
 
 * Add directories to search path and load auto-complete
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d")
 (add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
-(require 'auto-complete-config)
-(ac-config-default)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/extensions/auto-complete/dict")
+;(require 'auto-complete-config)
+;(ac-config-default)
+;(add-to-list 'ac-dictionary-directories "~/.emacs.d/extensions/auto-complete/dict")
 #+END_SRC
 
 * Set all active completion modes
@@ -53,13 +52,25 @@ Start auto-completion automatically at start-up, and differentiate between lower
 #+END_SRC
 
 ** Key settings
-Main trigger key is combination is C-i, so that TAB key is less effected. Also, specify abortion key.
-#+BEGIN_SRC emacs-lisp
-(ac-set-trigger-key "C-i")
-(global-set-key (kbd "C-i") 'ac-expand)	; use C-j as trigger key / problem with new line?
+Main trigger key is combination is C-i, so that TAB key is less
+effected. Also, specify abortion key.
+
+Best configuration: use same key, to perform:
+- expansion of shown word
+- restart and move forward one proposed completion
+#+BEGIN_SRC emacs-lisp :tangle no
+(ac-set-trigger-key "C-o")
+(global-set-key (kbd "C-o") 'ac-expand)	; use C-j as trigger key / problem with new line?
 (define-key ac-completing-map "\M-/" 'ac-stop) ; undo completion
-(define-key ac-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
-(define-key ac-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
+(define-key ac-mode-map (kbd "C-o") 'auto-complete) ; restart ac-mode
+(define-key ac-mode-map (kbd "C-o") 'ac-complete) ; restart ac-mode
+
+
+(global-set-key (kbd "C-o") 'auto-complete)
+(global-set-key (kbd "C-o") 'ac-expand)
+(ac-set-trigger-key "C-o")
+(global-set-key (kbd "C-o") 'ac-complete)
+
 #+END_SRC
 
 ** Menu settings

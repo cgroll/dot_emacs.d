@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: lim_sub
+# key: lim_
+# group: math
+# author: cg
+# --
+\underset{${1:n}\rightarrow ${2:\infty}}{\lim}$0

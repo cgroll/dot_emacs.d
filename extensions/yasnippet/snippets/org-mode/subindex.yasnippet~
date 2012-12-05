@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: _{...}
-# key: _
-# binding: C-7
-# group: index
-# --
-_{$1}$0
