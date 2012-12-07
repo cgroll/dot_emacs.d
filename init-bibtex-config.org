@@ -1,0 +1,155 @@
+TITLE: Bibtex settings
+
+* Create entry
+
+- C-c C-b: bibtex-entry
+- direct command: C-c C-e C-a: article
+
+* Motion
+- jump to beginning / end of entry:
+  - M-C-a (bibtex-beginning-of-entry)
+  - M-C-e
+- move to right end of field: TAB (bibtex-find-text)
+- jump to next field: bibtex-next-field
+- reposition window: M-C-l -> DOES NOT WORK ON UBUNTU: log out from
+  system 
+
+* Entry manipulation
+- bibtex-remove-delimiters
+- bibtex-remove-OPT-or-ALT
+- bibtex-clean-entry C-c C-c
+- bibtex-empty-field C-c C-d
+- bibtex-make-field C-c C-f
+- bibtex-kill-field C-c C-k
+- bibtex-yank C-c C-y
+- bibtex-copy-field-as-kill C-c M-k (copy field, includes field name)
+- bibtex-fill-entry align entry: C-c C-q
+
+* Entry format
+#+BEGIN_SRC emacs-lisp
+  (setq bibtex-align-at-equal-sign nil)
+  (setq bibtex-field-delimiters 'braces) 
+  (setq bibtex-comma-after-last-field t)
+  (setq bibtex-maintain-sorted-entries t)
+#+END_SRC
+
+- (setq bibtex-align-at-equal-sign nil) do not align equal signs also
+- (setq bibtex-field-delimiters 'braces) 
+- (setq bibtex-comma-after-last-field t)
+- (setq bibtex-maintain-sorted-entries t) -> buffer local
+- check syntax with bibtex-validate
+
+* Entry cleansing
+#+BEGIN_SRC emacs-lisp
+  (setq bibtex-entry-format '(opts-or-alts required-fields
+                                numerical-fields realign last-comma
+                                delimiters unify-case))
+  
+#+END_SRC
+
+- bibtex-clean-entry: check if any required fields are missing -> C-c
+  C-c
+- bibtex-entry-format:
+  - opts-or-alts: t -> delete unnecessary optional fields
+  - required-fields: t -> error if required field is missing
+  - numerical-fields: t -> remove unnecessary delimiters
+  - page-dashes: nil -> would change page dashes to single dash
+  - inherit-booktitle: nil -> for cross-references: could complicate
+    things unnecessarily
+  - realign: t -> automatically realign entry
+  - last-comma: t -> include comma for last field: could improve
+    adding fields afterward
+  - delimiters: t -> change to specified delimiter option
+  - unify-case: t -> automatically adapt uppercase / lowercase
+    letters to standard
+
+
+* Reference key generation
+
+#+BEGIN_SRC emacs-lisp  
+    (defun cg/check-file-name (proposed_name)
+       "function shall guarantee valid file names for unix OS"
+       (interactive)
+       (setq return-string (replace-regexp-in-string "[^A-Za-z0-9_+-]" "" proposed_name))
+       return-string
+       )
+    
+(setq bibtex-autokey-before-presentation-function 'cg/check-file-name)
+    (add-hook 'bibtex-autokey-before-presentation-hook 'cg/check-file-name)
+    (setq bibtex-autokey-edit-before-use nil)
+    (setq bibtex-autokey-prefix-string "rv_")
+    
+  (require 'bibtex)
+    ;; (add-to-list 'bibtex-autokey-name-change-strings
+    ;;    '("\(Mittnik\)" . "Mitt"))
+    ;; (add-to-list 'bibtex-autokey-name-change-strings
+    ;;    '("Engle" . "Eng"))
+    ;; (add-to-list 'bibtex-autokey-name-change-strings
+    ;;    '("\(Teräsvirta\)" . "Tera"))
+    
+    
+    (setq bibtex-autokey-names 2)
+    (setq bibtex-autokey-name-length 4)
+    (setq bibtex-autokey-name-separator "_")
+    (setq bibtex-autokey-additional-names "")
+    (setq bibtex-autokey-year-length 4)
+    (setq bibtex-autokey-year-use-crossref-entry nil)
+    
+    (setq bibtex-autokey-titlewords 4)
+  
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("Copulas" . "cop"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("copula" . "cop"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("extreme value theory" . "evt"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("\([Ff]inancial\)" . "fin"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("econometrics" . "econ"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("\\(GARCH\\)" . "gch"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("ARCH" . "ach"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("[Ii]ntroduction" . "intr"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("univariate" . "univ"))
+    ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+    ;;    '("multivariate" . "mvar"))
+    
+    (setq bibtex-autokey-titleword-length "6")
+    
+    ;; separators
+    (setq bibtex-autokey-titleword-separator "_")
+    (setq bibtex-autokey-name-year-separator "_")
+    (setq bibtex-autokey-year-title-separator "_")
+    
+#+END_SRC
+- use bibtex-autokey-before-presentation-hook to include a check so
+  that key can be used as file name
+- set bibtex-autokey-before-presentation-hook to cg/check-file-name
+- (setq bibtex-autokey-edit-before-use nil) -> do not prompt for key
+  confirmation
+- constant prefix: rv -> "revised"
+- (setq bibtex-autokey-prefix-string "rv")
+- name part:
+  - bibtex-autokey-name-change-strings -> leave unchanged
+  - (setq bibtex-autokey-names 2) -> two authors shall be named
+  - (setq bibtex-autokey-name-length 4)
+  - (setq bibtex-autokey-name-separator "_")
+  - (setq bibtex-autokey-additional-names "")
+- year part:
+  - (setq bibtex-autokey-year-length 4)
+  - (setq bibtex-autokey-year-use-crossref-entry nil)
+- title part:
+  - 
+
+* Place mark
+- bibtex-mark-entry: place mark at beginning, put point at end of entry
+
+* Get help to fields
+- bibtex-help-message C-c ?
+
+
+bibtex-entry-field-alist
