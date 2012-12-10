@@ -184,6 +184,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d/extensions/org/contrib/lisp/")
+
 (require 'org-drill)
 (setq org-drill-add-random-noise-to-intervals-p t) ; add random noise
 (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)

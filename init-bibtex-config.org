@@ -67,64 +67,65 @@ TITLE: Bibtex settings
 * Reference key generation
 
 #+BEGIN_SRC emacs-lisp  
-      (defun cg/check-file-name (proposed_name)
-         "function shall guarantee valid file names for unix OS"
-         (interactive)
-         (setq return-string (replace-regexp-in-string "[^A-Za-z0-9_+-]" "" proposed_name))
-         return-string
-         )
-      
+  (defun cg/check-file-name (proposed_name)
+     "function shall guarantee valid file names for unix OS"
+     (interactive)
+     (setq return-string (replace-regexp-in-string "[^A-Za-z0-9_+-]" "" proposed_name))
+     return-string
+     )
+  
   (setq bibtex-autokey-before-presentation-function 'cg/check-file-name)
-      (add-hook 'bibtex-autokey-before-presentation-hook 'cg/check-file-name)
-      (setq bibtex-autokey-edit-before-use nil)
-      (setq bibtex-autokey-prefix-string "")
-      
-    (require 'bibtex)
-      ;; (add-to-list 'bibtex-autokey-name-change-strings
-      ;;    '("\(Mittnik\)" . "Mitt"))
-      ;; (add-to-list 'bibtex-autokey-name-change-strings
-      ;;    '("Engle" . "Eng"))
-      ;; (add-to-list 'bibtex-autokey-name-change-strings
-      ;;    '("\(Teräsvirta\)" . "Tera"))
-      
-      
-      (setq bibtex-autokey-names 2)
-      (setq bibtex-autokey-name-length 4)
-      (setq bibtex-autokey-name-separator "_")
-      (setq bibtex-autokey-additional-names "")
-      (setq bibtex-autokey-year-length 4)
-      (setq bibtex-autokey-year-use-crossref-entry nil)
-      
-      (setq bibtex-autokey-titlewords 4)
-    
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("Copulas" . "cop"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("copula" . "cop"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("extreme value theory" . "evt"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("\([Ff]inancial\)" . "fin"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("econometrics" . "econ"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("\\(GARCH\\)" . "gch"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("ARCH" . "ach"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("[Ii]ntroduction" . "intr"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("univariate" . "univ"))
-      ;; (add-to-list 'bibtex-autokey-titleword-change-strings
-      ;;    '("multivariate" . "mvar"))
-      
-      (setq bibtex-autokey-titleword-length "6")
-      
-      ;; separators
-      (setq bibtex-autokey-titleword-separator "_")
-      (setq bibtex-autokey-name-year-separator "_")
-      (setq bibtex-autokey-year-title-separator "_")
-      
+  (add-hook 'bibtex-autokey-before-presentation-hook 'cg/check-file-name)
+  (setq bibtex-autokey-edit-before-use t)
+  (setq bibtex-autokey-prefix-string "")
+  
+  (require 'bibtex)
+  ;; (add-to-list 'bibtex-autokey-name-change-strings
+  ;;    '("\(Mittnik\)" . "Mitt"))
+  ;; (add-to-list 'bibtex-autokey-name-change-strings
+  ;;    '("Engle" . "Eng"))
+  ;; (add-to-list 'bibtex-autokey-name-change-strings
+  ;;    '("\(Teräsvirta\)" . "Tera"))
+  
+  ;; author name properties
+  (setq bibtex-autokey-names 2)
+  (setq bibtex-autokey-name-length 4)
+  (setq bibtex-autokey-name-separator "_")
+  (setq bibtex-autokey-additional-names "")
+  (setq bibtex-autokey-year-length 4)
+  (setq bibtex-autokey-year-use-crossref-entry nil)
+  
+  ;; title properties
+  (setq bibtex-autokey-titlewords 4)
+  (setq bibtex-autokey-titleword-change-strings nil)    
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("Copulas" . "cop"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("copula" . "cop"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("extreme value theory" . "evt"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("\([Ff]inancial\)" . "fin"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("econometrics" . "econ"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("\\(GARCH\\)" . "gch"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("ARCH" . "ach"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("[Ii]ntroduction" . "intr"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("univariate" . "univ"))
+  ;; (add-to-list 'bibtex-autokey-titleword-change-strings
+  ;;    '("multivariate" . "mvar"))
+  
+  (setq bibtex-autokey-titleword-length "20")
+  
+  ;; separators
+  (setq bibtex-autokey-titleword-separator "_")
+  (setq bibtex-autokey-name-year-separator "_")
+  (setq bibtex-autokey-year-title-separator "_")
+  
 #+END_SRC
 - use bibtex-autokey-before-presentation-hook to include a check so
   that key can be used as file name
@@ -209,8 +210,6 @@ bibtex-entry-field-alist
         
         (message bib-key)
   
-  
-           
         (beginning-of-buffer)
         (insert "\n")      
         (end-of-buffer)
@@ -265,6 +264,7 @@ bibtex-entry-field-alist
                  (end-of-buffer)
                  (insert clean_bibtex_entry)
                  (bibtex-sort-buffer)
+                 (save-buffer)
                  (switch-to-buffer "bib_process_file.bib")
                  )
               )

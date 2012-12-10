@@ -75,95 +75,6 @@ Set math prefix.
 #+END_SRC
 
 * bibtex
-#+BEGIN_SRC emacs-lisp  
-  (defun cg/capture-bibtex ()
-     "function shall create org-entry for literature document, thereby
-         optionally renaming pdf file and creating bibtext entry"
-     (interactive)
-     (let ((mylist (list "emacs-kill-ring" "clipboard" "file"))
-             bibtex-type bibtex-entry
-             (tmpbuf (get-buffer-create "*captured-bibtex-entry"))
-             )
-        (setq bibtex-type (ido-completing-read "Where is the bibtex
-     entry? " mylist))
-        (cond
-           
-           ((string= bibtex-type "file")  ; in case I want to choose a
-                                          ; file
-              (ido-find-file-other-window) ; copy bibtex text 
-              (setq bibtex-entry (buffer-string))
-              )
-           
-           ((string= bibtex-type "emacs-kill-ring") ; in case bibtex is
-                                          ; given via emacs-kill-ring 
-              (setq bibtex-entry (substring-no-properties (car kill-ring)))
-              )
-           
-           ((string= bibtex-type "clipboard") ; get entry from clipboard
-              (with-current-buffer tmpbuf
-                 (delete-region (point-min) (point-max))
-                 (goto-char (point-min))
-                 (clipboard-yank)
-                 (setq bibtex-entry (buffer-string))
-                 )
-              )
-           )
-        ;; prepend two newlines
-        (setq bibtex-entry (concat "\n\n" bibtex-entry))
-        
-        ;; now append bibtex-entry to refs_test.bib file
-        (write-region bibtex-entry nil "~/literature/management/refs_test.bib" t)
-  
-        ;; get location 
-        (setq location (read-file-name
-                          "Where is associated document file?"
-        "~/Downloads/" nil 'confirm))
-        (if (file-exists-p location)
-           ;; mv file to bibliography with new title
-  
-           ;; create location-string with link properties
-  
-           ;; location string has to be plugged into template
-           
-           
-           ;; change name of file according to title
-           (progn
-              (org-capture)
-  
-              )
-  
-           
-           ;; get title string
-  
-        
-  
-           )
-        
-        ;; (with-temp-buffer
-        ;;    (insert bibtex-entry)
-        ;;    (write-region (point-min)
-        ;;       (point-max)
-        ;;       "~/literature/management/refs_test.bib") )
-        )
-     )
-     
-  
-  (global-set-key (kbd "C-5") 'cg/capture-bibtex)
-  
-  (defun cg/parse-bibtex-and-make-local-variable ()
-     "function shall parse bibtex at point and keep alist as local
-  variable"
-     (interactive)
-     (beginning-of-buffer)
-     (search-forward "@")
-     (backward-char)
-     (bibtex-clean-entry t)
-     (bibtex-fill-entry)
-     (setq current-bibtex-entry-alist-of-fields (bibtex-parse-entry))
-     )
-  
-  (global-set-key (kbd "C-4") 'cg/parse-bibtex-and-make-local-variable)
-#+END_SRC
   
 #+BEGIN_SRC emacs-lisp
     (require 'reftex)
@@ -180,6 +91,7 @@ Set math prefix.
          (reftex-parse-all))
     (define-key org-mode-map (kbd "C-c (") 'reftex-citation))
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+(setq reftex-default-bibliography (quote "~/Dropbox/literature/management/references.bib"))
 #+END_SRC
 
 
