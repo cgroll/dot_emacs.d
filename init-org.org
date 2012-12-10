@@ -423,7 +423,8 @@ Additional notes to store:
   
 #+END_SRC
 *** Refile targets
-#+BEGIN_SRC emacs-lisp  (setq org-refile-use-outline-path t)
+#+BEGIN_SRC emacs-lisp  
+(setq org-refile-use-outline-path t)
   (setq org-refile-use-outline-path 'file)
   (setq org-outline-path-complete-in-steps t)
   (setq org-refile-allow-creating-parent-nodes (quote confirm))
@@ -460,6 +461,7 @@ Additional notes to store:
            ("~/comp_science/emacs_notes.org" :maxlevel . 3)
            ("~/comp_science/git_notes.org" :maxlevel . 3)
            ("~/comp_science/gtd_notes.org" :maxlevel . 3)
+           ("~/literature/management/literature_db.org" :maxlevel . 3)
            ("~/comp_science/ubuntu_notes.org" :maxlevel . 3)
            ("~/org/annuals.org" :maxlevel . 1))))
   ;; (defun cg/org-refile ()

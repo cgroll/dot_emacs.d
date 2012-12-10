@@ -2,6 +2,8 @@
 
 Load auctex and preview latex.
 #+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/auctex-11.87/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/auctex-11.87/preview/")
   (load "auctex.el" nil t t)
   (load "preview-latex.el" nil t t)
 #+END_SRC
