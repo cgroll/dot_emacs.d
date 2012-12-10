@@ -11,6 +11,8 @@
 ;; individual org-mode settings
 (org-babel-load-file "~/.emacs.d/init-org.org")
 
+(org-babel-load-file "~/.emacs.d/init-bibtex-config.org")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       auto-complete-mode
