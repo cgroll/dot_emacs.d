@@ -1,3 +1,17 @@
+
+;; remove old .el files
+  (condition-case nil
+(progn
+(delete-file "~/.emacs.d/init-ac.el")
+(delete-file "~/.emacs.d/init-org.el")
+(delete-file "~/.emacs.d/init-R.el")
+(delete-file "~/.emacs.d/init-latex.el")
+(delete-file "~/.emacs.d/init-bibtex-config.el")
+(delete-file "~/.emacs.d/init-config.el")
+)
+         (delete-file filename)
+       (error nil))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       org-mode
@@ -174,7 +188,11 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(org-babel-load-file "~/.emacs.d/init-matlab.org")
+;; load matlab only on some computers
+
+(if (string= system-name "chris-wk")
+   (org-babel-load-file "~/.emacs.d/init-matlab.org")   
+   )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -247,6 +265,7 @@
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
+ '(matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
  '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)

@@ -23,12 +23,20 @@
 
 
 Setup cedet:
-#+BEGIN_SRC emacs-lisp
-(load-file "~/cedet-1.1/common/cedet.el")
-(global-ede-mode 1)                      ; Enable the Project management system
-(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
-(global-srecode-minor-mode 1)            ; Enable template insertion menu
+#+BEGIN_SRC emacs-lisp 
+  (load-file "~/cedet-1.1/common/cedet.el")
+  (semantic-load-enable-semantic-debugging-helpers)      ; Enable prototype help and smart completion 
+(require 'semantic-ia)
+;  (global-ede-mode 1)                      ; Enable the Project management system
+  (global-srecode-minor-mode 1)            ; Enable template insertion menu
+(semantic-add-system-include "~/MATLAB/R2012a/toolbox/" 'matlab-shell-mode)
+(require 'semanticdb)
+(global-semanticdb-minor-mode 1)
 #+END_SRC
+
+(setq matlab-show-mlint-warnings t)
+(setq matlab-highlight-cross-function-variables t)
+(setq matlab-shell-ask-MATLAB-for-completions t)
 
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/matlab-emacs/")
@@ -37,11 +45,20 @@ Setup cedet:
     (matlab-cedet-setup)
 #+END_SRC
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       matlab
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; some settings recommended by people in order to use matlab with org-babel:
+(setq org-babel-octave-wrapper-method
+  "%s
+if ischar(ans), fid = fopen('%s', 'w'); fprintf(fid, '%%s\\n', ans);
+fclose(fid); else, dlmwrite('%s', ans, '\\t'); end")
+(setq org-babel-octave-eoe-output "ans =org_babel_eoe")
+
 
 
 ;; matlab shortcuts
