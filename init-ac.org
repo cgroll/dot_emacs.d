@@ -3,14 +3,33 @@
 * Add directories to search path and load auto-complete
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
-;(require 'auto-complete-config)
+(add-to-list 'load-path "~/.emacs.d/extensions")
+(require 'auto-complete-config)
+(require 'ac-math)
+(require 'auto-complete-etags)
 ;(ac-config-default)
 ;(add-to-list 'ac-dictionary-directories "~/.emacs.d/extensions/auto-complete/dict")
 #+END_SRC
 
 * Set all active completion modes
+This will set default ac-sources valid for all buffers. One could
+easily define differing settings for individual modes. This way, one
+only needs to define a function loading the respective ac-sources and
+add it as hook to the respective mode. 
 #+BEGIN_SRC emacs-lisp
-(setq-default ac-sources '(ac-source-filename ac-source-features ac-source-functions ac-source-variables ac-source-symbols ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers))
+  (setq-default ac-sources '(ac-source-filename
+                               ac-source-features
+                               ac-source-functions
+                               ac-source-variables
+                               ac-source-symbols
+                               ac-source-abbrev
+                               ac-source-dictionary
+                               ac-source-words-in-same-mode-buffers
+                               ac-source-semantic
+                               ac-source-latex-commands
+                               ac-source-math-latex
+                               ;; ac-source-etags
+                               ac-source-math-unicode))
 #+END_SRC
 
 * User word lists

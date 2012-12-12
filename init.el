@@ -191,8 +191,26 @@
 ;; load matlab only on some computers
 
 (if (string= system-name "chris-wk")
-   (org-babel-load-file "~/.emacs.d/init-matlab.org")   
+   (org-babel-load-file "~/.emacs.d/init-matlab.org")
+   (custom-set-variables
+      '(matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
+      )
    )
+
+(if (string= system-name "chris-lpt")
+   (org-babel-load-file "~/.emacs.d/init-matlab.org")
+   (custom-set-variables
+      '(matlab-shell-command "~/remote_matlab")
+      )
+   )
+
+(if (string= system-name "chris-ntb")
+   (org-babel-load-file "~/.emacs.d/init-matlab.org")
+   (custom-set-variables
+      '(matlab-shell-command "~/remote_matlab")
+      )
+   )
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -265,7 +283,6 @@
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
- '(matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
  '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
