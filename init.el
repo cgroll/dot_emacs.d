@@ -1,6 +1,31 @@
 
 ;(setq inferior-julia-program-name "/path/to/julia/julia-release-basic")
 
+;; (defface org-block-begin-line
+;;   '((t (:underline "#A7A6AA" :foreground "#ff0000" :background "#6b6b6b")))
+;;   "Face used for the line delimiting the begin of source blocks.")
+
+;; (defface org-block-background
+;;   '((t (:background "#262626")))
+;;   "Face used for the source block background.")
+
+;; (defface org-block-end-line
+;;   '((t (:overline "#A7A6AA" :foreground "#ff0000" :background "#6b6b6b")))
+;;   "Face used for the line delimiting the end of source blocks.")
+
+(defface org-block-begin-line
+  '((t (:underline "#A7A6AA" :foreground "#ff0000" :background "#262626")))
+  "Face used for the line delimiting the begin of source blocks.")
+
+(defface org-block-background
+  '((t (:background "#262626")))
+  "Face used for the source block background.")
+
+(defface org-block-end-line
+  '((t (:overline "#A7A6AA" :foreground "#ff0000" :background "#262626")))
+  "Face used for the line delimiting the end of source blocks.")
+
+
 ;; remove old .el files
 (condition-case nil
    (progn
@@ -306,7 +331,6 @@
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
- '(matlab-shell-command "~/remote_matlab")
  '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
