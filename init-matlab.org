@@ -47,6 +47,8 @@ set path to mlint: ~/matlab/R2012a/bin/glnx86/mlint
     (load-library "matlab-load")
     ;; Enable CEDET feature support for MATLAB code. (Optional)
     (matlab-cedet-setup)
+  (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)
+
 #+END_SRC
 
 
