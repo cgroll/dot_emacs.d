@@ -1,42 +1,116 @@
 #+TITLE: Initialization of auto-complete.el settings
 
-* Add directories to search path and load auto-complete
+The general idea of auto-complete-mode is to provide both static as
+well as dynamic completion on the fly, listed in a small pop-up
+window if first guess should not be accurate.
+
+Thereby static completion consists of unchanging word lists, while
+dynamic completion relies on other functions to come up with lists
+depending on content and environment. For example, auto-complete-mode
+allows completion of file names, which are different on each computer
+and evolving through time. 
+
+Despite being unchangeable itself, whether specific file lists are
+used or not can be determined dynamically nevertheless. That is,
+depending on the currently used major-mode, either word lists with
+Latex-specific or C-language words can be used.
+
+Auto-completion-mode handles these separate ways of static and
+content-specific word lists as sources. For example, one source for
+completion could be file names, while another source for completion
+would be all words in the current buffer.
+
+One now can either define a default set of possible ac-sources which
+will be used for all buffers, or render actually used ac-sources
+conditional on the major-mode of buffers. It seems, however, that you
+have to be very cautious not to specify any default settings if you
+want to take the more individualistic route, because any
+customizations would be overwritten otherwise.
+
+* Description of sources
+Some words on the sources I use, as well as their intended scope.
+
+ac-source-filename provides completion of file names. This is useful
+for nearly every major-mode, as it is quite commonly required to link
+to other files.
+
+ac-source-functions, ac-source-variables and ac-source-symbols
+provide completion of emacs-lisp context. While very much
+appreciated in emacs-lisp-mode buffers, it also becomes necessary for
+example in org-mode buffers with emacs-lisp source blocks and for
+operations like buffer-file-name, org-table, ...
+
+ac-source-semantic should provide completion of files in context.
+That is, functions relied on, other functions in project,... However,
+it only works in combination with cedet, which is mainly designed for
+famous machine code languages like C++, java,...
+
+ac-source-dictionary is a list of user-defined words. I use this
+variable to provide me with completion to the most frequently
+appearing words of the English language with more than 3 letters. In
+detail, this source consists of two parts: some word lists defined
+in ac-user-dictionary-files, which will be used throughout all modes,
+(this could be email addresses, English words), and a folder
+ac-dictionary-directories containing mode-specific word lists as well
+as word lists for individual file extensions (.txt files, .org files).
+
+ac-source-etags is another way to provide completion based on content
+functions. For example, you want to have auto-completion to all your
+matlab functions in a given project directory. This is a very
+convenient feature for statistical programming, as you can give
+self-explanatory names to your functions (e.g.
+fitBivCopUnderGaussianAssum) without unbearably increasing typing
+effort. This feature will be explained in more detail below, as it
+relies on the creation of etags for your project directories, which
+is not completely trivial. Also, you must specify a tags table,
+otherwise ac-source-etags will throw an error.
+
+Additional sources can be found at
+http://emacswiki.org/AutoCompleteSources. 
+
+* Implementation of word-lists
+** Set paths 
+At first, we will have to make sure that all files installed are
+found by emacs and are loaded at startup.
+
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
 (add-to-list 'load-path "~/.emacs.d/extensions")
-(require 'auto-complete-config)
 (require 'ac-math)
 (require 'auto-complete-etags)
-;(ac-config-default)
-;(add-to-list 'ac-dictionary-directories "~/.emacs.d/extensions/auto-complete/dict")
+(require 'auto-complete-config)
 #+END_SRC
 
-* Set all active completion modes
+** Initialization of static word lists 
+Syntax should be (setq ac-user-dictionary-files '("fileA" "fileB")).
+#+BEGIN_SRC emacs-lisp
+(setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete_own_words/own_word_list"))
+(setq ac-dictionary-files
+     '("~/.emacs.d/extensions/auto-complete/dict/"))
+#+END_SRC
+
+
+** Set active completion modes
 This will set default ac-sources valid for all buffers. One could
 easily define differing settings for individual modes. This way, one
 only needs to define a function loading the respective ac-sources and
 add it as hook to the respective mode. 
 #+BEGIN_SRC emacs-lisp
   (setq-default ac-sources '(ac-source-filename
-                               ac-source-features
+                               ;; ac-source-features
                                ac-source-functions
                                ac-source-variables
                                ac-source-symbols
-                               ac-source-abbrev
+                               ;; ac-source-abbrev
                                ac-source-dictionary
                                ac-source-words-in-same-mode-buffers
-                               ac-source-semantic
+                               ;; ac-source-semantic
                                ac-source-latex-commands
                                ac-source-math-latex
-                               ;; ac-source-etags
+                               ac-source-etags
                                ac-source-math-unicode))
 #+END_SRC
 
-* User word lists
-#+BEGIN_SRC 
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/extensions/auto-complete/dict/")
-(setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete/dict/own_word_list"))
-#+END_SRC
 
 ** Enable language switching
 Enable language switching to german, mainly for answering of german
@@ -63,7 +137,7 @@ be deleted upfront. This can be done by search for regexp ^.\{1,4\}$
   )
 #+END_SRC
 
-* Settings
+* Configuration
 Start auto-completion automatically at start-up, and differentiate between lower and upper case letters.
 #+BEGIN_SRC emacs-lisp
 (auto-complete-mode t)
@@ -114,5 +188,17 @@ Use auto-complete in nearly every mode.
 (add-to-list 'ac-modes 'message-mode)
 (global-auto-complete-mode t)
 #+END_SRC
+
+
+
+
+
+
+
+
+
+
+
+
 
 

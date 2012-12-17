@@ -1,4 +1,5 @@
 #+TITLE: Matlab settings
+http://blog.angjookanazawa.com/post/8815280589/productivity-matlab-emacs-integration-more
 
 #+name: settings_for_remote_matlab
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -34,6 +35,9 @@ Setup cedet:
 (global-semanticdb-minor-mode 1)
 #+END_SRC
 
+MLint:
+set path to mlint: ~/matlab/R2012a/bin/glnx86/mlint
+
 (setq matlab-show-mlint-warnings t)
 (setq matlab-highlight-cross-function-variables t)
 (setq matlab-shell-ask-MATLAB-for-completions t)
@@ -62,6 +66,25 @@ etags -o TAGS  \
     --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{8\}\([^ \t]+\)/\2/' \
     --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{9\}\([^ \t]+\)/\2/' \
     `find . -follow -name "*.m"`
+
+etags -o ./TAGS  \
+    --lang=none \
+    --regex='/[ \t]*function.*=[ \t]*\([^ \t(]*\)/\1/' \
+    --regex='/[ \t]*function[ \t]+\([^[ \t=(]*\)[ \t]*\($\|(\)/\1/' \
+    --regex='/%%%key \(.*\)/\1/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+\)/\1/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{1\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{2\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{3\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{4\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{5\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{6\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{7\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{8\}\([^ \t]+\)/\2/' \
+    --regex='/[ \t]*global[ \t]+\([^ \t]+[ \t]+\)\{9\}\([^ \t]+\)/\2/' \
+    `find . -follow -name "*.m"`
+
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

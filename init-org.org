@@ -658,6 +658,8 @@ Stuck projects:
 <<<<<<< HEAD
 
 * Org babel
+http://nakkaya.com/2010/09/07/writing-papers-using-org-mode/
+
 Disable confirmation query for code evaluation and evaluation on export.
 #+BEGIN_SRC emacs-lisp
   (setq org-confirm-babel-evaluate nil)

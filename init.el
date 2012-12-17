@@ -1,16 +1,23 @@
 
+;(setq inferior-julia-program-name "/path/to/julia/julia-release-basic")
+
 ;; remove old .el files
-  (condition-case nil
-(progn
-(delete-file "~/.emacs.d/init-ac.el")
-(delete-file "~/.emacs.d/init-org.el")
-(delete-file "~/.emacs.d/init-R.el")
-(delete-file "~/.emacs.d/init-latex.el")
-(delete-file "~/.emacs.d/init-bibtex-config.el")
-(delete-file "~/.emacs.d/init-config.el")
-)
-         (delete-file filename)
-       (error nil))
+(condition-case nil
+   (progn
+      (delete-file "~/.emacs.d/init-ac.el")
+      (delete-file "~/.emacs.d/init-org.el")
+      (delete-file "~/.emacs.d/init-R.el")
+      (delete-file "~/.emacs.d/init-latex.el")
+      (delete-file "~/.emacs.d/init-bibtex-config.el")
+      (delete-file "~/.emacs.d/init-config.el")
+      )
+   (delete-file filename)
+   (error nil))
+
+;; load tags-table, so that ac-source-etags will not fail
+(visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
+(setq inferior-julia-program-name
+   "~/julia/usr/bin/julia-release-basic")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -278,7 +285,6 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(LaTeX-math-abbrev-prefix "M-g")
- '(ac-dictionary-files (quote ("~/.emacs.d/extensions/auto-complete/dict/own_word_list")))
  '(ac-trigger-key "C-o")
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
