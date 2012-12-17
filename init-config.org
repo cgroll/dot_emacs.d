@@ -284,20 +284,34 @@ the best accessible keys.
 
 ** Modify syntax tables
 #+BEGIN_SRC emacs-lisp
-  ;; modify default syntax table
-  (modify-syntax-entry ?\C-\j "-") ; newline as whitespace
-  (modify-syntax-entry ?. "'")
-  (modify-syntax-entry ?$ "'")
-  (modify-syntax-entry ?- "_")
-  (modify-syntax-entry ?' "'")
-  
-  ;; modify ess-mode syntax table
-  (modify-syntax-entry ?. "'" ess-mode-syntax-table) ;; stop symbol motions at . / sexp does
-                               ;; not stop at prefixes
-  (modify-syntax-entry ?$ "'" ess-mode-syntax-table) ;; stop symbol motions at $ / sexp does
-                               ;; not stop at prefixes
-  (modify-syntax-entry ?- "_" ess-mode-syntax-table) ;; make symbol constituent
-  (modify-syntax-entry ?' "'" ess-mode-syntax-table)
+    ;; modify default syntax table
+    
+    (defun cg/modify-current-syntax-table ()
+       (interactive)
+       ;(modify-syntax-entry ?\C-\j "-") ; newline as whitespace
+       (modify-syntax-entry ?. "'")
+       (modify-syntax-entry ?$ "'")
+       (modify-syntax-entry ?- "_")
+       (modify-syntax-entry ?' "'")
+       )
+    
+  (add-to-list 'ess-mode-hook 'cg/modify-current-syntax-table)
+  (add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
+    
+    (modify-syntax-entry ?\C-\j "-") ; newline as whitespace
+    (modify-syntax-entry ?. "'")
+    (modify-syntax-entry ?$ "'")
+    (modify-syntax-entry ?- "_")
+    (modify-syntax-entry ?' "'")
+    
+
+    ;; modify ess-mode syntax table
+    (modify-syntax-entry ?. "'" ess-mode-syntax-table) ;; stop symbol motions at . / sexp does
+                                 ;; not stop at prefixes
+    (modify-syntax-entry ?$ "'" ess-mode-syntax-table) ;; stop symbol motions at $ / sexp does
+                                 ;; not stop at prefixes
+    (modify-syntax-entry ?- "_" ess-mode-syntax-table) ;; make symbol constituent
+    (modify-syntax-entry ?' "'" ess-mode-syntax-table)
 #+END_SRC
 ** Word-based
 Word based motions and copying operations are always incorporating
@@ -549,8 +563,10 @@ behavior based on previous motion are initialized.
   (global-set-key (kbd "S-C-ä") 'cg/copy-symbol-with-direction-guess)
   
   
-  (global-set-key (kbd "S-C-n") 'forward-symbol)
-  (global-set-key (kbd "S-C-p") 'backward-symbol)
+  (global-set-key (kbd "M-C-f") 'forward-symbol)
+  (global-set-key (kbd "M-C-b") 'backward-symbol)
+  (global-set-key (kbd "S-C-p") 'up-list)
+  (global-set-key (kbd "S-C-n") 'down-list)
   
   
 #+END_SRC

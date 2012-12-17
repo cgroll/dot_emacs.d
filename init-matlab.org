@@ -43,6 +43,8 @@ Setup cedet:
     (load-library "matlab-load")
     ;; Enable CEDET feature support for MATLAB code. (Optional)
     (matlab-cedet-setup)
+  (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)
+
 #+END_SRC
 
 

@@ -14,6 +14,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;;;;;       julia
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(add-to-list 'load-path "~/julia/contrib/") ;Tell emacs to look for the file there.
+(require 'julia-mode)                             ;Tell it to load it.
+(setq auto-mode-alist                             ;Tell it to go to
+                                        ;julia-mode when a Julia
+                                        ;file(.jl) is spotted. 
+      (append '(("\\.jl$" . julia-mode)) auto-mode-alist))
+(setq inferior-julia-program-name "~/julia/usr/bin/julia-release-basic")
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;;;;       org-mode
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -283,6 +300,7 @@
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
+ '(matlab-shell-command "~/remote_matlab")
  '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
@@ -304,4 +322,8 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- )
+ '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.8 :width expanded))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.6 :width normal))))
+ '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.4 :width normal))))
+ '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.2))))
+ '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
