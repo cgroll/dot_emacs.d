@@ -360,3 +360,4 @@
  '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.4 :width normal))))
  '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.2))))
  '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
+(put 'upcase-region 'disabled nil)

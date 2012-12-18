@@ -23,7 +23,7 @@ files.
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)) 
 #+END_SRC
 
-* Org task manager
+* Org task manager                                                      :gtd:
 This chapter determines all customized settings for using org-mode as
 task planer. The settings are chosen in compliance with the Getting
 things done methodology.
@@ -36,8 +36,11 @@ list, and the file used as inbox bucket for captured notes is set to
 over multiple computers, the complete /~/org/ directory is only a
 symbolic link to a folder stored in my dropbox.
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (quote ("~/org/todo.org" "~/org/refile.org")))
-;;  (setq org-default-notes-file "~/org/refile.org") 
+  (setq org-agenda-files (quote ("~/org/todo.org" "~/org/refile.org" 
+                                   "~/comp_science/emacs_notes.org"
+                                   "~/Dropbox/knowledge_base/oracle.org"
+                                   "~/Dropbox/literature/management/literature_db.org")))
+  ;;  (setq org-default-notes-file "~/org/refile.org") 
 #+END_SRC
 ** Determine files for notes captured by org-mode
 In addition to all files regarding my daily tasks and appointments, I
@@ -79,7 +82,7 @@ extend it with private notes.
 *Remark: all these files shall be available publicly, so that none of them may
 contain any sensitive private data!!*
 
-** Todo states
+** Todo states                                                         :todo:
 I keep the following todo states:
 - TODO :: every individual task generally gets a TODO mark
 - NEXT :: if any higher-level task or project brings forth any
@@ -133,7 +136,7 @@ timestamps.
   (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 #+END_SRC
 
-** Org-capture
+** Org-capture                                                      :capture:
 The process of capturing tasks and notes is probably one of the most
 important parts of the complete system. It is absolutely crucial to
 the system that any information can be temporarily captured and shoved
@@ -526,7 +529,7 @@ steadily. Hence, I will use search commands.
        )
 #+END_SRC
 
-** Org-agenda
+** Org-agenda                                                        :agenda:
 Set number of days ahead shown in agenda view:
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-span 8)
@@ -631,7 +634,7 @@ Stuck projects:
          (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
 <<<<<<< HEAD
 
-* Org babel
+* Org babel                                                           :babel:
 http://nakkaya.com/2010/09/07/writing-papers-using-org-mode/
 
 Disable confirmation query for code evaluation and evaluation on export.
@@ -689,7 +692,7 @@ Show source-blocks in native faces
   
   
 #+END_SRC
-* Org tex-commands
+* Org tex-commands                                                    :latex:
 Since all my scientific publications are written in org-babel, I
 often have to include tex-commands even in org-mode for inline
 mathematical formulas. Hence, Greek letters, sub- and super-indices
