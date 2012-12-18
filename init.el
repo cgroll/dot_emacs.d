@@ -327,10 +327,12 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(LaTeX-math-abbrev-prefix "M-g")
+ '(ac-dictionary-files (quote ("~/.emacs.d/extensions/auto-complete/dict/own_word_list")))
  '(ac-trigger-key "C-o")
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
+ '(matlab-shell-command "~/remote_matlab")
  '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
@@ -338,6 +340,7 @@
  '(org-agenda-start-on-weekday nil)
  '(org-clock-into-drawer t)
  '(org-deadline-warning-days 14)
+ '(org-drawers (quote ("" "CLOCK" "LOGBOOK" "RESULTS")))
  '(org-drill-optimal-factor-matrix (quote ((3 (2.46 . 2.46) (1.56 . 2.2) (2.04 . 2.244) (2.08 . 2.166) (2.6 . 2.6) (1.96 . 2.316) (2.2199999999999998 . 2.379) (1.9000000000000001 . 2.111) (1.8199999999999998 . 2.26) (2.5 . 2.5) (2.36 . 2.439)) (2 (2.08 . 2.166) (1.8199999999999998 . 2.26) (2.2199999999999998 . 2.379) (2.22 . 2.22) (2.46 . 2.497) (1.7000000000000002 . 2.255) (2.04 . 2.319) (1.96 . 2.238) (2.1799999999999997 . 2.325) (2.36 . 2.439) (2.5 . 2.5) (2.6 . 2.588) (1.56 . 2.2)) (1 (2.08 . 3.902) (1.8199999999999998 . 3.615) (1.56 . 3.52) (2.2199999999999998 . 3.806) (2.04 . 3.59) (2.36 . 3.902) (2.1799999999999997 . 3.804) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.706) (1.7000000000000002 . 3.608)))))
  '(org-fast-tag-selection-single-key nil)
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))

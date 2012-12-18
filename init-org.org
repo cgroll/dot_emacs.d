@@ -13,6 +13,7 @@ At first, we want to set the most important key bindings.
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
+(define-key org-mode-map (kbd "C-7 C-7") 'next-error)
 #+END_SRC
 
 * Org-mode file formats
@@ -151,7 +152,7 @@ storage location, prompts, tags and the like.
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates
         (quote (
-                  ("t" "TASK: multiple templates")
+                  ("t" "TASK templates")
                   
                   ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
                   ("tt" "task, manual scheduling"
@@ -229,7 +230,7 @@ storage location, prompts, tags and the like.
     (setq org-capture-templates  
   (append org-capture-templates
        (quote (
-                 ("e" "Templates for events")
+                 ("e" "EVENT templates")
                  
                  ;; Future event: prompt for date without time
                  ("ee" "daily event without time"
@@ -294,7 +295,7 @@ calls, and org-protocol
   (setq org-capture-templates  
 (append org-capture-templates
      (quote (
-               ("b" "BUY product: multiple templates")
+               ("b" "BUY templates")
     
                ;; append to shop list
                ("bs" "product from SHOP"
@@ -380,33 +381,6 @@ Additional notes to store:
   - vacation days / costs
   - handy balance
 - registration / password
-*** Capturing bibtex entries
-#+BEGIN_SRC emacs-lisp
-  (setq org-capture-templates
-     (append org-capture-templates
-        (quote (
-                  ("B" "BIBTEX entry"
-                     entry
-                     (file+headline "~/literature/management/bibliography.org" "unsorted entries")
-                     "* %:title   %^G
-    :PROPERTIES:
-    :author: %:author
-    :year: %:year
-    :journal: %:journal
-    :Bibtex key: %:key
-    :link to bibtex entry: %a 
-    :link to pdf: [file:~/literature/%:author_%:year.pdf]
-    :link to notes: [file:~/literature/notes/%:author_%:year.org]
-    :entered: %U
-    :END:
-    Comment: %?
-    " :empty-lines 2)
-                  )
-           )
-        )
-     )
-  
-#+END_SRC
 *** Capturing present ideas
 #+BEGIN_SRC emacs-lisp
   (setq org-capture-templates

@@ -233,9 +233,9 @@ bibtex-entry-field-alist
               (setq new_file_name
                  (cg/prompt-for-file-and-return-bibtex-key-file-name-with-extension
                     bib-key))
-              (org-capture nil "W")
+              (org-capture nil "BW")
               )
-           (org-capture nil "Z")
+           (org-capture nil "BZ")
            
            )
         (org-capture-finalize)
@@ -377,11 +377,12 @@ bibtex-entry-field-alist
   (setq org-capture-templates
      (append org-capture-templates
         (quote (
-                  ("W" "BIBTEX entry with file"
+      ("B" "BIBTEX templates")
+                  ("BW" "BIBTEX entry with file"
                      entry
                      (file
                         "~/literature/management/bib_process_file.org")
-                     "** %:title
+                     "**** %:title
       :PROPERTIES:
       :type: %:btype
       :author: %:author
@@ -394,7 +395,7 @@ bibtex-entry-field-alist
       :entered: %U
       :END:
       Comment:
-      " :empty-lines 2)
+      " :empty-lines 1)
                   )
            )
         )
@@ -403,11 +404,12 @@ bibtex-entry-field-alist
   (setq org-capture-templates
      (append org-capture-templates
         (quote (
-                  ("Z" "BIBTEX entry without file"
+
+                  ("BZ" "BIBTEX entry without file"
                      entry
                      (file
                         "~/literature/management/bib_process_file.org")
-                     "** %:title
+                     "**** %:title
       :PROPERTIES:
       :type: %:btype
       :author: %:author
@@ -420,7 +422,7 @@ bibtex-entry-field-alist
       :entered: %U
       :END:
       Comment:
-      " :empty-lines 2)
+      " :empty-lines 1)
                   )
            )
         )
