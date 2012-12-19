@@ -1,3 +1,60 @@
+;; measure start-up time
+(defvar *emacs-load-start* (current-time))
+
+
+(add-to-list 'load-path "~/.emacs.d/extensions/")
+(require 'use-package)
+
+;; (use-package ace-jump-mode
+;;   :bind ("C-." . ace-jump-mode))
+
+;; (use-package ace-jump-mode
+;;   :defer t
+;;   :init
+;;   (progn
+;;     (autoload 'ace-jump-mode "ace-jump-mode" nil t)
+;;     (bind-key "C-." 'ace-jump-mode)))
+
+(use-package ace-jump-mode
+ :commands abc-fun
+ :config
+(message "Yay, ace-jump-mode was actually loaded!")
+ :init
+ (bind-key "C-." 'abc-fun))
+
+(use-package ess-site
+	:load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/"
+
+   :init 
+	(bind-key "C-j" 'ess-indent-command)
+	(bind-key "C-M-j" 'cg/ess-indent-buffer)
+
+   :config
+   (message "Yay, ESS was actually loaded!")
+   )
+
+;; (use-package ascii
+;;   :commands (ascii-on ascii-toggle)
+;;   :init
+;;   (progn
+;;     (defun ascii-toggle ()
+;;       (interactive)
+;;       (if ascii-display
+;;           (ascii-off)
+;;         (ascii-on)))
+
+;;     (bind-key "C-c e A" 'ascii-toggle)))
+
+(use-package matlab
+  :commands matlab
+  :init
+  (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
+  :config
+  (progn
+    (matlab-cedet-setup)
+     (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)))
+
+
 
 ;(setq inferior-julia-program-name "/path/to/julia/julia-release-basic")
 
@@ -39,10 +96,10 @@
    (delete-file filename)
    (error nil))
 
-;; ;; load tags-table, so that ac-source-etags will not fail
-;; (visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
-;; (setq inferior-julia-program-name
-;;    "~/julia/usr/bin/julia-release-basic")
+;; load tags-table, so that ac-source-etags will not fail
+(visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
+(setq inferior-julia-program-name
+   "~/julia/usr/bin/julia-release-basic")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -198,9 +255,9 @@
 (ido-mode t)
 
 ;; ess: better is probably autoload in order to speed up starting procedure
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/")
-(require 'ess-site)
-(org-babel-load-file "~/.emacs.d/init-R.org")
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/")
+;; (require 'ess-site)
+;; (org-babel-load-file "~/.emacs.d/init-R.org")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -333,7 +390,6 @@
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
  '(matlab-shell-command "~/remote_matlab")
- '(org-agenda-files (quote ("~/org/refile.org" "~/org/todo.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
  '(org-agenda-skip-scheduled-if-done t)
@@ -361,3 +417,9 @@
  '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.2))))
  '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
 (put 'upcase-region 'disabled nil)
+
+
+
+(message "My .emacs loaded in %ds" (destructuring-bind (hi lo ms) (current-time)
+                           (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
+

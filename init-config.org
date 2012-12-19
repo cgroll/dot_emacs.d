@@ -187,7 +187,7 @@ Now, set indentation key.
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-j") 'indent-for-tab-command)
   (define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
-  (define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+  ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
   
   (defun cg/ess-indent-buffer ()
      "apply ess-indent to complete buffer"
@@ -224,7 +224,7 @@ Now, set indentation key.
         )
      )
   (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
-  (define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
+  ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
   (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
 #+END_SRC
 
@@ -318,93 +318,104 @@ Word based motions and copying operations are always incorporating
 "M". While basic operations are already implemented, copying
 behavior based on previous motion are initialized. 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-n") 'forward-word)
-  (global-set-key (kbd "M-p") 'backward-word)
-  (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
-  (global-set-key (kbd "M-d") 'kill-word)
+  ;; (global-set-key (kbd "M-n") 'forward-word)
+  ;; (global-set-key (kbd "M-p") 'backward-word)
+  ;; (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
+  ;; (global-set-key (kbd "M-d") 'kill-word)
+  (bind-key* "M-n" 'forward-word)
+  (bind-key* "M-p" 'backward-word)
+  (bind-key* "M-<backspace>" 'backward-kill-word)
+  (bind-key* "M-d" 'kill-word)
   
   (defun cg/copy-current-word ()
-       "copy word at point"
-       (save-excursion
-          (kill-new (word-at-point))
-          (message (word-at-point)))
-       )
-    
-    (defun cg/copy-forward-word ()
-       "copy current or next word"
-       (save-excursion
-          (forward-word)
-          (backward-word)
-          (thing-at-point 'word)
-          (message (thing-at-point 'word))
-          )
-       )
-    
-    (defun cg/copy-backward-word ()
-       "copy current or previous word"
-       (save-excursion
-          (backward-word)
-          (forward-word)
-          (kill-new (word-at-point))
-          (message (word-at-point)))
-       )
-    
-    (defun cg/copy-word-with-direction-guess ()
-       "based on last movement, try to guess whether previous or next
-       word shall be copied to kill-ring"
-       (interactive)
-       
-       ;; init list of last motions for comparison
-       (setq last-motion-to-next-guess-alist
-       '((forward-char    . cg/copy-forward-word)
-           (forward-word     . cg/copy-forward-word)
-           (forward-sexp  . cg/copy-forward-word)   
-           (backward-char    . cg/copy-backward-word)
-           (backward-word  . cg/copy-backward-word)
-           (backward-sexp . cg/copy-backward-word)))
-       ;; remark: possibly extend to search commands
-    
-       ;; set default value, if motions don't match
-       (setq default-motion 'cg/copy-current-word)
-    
-       ;; store last command
-       (let ((input-motion last-command)
-               copy-function)
-    
-          ;; compare last command to list of possible motions
-          (if (assoc-string input-motion last-motion-to-next-guess-alist)
-             (setq copy-function (cdr (assoc-string input-motion
-          last-motion-to-next-guess-alist)))
-             ;; else: default motion
-             (setq copy-function default-motion)
-             )
-          ;;(print copy-function)
-          (funcall copy-function)
-          )
-       )
-
-  (global-set-key (kbd "M-ä") 'cg/copy-word-with-direction-guess)
+     "copy word at point"
+     (save-excursion
+        (kill-new (word-at-point))
+        (message (word-at-point)))
+     )
+  
+  (defun cg/copy-forward-word ()
+     "copy current or next word"
+     (save-excursion
+        (forward-word)
+        (backward-word)
+        (thing-at-point 'word)
+        (message (thing-at-point 'word))
+        )
+     )
+  
+  (defun cg/copy-backward-word ()
+     "copy current or previous word"
+     (save-excursion
+        (backward-word)
+        (forward-word)
+        (kill-new (word-at-point))
+        (message (word-at-point)))
+     )
+  
+  (defun cg/copy-word-with-direction-guess ()
+     "based on last movement, try to guess whether previous or next
+         word shall be copied to kill-ring"
+     (interactive)
+     
+     ;; init list of last motions for comparison
+     (setq last-motion-to-next-guess-alist
+        '((forward-char    . cg/copy-forward-word)
+            (forward-word     . cg/copy-forward-word)
+            (forward-sexp  . cg/copy-forward-word)   
+            (backward-char    . cg/copy-backward-word)
+            (backward-word  . cg/copy-backward-word)
+            (backward-sexp . cg/copy-backward-word)))
+     ;; remark: possibly extend to search commands
+     
+     ;; set default value, if motions don't match
+     (setq default-motion 'cg/copy-current-word)
+     
+     ;; store last command
+     (let ((input-motion last-command)
+             copy-function)
+        
+        ;; compare last command to list of possible motions
+        (if (assoc-string input-motion last-motion-to-next-guess-alist)
+           (setq copy-function (cdr (assoc-string input-motion
+                                       last-motion-to-next-guess-alist)))
+           ;; else: default motion
+           (setq copy-function default-motion)
+           )
+        ;;(print copy-function)
+        (funcall copy-function)
+        )
+     )
+  
+;;  (global-set-key (kbd "M-ä") 'cg/copy-word-with-direction-guess)
+(bind-key* "M-ä" 'cg/copy-word-with-direction-guess)
 #+END_SRC
+
 #+BEGIN_SRC emacs-lisp
-  (defun sacha/search-word-backward ()
-    "Find the previous occurrence of the current word."
-    (interactive)
-    (let ((cur (point)))
-      (skip-syntax-backward "w_")
-      (goto-char
-       (if (re-search-backward (concat "\\_<" (current-word) "\\_>") nil t)
-           (match-beginning 0)
-         cur))))
+  ;; (defun sacha/search-word-backward ()
+  ;;   "Find the previous occurrence of the current word."
+  ;;   (interactive)
+  ;;   (let ((cur (point)))
+  ;;     (skip-syntax-backward "w_")
+  ;;     (goto-char
+  ;;      (if (re-search-backward (concat "\\_<" (current-word) "\\_>") nil t)
+  ;;          (match-beginning 0)
+  ;;        cur))))
 #+END_SRC  
 ** Sexp-based
 
 #+BEGIN_SRC emacs-lisp
     (require 'thingatpt)
     
-    (global-set-key (kbd "C-M-n") 'forward-sexp)
-    (global-set-key (kbd "C-M-p") 'backward-sexp)
-    (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
-    (global-set-key (kbd "C-M-d") 'kill-sexp)
+    ;; (global-set-key (kbd "C-M-n") 'forward-sexp)
+    ;; (global-set-key (kbd "C-M-p") 'backward-sexp)
+    ;; (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+    ;; (global-set-key (kbd "C-M-d") 'kill-sexp)
+    (bind-key* "C-M-n" 'forward-sexp)
+    (bind-key* "C-M-p" 'backward-sexp)
+    (bind-key* "C-M-<backspace>" 'backward-kill-sexp)
+    (bind-key* "C-M-d" 'kill-sexp)
+  
     
   (defun cg/copy-current-sexp ()
        "copy sexp at point"
@@ -467,7 +478,8 @@ behavior based on previous motion are initialized.
         (funcall copy-function)
         )
      )
-  (global-set-key (kbd "C-M-ä") 'cg/copy-sexp-with-direction-guess)
+  ;; (global-set-key (kbd "C-M-ä") 'cg/copy-sexp-with-direction-guess)
+  (bind-key* "C-M-ä" 'cg/copy-sexp-with-direction-guess)
     
 #+END_SRC
 ** Symbol-based

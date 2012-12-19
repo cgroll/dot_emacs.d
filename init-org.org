@@ -30,57 +30,48 @@ things done methodology.
 
 ** Determine files for org agenda
 First, we have to define which files to use when searching for tasks.
-In this setting, all paths in the /~/org/ directory are on the path
+In this setting, most files in the /~/customs/ directory are on the path
 list, and the file used as inbox bucket for captured notes is set to
 /~/org/refile.org/. In order to synchronize these files privately
-over multiple computers, the complete /~/org/ directory is only a
-symbolic link to a folder stored in my dropbox.
+over multiple computers, the complete /~/customs/ directory is only a
+symbolic link to a folder stored in my dropbox. However, I want to
+allow other people to set up the same emacs environment as I have,
+and do not want to force them to use Dropbox, too. Hence, nowhere in
+my emacs settings the directories in Dropbox should be used directly.
+
 #+BEGIN_SRC emacs-lisp
-  (setq org-agenda-files (quote ("~/org/todo.org" "~/org/refile.org" 
-                                   "~/comp_science/emacs_notes.org"
-                                   "~/Dropbox/knowledge_base/oracle.org"
-                                   "~/Dropbox/literature/management/literature_db.org")))
+  (setq org-agenda-files
+     (quote (
+               ;; task manager files: private
+               "~/customs/gtd/todo.org"
+               "~/customs/gtd/refile.org"
+               
+               ;; software instruction notes
+               "~/customs/notes/priv_comp_notes.org" ; private
+               "~/how_to/comp_records.org"           ; public
+               
+               ;; link collection: private
+               "~/customs/chronicle/oracle.org"
+               
+               ;; literature collection: private
+               "~/literature/lit_man/opac.org")))
   ;;  (setq org-default-notes-file "~/org/refile.org") 
 #+END_SRC
-** Determine files for notes captured by org-mode
-In addition to all files regarding my daily tasks and appointments, I
-also use org-mode to capture short notes about things I read.
-Especially, I collect short information about software and coding
-tricks that I stumble upon, and capture them in my computational
-science directory /~/comp_science/, where plain text files with notes
-regarding to all different topics are stored. These files again are
-publicly available through at git repository stored at github. So far,
-my notes files are:
-- bash_notes.org :: contains notes on bash programming and all
-                    important commands for the linux shell
-- emacs_notes.org :: notes about emacs installation procedures, as
-     well as installation procedures for all emacs extensions. Also,
-     the structure of my emacs configuration is explained, together
-     with descriptions on keeping my emacsen as git repository for
-     simple syncronization between multiple computers.
-- git_notes.org :: notes on subversion control with git and github
-                   (which is also how I backup my emacs system
-                   settings publicly).
-- gtd_notes.org :: more elaborate description of the structure and
-                   possibilities of the org task managing features.
-                   gtd refers to "Getting things done", which is a
-                   book regarding a detailled task management
-                   procedure.
-- e_lisp_notes.org :: notes on emacs lisp
-- e_wanderlust_notes.org :: wanderlust email notes
-- e_bbdb_notes.org :: using big brother database
-- R_notes.org :: notes on statistical computing with R
-- matlab_notes.org :: notes on using matlab
-- julia_notes.org :: notes on using julia language
-- literature_notes.org :: notes on digital literature management -
-     comprises mendeleydesktop, JabRef, Citavi, etc.
-- e_latex_notes.org :: notes on latex, with focus on latex in emacs
 
-The respective public git-repo should be easily forked, so that everybody can
-extend it with private notes.
+In addition to the files required for my task manager, I also keep
+files in my agenda list that contain instructions about computer
+usage. These files thereby all become conveniently search-able through
+built-in org-mode tools.
 
-*Remark: all these files shall be available publicly, so that none of them may
-contain any sensitive private data!!*
+The file containing most of my written instructions and shortcuts for
+emacs, ubuntu in general, statistical programming languages etc will
+be publicly available through github in my how_to repository.
+
+All other files contain private information and hence are not made
+publicly available. However, I will provide some "dummy" files for
+them, so that emacs will not throw any errors if you haven't already
+set up these files on your own. Furthermore, these "dummy" files
+additionally should give you an impression of how I use them.
 
 ** Todo states                                                         :todo:
 I keep the following todo states:
@@ -144,7 +135,7 @@ away fast and without disturbing the current workflow. That means,
 with very few shortcuts any information can be captured in a highly
 adapted template tailored to the specific information requirements. At
 a header level, information is classified as one of several main
-topics:
+topics: 
 - TODO task
 - email response
 - event, appointment, date
@@ -159,41 +150,41 @@ storage location, prompts, tags and the like.
                   
                   ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
                   ("tt" "task, manual scheduling"
-                     entry (file+headline "~/org/refile.org" "tasks")
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
                      "* TODO %? \nAdded: %U\n"
                       :clock-resume t) 
                   
                   ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
                   ("tT" "task, tag prompt"
-                     entry (file+headline "~/org/refile.org" "tasks")
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
                      "* TODO %? %^G \nAdded: %U\n"
                       :clock-resume t)
   
                   ;; Checklist entries to steady challenges
                   ("tc" "checkitem: COMPUTER improvements"
-                     checkitem (file+olp "~/org/todo.org"
+                     checkitem (file+olp "~/customs/gtd/todo.org"
                      "Computational science" "Computer improvements")
                      " [ ] %?")
   
                   ("te" "checkitem: EMACS improvements"
-                     checkitem (file+olp "~/org/todo.org"
+                     checkitem (file+olp "~/customs/gtd/todo.org"
                      "Computational science" "Emacs improvements")
                      " [ ] %?")
   
                   ("tk" "checkitem: KNOWLEDGE improvements"
-                     checkitem (file+olp "~/org/todo.org"
+                     checkitem (file+olp "~/customs/gtd/todo.org"
                      "Education" "Knowledge improvements")
                      " [ ] %?") 
     
                   ;; TODO entry, active timestamp, prompt for yanking
                   ("ty" "task with yanking" entry (file+headline
-                  "~/org/refile.org" "tasks") 
+                  "~/customs/gtd/refile.org" "tasks") 
                      "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
                       :clock-resume t)
                   
                   ;; TODO entry, active timestamp, prompt for tag and clipboard entry
                   ("tY" "task with tag and yanking"
-                     entry (file+headline "~/org/refile.org" "tasks")
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
                      "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
                       :clock-resume t)
                   
@@ -201,25 +192,25 @@ storage location, prompts, tags and the like.
                   ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
                                           ; project related tasks with link to origin
                   ("tP" "project with tag, automatic source"
-                     entry (file+headline "~/org/todo.org" "Research")
+                     entry (file+headline "~/customs/gtd/todo.org" "Research")
                      "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\n%a\nAdded: %U\n "
                       :clock-resume t)
   
                   
                   ("tp" "project task"
-                     entry (file+headline "~/org/todo.org" "Research")
+                     entry (file+headline "~/customs/gtd/todo.org" "Research")
                      "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\nAdded: %U\n "
                       :clock-resume t)         
                   ;; write function to shift todo tasks from project file to agenda ! 
                   
                   ("r" "EMAIL response"
-                     entry (file+headline "~/org/refile.org" "tasks")
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
                      "* TODO Respond to %:from on %:subject :EMAIL:\n%a\n"
                       :clock-resume t :immediate-finish t
                      )
                   
                   ("h" "HABIT"
-                     entry (file+headline "~/org/refile.org" "tasks")
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
                      "* HABIT %?\n%U\nSCHEDULED: %t .+1d/3d\n
   :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: HABIT\n:END:\n")
   
@@ -237,50 +228,50 @@ storage location, prompts, tags and the like.
                  
                  ;; Future event: prompt for date without time
                  ("ee" "daily event without time"
-                 entry (file+headline "~/org/refile.org" "tasks")
+                 entry (file+headline "~/customs/gtd/refile.org" "tasks")
                     "* %? :calendar: \n%^{Which date?}t \nAdded:%U\n"
                      :clock-resume t)
                  
                  ;; Future event: prompt for date WITH time
                  ("et" "event with time specification"
-                 entry (file+headline "~/org/refile.org" "tasks")
+                 entry (file+headline "~/customs/gtd/refile.org" "tasks")
                     "* %? :calendar: \n%^{Which date and time?}T \nAdded: %U\n"
                      :clock-resume t)
     
                  ;; Future event lasting for multiple days
                  ("ed" "enduring event"
-                 entry (file+headline "~/org/refile.org" "tasks")
+                 entry (file+headline "~/customs/gtd/refile.org" "tasks")
                     "* %? :calendar: \n%^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
                      :clock-resume t)
   
                  ;; Entry in tracking file
                  ("eh" "tracking history event"
-                 entry (file+datetree "~/org/tracker.org")
+                 entry (file+datetree "~/customs/gtd/tracker.org")
                       "* %^{Activity?|haircut|handy_charge|dentist|grandparents} %?"
                        :clock-resume t)
   
                  ;; Birthday entry into anniversaries calendar with prompt
                  ;; for date; date is active -> appears in agenda
                  ("ea" "annually repeating event"
-                 plain (file+headline "~/org/todo.org" "Anniversaries")
+                 plain (file+headline "~/customs/gtd/todo.org" "Anniversaries")
                     "(org-anniversary %?) %^{Which event? Also, add %% in front} %d"
                      :clock-resume t)
                  
                  ;; Entry in log: at current time finished activity with completion
                  ("el" "logbook: finished activities"
-                 entry (file+datetree "~/org/log.org")
+                 entry (file+datetree "~/customs/gtd/log.org")
                     "* %U - %^{Activity?|lunch|break|buy|program|read|work|research|torture} "
                      :clock-resume t)
                  
                  ;; Stopwatch activity without prompt
                  ("es" "stopwatch"
-                 entry (file+datetree "~/org/log.org")
+                 entry (file+datetree "~/customs/gtd/log.org")
                     "* Stopwatch %? \nStarted: %U\n"
                      :clock-resume t)
                  
                  ;; Entry in creditcard with prompt for sum and cursor for item specification
                  ("ec" "credit-card info"
-                 entry (file+datetree "~/org/creditcard.org")
+                 entry (file+datetree "~/customs/gtd/creditcard.org")
                     "* %? - %^{Amount?} \nAdded: %U\n"
                      :clock-resume t)
                  
@@ -302,17 +293,17 @@ calls, and org-protocol
     
                ;; append to shop list
                ("bs" "product from SHOP"
-                  checkitem (file+olp "~/org/todo.org" "Buy" "Shop")
+                  checkitem (file+olp "~/customs/gtd/todo.org" "Buy" "Shop")
                   " [ ] %? ") 
     
                ;; append to mall list
                ("bm" "product from MALL"
-                  checkitem (file+olp "~/org/todo.org" "Buy" "Mall")
+                  checkitem (file+olp "~/customs/gtd/todo.org" "Buy" "Mall")
                   " [ ] %? ") 
     
                ;; append to regular list
                ("br" "REGULAR product"
-                  checkitem (file+olp "~/org/todo.org" "Buy" "Regulars")
+                  checkitem (file+olp "~/customs/gtd/todo.org" "Buy" "Regulars")
                   " [ ] %? ") 
       
                )
@@ -331,24 +322,24 @@ Plain notes without any code, yanking or source file link.
     
                     ;; git-note
                     ("n" "plain note"
-                       entry (file+headline "~/org/refile.org" "notes")
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
                        "* %? ")
   
                     ("N" "note with yanking"
-                       entry (file+headline "~/org/refile.org" "notes")
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
                        "* %? \n%^C")
   
                     
                     ("o" "note with origin and yanking"
-                       entry (file+headline "~/org/refile.org" "notes")
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
                        "* %? \nFrom: %A\n%^C")
   
                     ("s" "shortcut"
-                         table-line (file+headline "~/org/refile.org" "shortcuts")
+                         table-line (file+headline "~/customs/gtd/refile.org" "shortcuts")
                          "| %? | |")
                     
                     ("S" "shortcut with yanking"
-                         table-line (file+headline "~/org/refile.org" "shortcuts")
+                         table-line (file+headline "~/customs/gtd/refile.org" "shortcuts")
                          "| ^C | |")
     
                     )
@@ -364,13 +355,13 @@ Notes with code snippet in clipboard or kill ring, and source file link.
           (quote (
                     ;; code yanking
                     ("c" "note with code"
-                       entry (file+headline "~/org/refile.org" "notes")
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
                        "* %? \n#+begin_src
                     %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n")
   
                     ;; code yanking with source recording for w3m
                     ("w" "note with code, source "
-                       entry (file+headline "~/org/refile.org" "notes")
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
                        "* %? \n#+begin_src
                     %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n")
              )
@@ -391,7 +382,7 @@ Additional notes to store:
         (quote (
                   ("p" "PRESENT idea"
                      checkitem
-                     (file+headline "~/org/todo.org" "Presents")
+                     (file+headline "~/customs/gtd/todo.org" "Presents")
                      " [ ] %? " :prepend)
                   )
            )
@@ -400,6 +391,7 @@ Additional notes to store:
   
 #+END_SRC
 *** Refile targets
+
 #+BEGIN_SRC emacs-lisp  
 (setq org-refile-use-outline-path t)
   (setq org-refile-use-outline-path 'file)
@@ -412,45 +404,17 @@ Additional notes to store:
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;; (setq org-refile-targets
-  ;;    (quote
-  ;;       (("~/comp_science/bash_notes.org" :maxlevel . 4)
-  ;;          ;;(nil :maxlevel . 3)          
-  ;;          ;;(org-agenda-files :maxlevel . 4)
-  
-  ;;          ("~/comp_science/e_auto-complete_notes.org" :maxlevel . 4)         
-  ;;          ("~/comp_science/emacs_notes.org" :maxlevel . 4)
-  ;;                   
-  ;;          
-  ;;          
-  ;;          )
-  ;;       )
-  ;;    )
-  
-  
   ;; refile targets
   (setq org-refile-targets
      (quote
-        (("~/org/todo.org" :maxlevel . 1)
-           ("~/org/log.org" :maxlevel . 1)
-           ("~/org/creditcard.org" :maxlevel . 1)
-           ("~/comp_science/e_auto-complete_notes.org" :maxlevel . 3)
-           ("~/comp_science/emacs_notes.org" :maxlevel . 3)
-           ("~/comp_science/git_notes.org" :maxlevel . 3)
-           ("~/comp_science/gtd_notes.org" :maxlevel . 3)
-           ("~/literature/management/literature_db.org" :maxlevel . 3)
-           ("~/comp_science/ubuntu_notes.org" :maxlevel . 3)
-           ("~/org/annuals.org" :maxlevel . 1))))
-  ;; (defun cg/org-refile ()
-  ;;    (interactive)
-  ;;    (add-file-local-variable 'org-refile-targets t)
-  ;;    (setq org-refile-targets
-  ;;       (quote
-  ;;          (("~/org/todo.org" :maxlevel . 1)
-  ;;             ("~/org/log.org" :maxlevel . 1)
-  ;;             ("~/org/creditcard.org" :maxlevel . 1)
-  ;;             ("~/org/annuals.org" :maxlevel . 1))))
-  ;;    )
+        (
+           ("~/customs/gtd/todo.org" :maxlevel . 1)
+           ("~/how_to/comp_records.org" :maxlevel . 1)
+           ("~/customs/notes/priv_comp_notes.org" :maxlevel . 1)
+           ("~/customs/chronicle/oracle.org" :maxlevel . 1)
+           ("~/customs/gtd/creditcard.org" :maxlevel . 1)
+           ("~/literature/lit_man/opac.org" :maxlevel . 1)
+           )))
 #+END_SRC
 
 ** Push line to agenda
@@ -557,8 +521,9 @@ Show clock-report per default.
 #+BEGIN_SRC emacs-lisp
   (setq org-agenda-start-with-clockreport-mode t)
 #+END_SRC
-Determine additional files for text search.
-#+BEGIN_SRC emacs-lisp  
+Determine additional files for text search. So far, I do not need
+additional files to be searched, hence tangling is off.
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq org-agenda-text-search-extra-files
      '("~/Dropbox/knowledge_base/oracle.org"
          "~/comp_science/git_notes.org"
@@ -587,7 +552,11 @@ Stuck projects:
      )
 #+END_SRC
 ** OrgMobile
-#+BEGIN_SRC emacs-lisp
+Synchronization via orgmobile needs a server to sync the files to the
+mobile phone. In this case, I set it up with my Dropbox folder, which
+I explicitly name here. This could make problems on other computers,
+where Dropbox is not installed.
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq org-mobile-directory "~/Dropbox/MobileOrg")
 #+END_SRC
 
@@ -615,24 +584,6 @@ Stuck projects:
          (R . t)))
   
 #+END_SRC
-(org-agenda-custom-commands
-   (quote (("d" todo "DELEGATED" nil)
-       ("c" todo "DONE|DEFERRED|CANCELLED" nil)
-       ("w" todo "WAITING" nil)
-       ("W" agenda "" ((org-agenda-span 21)))
-       ("A" agenda ""
-        ((org-agenda-skip-function
-          (lambda nil
-        (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]")))
-         (org-agenda-ndays 1)
-         (org-agenda-overriding-header "Today's Priority #A tasks: ")))
-       ("u" alltodo ""
-        ((org-agenda-skip-function
-          (lambda nil
-        (org-agenda-skip-entry-if (quote scheduled) (quote deadline)
-                      (quote regexp) "\n]+>")))
-         (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
-<<<<<<< HEAD
 
 * Org babel                                                           :babel:
 http://nakkaya.com/2010/09/07/writing-papers-using-org-mode/

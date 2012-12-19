@@ -25,14 +25,14 @@ http://blog.angjookanazawa.com/post/8815280589/productivity-matlab-emacs-integra
 
 Setup cedet:
 #+BEGIN_SRC emacs-lisp 
-  (load-file "~/cedet-1.1/common/cedet.el")
-  (semantic-load-enable-semantic-debugging-helpers)      ; Enable prototype help and smart completion 
-(require 'semantic-ia)
-;  (global-ede-mode 1)                      ; Enable the Project management system
-  (global-srecode-minor-mode 1)            ; Enable template insertion menu
-(semantic-add-system-include "~/MATLAB/R2012a/toolbox/" 'matlab-shell-mode)
-(require 'semanticdb)
-(global-semanticdb-minor-mode 1)
+  ;;   (load-file "~/cedet-1.1/common/cedet.el")
+  ;;   (semantic-load-enable-semantic-debugging-helpers)      ; Enable prototype help and smart completion 
+  ;; (require 'semantic-ia)
+  ;; ;  (global-ede-mode 1)                      ; Enable the Project management system
+  ;;   (global-srecode-minor-mode 1)            ; Enable template insertion menu
+  ;; (semantic-add-system-include "~/MATLAB/R2012a/toolbox/" 'matlab-shell-mode)
+  ;; (require 'semanticdb)
+  ;; (global-semanticdb-minor-mode 1)
 #+END_SRC
 
 MLint:
@@ -42,7 +42,7 @@ set path to mlint: ~/matlab/R2012a/bin/glnx86/mlint
 (setq matlab-highlight-cross-function-variables t)
 (setq matlab-shell-ask-MATLAB-for-completions t)
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (add-to-list 'load-path "~/matlab-emacs/")
     (load-library "matlab-load")
     ;; Enable CEDET feature support for MATLAB code. (Optional)

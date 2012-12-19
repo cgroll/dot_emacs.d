@@ -170,13 +170,13 @@ bibtex-entry-field-alist
      (let
         (
            ;; set variables for paths
-           (lit_dir  "~/Dropbox/literature")
+           (lit_dir  "~/literature")
            (rv_file_bib 
-              "~/Dropbox/literature/management/bib_process_file.bib")
+              "~/literature/lit_man/bib_process_file.bib")
            (rv_file_org 
-              "~/Dropbox/literature/management/bib_process_file.org")
+              "~/literature/lit_man/bib_process_file.org")
            (bib_tex_file 
-              "~/Dropbox/literature/management/refs_test.bib")
+              "~/literature/lit_man/references.bib")
            
            
            ;; set variables
@@ -251,6 +251,17 @@ bibtex-entry-field-alist
         (search-forward "{")
         (insert "rv_")
   
+        ;; get clean bibtex with rv_ included
+        (let (beg_point end_point)
+           (bibtex-beginning-of-entry)
+           (setq beg_point (point))
+           (bibtex-end-of-entry)
+           (setq end_point (point))
+           (setq clean_bibtex_entry
+              (substring (buffer-string) beg_point
+                 end_point))
+           )
+  
         ;; insert org entry
         (end-of-buffer)
         (insert clean_org_entry)
@@ -260,7 +271,7 @@ bibtex-entry-field-alist
            (progn
               (save-excursion
                  (find-file
-        "~/Dropbox/literature/management/references.bib")
+        "~/literature/lit_man/references.bib")
                  (end-of-buffer)
                  (insert clean_bibtex_entry)
                  (bibtex-sort-buffer)
@@ -381,7 +392,7 @@ bibtex-entry-field-alist
                   ("BW" "BIBTEX entry with file"
                      entry
                      (file
-                        "~/literature/management/bib_process_file.org")
+                        "~/literature/lit_man/bib_process_file.org")
                      "**** %:title
       :PROPERTIES:
       :type: %:btype
@@ -389,9 +400,9 @@ bibtex-entry-field-alist
       :year: %:year
       :journal: %:journal
       :Bibtex_key: *rv_%:key*
-      :link_to_bibtex_entry: [file:~/literature/management/refs_test.bib::rv_%:key]
+      :link_to_bibtex_entry: [file:~/literature/lit_man/references.bib::rv_%:key]
       :link_to_file: [file:~/literature/%:key.pdf]
-      :link_to_notes: [file:~/literature/management/notes/%:key.org]
+      :link_to_notes: [file:~/literature/lit_man/notes/%:key.org]
       :entered: %U
       :END:
       Comment:
@@ -404,11 +415,11 @@ bibtex-entry-field-alist
   (setq org-capture-templates
      (append org-capture-templates
         (quote (
-
+  
                   ("BZ" "BIBTEX entry without file"
                      entry
                      (file
-                        "~/literature/management/bib_process_file.org")
+                        "~/literature/lit_man/bib_process_file.org")
                      "**** %:title
       :PROPERTIES:
       :type: %:btype
@@ -416,9 +427,9 @@ bibtex-entry-field-alist
       :year: %:year
       :journal: %:journal
       :Bibtex_key: *rv_%:key*
-      :link_to_bibtex_entry: [file:~/literature/management/refs_test.bib::rv_%:key]
+      :link_to_bibtex_entry: [file:~/literature/lit_man/references.bib::rv_%:key]
       :location: %(cg/get-location-from-user-via-prompt)
-      :link_to_notes: [file:~/literature/management/notes/%:key.org]
+      :link_to_notes: [file:~/literature/lit_man/notes/%:key.org]
       :entered: %U
       :END:
       Comment:
@@ -443,7 +454,7 @@ bibtex-entry-field-alist
   (defun cg/create-new-literature-entry ()
      "switch to bibtex processing file and enter new entry"
      (interactive)
-     (find-file "~/literature/management/bib_process_file.bib")
+     (find-file "~/literature/lit_man/bib_process_file.bib")
      (delete-region (point-min) (point-max))
      (bibtex-mode)
      )
