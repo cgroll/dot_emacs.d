@@ -39,10 +39,10 @@
    (delete-file filename)
    (error nil))
 
-;; load tags-table, so that ac-source-etags will not fail
-(visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
-(setq inferior-julia-program-name
-   "~/julia/usr/bin/julia-release-basic")
+;; ;; load tags-table, so that ac-source-etags will not fail
+;; (visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
+;; (setq inferior-julia-program-name
+;;    "~/julia/usr/bin/julia-release-basic")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -51,13 +51,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(add-to-list 'load-path "~/julia/contrib/") ;Tell emacs to look for the file there.
-(require 'julia-mode)                             ;Tell it to load it.
-(setq auto-mode-alist                             ;Tell it to go to
-                                        ;julia-mode when a Julia
-                                        ;file(.jl) is spotted. 
-      (append '(("\\.jl$" . julia-mode)) auto-mode-alist))
-(setq inferior-julia-program-name "~/julia/usr/bin/julia-release-basic")
+;; (add-to-list 'load-path "~/julia/contrib/") ;Tell emacs to look for the file there.
+;; (require 'julia-mode)                             ;Tell it to load it.
+;; (setq auto-mode-alist                             ;Tell it to go to
+;;                                         ;julia-mode when a Julia
+;;                                         ;file(.jl) is spotted. 
+;;       (append '(("\\.jl$" . julia-mode)) auto-mode-alist))
+;; (setq inferior-julia-program-name "~/julia/usr/bin/julia-release-basic")
 
 
 
@@ -246,19 +246,19 @@
       )
    )
 
-(if (string= system-name "chris-lpt")
-   (org-babel-load-file "~/.emacs.d/init-matlab.org")
-   (custom-set-variables
-      '(matlab-shell-command "~/remote_matlab")
-      )
-   )
+;; (if (string= system-name "chris-lpt")
+;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
+;;    (custom-set-variables
+;;       '(matlab-shell-command "~/remote_matlab")
+;;       )
+;;    )
 
-(if (string= system-name "chris-ntb")
-   (org-babel-load-file "~/.emacs.d/init-matlab.org")
-   (custom-set-variables
-      '(matlab-shell-command "~/remote_matlab")
-      )
-   )
+;; (if (string= system-name "chris-ntb")
+;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
+;;    (custom-set-variables
+;;       '(matlab-shell-command "~/remote_matlab")
+;;       )
+;;    )
 
 
 
