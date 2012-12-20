@@ -1,0 +1,2040 @@
+#+TITLE: Initialization of packages that require explanations
+
+
+* general emacs configurations
+** Text behaviour
+*** Default major-mode
+Usually, I tend to spend nearly all of my time in org-mode.
+#+BEGIN_SRC emacs-lisp
+  (setq default-major-mode 'org-mode)
+#+END_SRC
+*** Auto-fill: automount line breaks
+Auto-fill-mode enables automatic line breaks. I will set the automatic
+line break to a value of 69, thereby omitting line wrapping even on
+small screen-widths like on netbooks, or at screens with low
+resolution.
+
+Auto-fill-mode should basicly be started automatically for any major
+mode. However, some special modes like minibuffer mode should be
+excluded, so that the way to go here is with mode hooks for basically
+any mode that is relevant for me.
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  (add-hook 'fundamental-mode-hook 'turn-on-auto-fill)
+  (add-hook 'ess-mode-hook 'turn-on-auto-fill)
+  (add-hook 'emacs-lisp-mode-hook 'turn-on-auto-fill)
+  (add-hook 'message-mode-hook 'turn-on-auto-fill)
+  (setq fill-column 69)
+#+END_SRC
+*** Delete-selection-mode
+With default settings, emacs behaves different during copy-pasting
+than commonly known programs like word, lyx, etc. In order to be able
+to paste something such that it directly replaces a highlighted
+region, delete-selection-mode has to be enabled. I will use this
+behaviour globally.
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode 1)               
+#+END_SRC
+*** Copy/paste 
+In order to enable emacs to interact with the standard linux
+clipboard, include the following lines. Otherwise you are not able
+e.g. to copy from emacs to firefox.
+#+BEGIN_SRC emacs-lisp
+  (setq x-select-enable-clipboard t)
+  (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+#+END_SRC
+** Spell checking
+Enable flyspell for all org-mode buffers.
+#+BEGIN_SRC emacs-lisp
+(ispell-change-dictionary "american")
+  (add-hook 'org-mode-hook
+     (lambda()
+        (ac-flyspell-workaround) ; to avoid interference with ac-mode
+        (flyspell-mode t)
+        )
+     )
+#+END_SRC
+
+Enable switching through languages:
+not able with flyspell, because I did not get on-board german
+dictionary to work
+#+BEGIN_SRC emacs-lisp
+    (defvar cg-current-language)
+    (setq cg-current-language "english")
+    
+    (defun cg/switch-language ()
+       "switch language for google-translate, autocomplete and ispell"
+       (interactive)
+       (if (string= cg-current-language "english")
+          (progn 
+             (setq cg-current-language "deutsch") 
+             ;(ispell-change-dictionary "deutsch") there was no on-board
+             ;linux dictionary that I could get running 
+             (flyspell-mode nil)
+             (setq ac-user-dictionary-files
+                '("~/.emacs.d/extensions/auto-complete_own_words/german_words"))
+             ; include google translate
+             )
+          ;; else-part
+          (setq language "english")
+          (flyspell-mode t)
+          (ispell-change-dictionary "english")
+          (setq ac-user-dictionary-files
+             '("~/.emacs.d/extensions/auto-complete_own_words/own_word_list"))
+          ; include google translate
+          )
+       (message "Language switched to %s" cg-current-language) 
+       )
+(unbind-key "C-t")
+  (bind-key "C-t C-s" 'cg/switch-language)
+  ;; (global-set-key (kbd "C-t C-s")   'cg/switch-language)
+#+END_SRC
+
+Specify personal spelling dictionary.
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-personal-dictionary "~/Dropbox/personal_data/.ispell_english")
+#+END_SRC
+
+** Layout
+*** Menus
+In order to save precious display space, toolbars and scroll bars
+shall be disabled. Moving by keybindings is faster anyways.
+#+BEGIN_SRC emacs-lisp
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+#+END_SRC
+However, besides line-numbers, also current column numbers shall be
+shown. 
+#+BEGIN_SRC emacs-lisp
+  (column-number-mode 1)
+#+END_SRC
+*** Color-theme
+Following the practice of most heavy-weight programmers, I adjust my
+emacs face-colors in order to have a dark-colored background and
+colored letters. This allegedly should be less exhausting to the
+eyes.
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/extensions/color-theme-6.6.0")
+  (require 'color-theme)
+  (color-theme-initialize)
+  (color-theme-jsc-dark)
+#+END_SRC
+Remark: sadly, this configuration seems to distort my auto-completion
+tooltip menu.
+I also like to highlight the current line and cursor point.
+#+BEGIN_SRC emacs-lisp  
+  (global-hl-line-mode 1)
+  (set-cursor-color "red")
+#+END_SRC
+*** Scrolling behaviour
+It seems clearer to me to scroll only one line in case that cursor
+leaves window boundaries.
+#+BEGIN_SRC emacs-lisp  
+    (setq scroll-step 1)
+#+END_SRC
+** Indentation
+Basically all indentation should be done automatically with one
+single keystroke, here "C-j". This usually will call the function
+indent-for-tab-command, which claims to "indent line or region in a
+proper way regarding the current major mode or insert tab."
+For some special modes, however, special extensions of the function
+exist. 
+
+First, I will set the length of indentation, and the indentation
+stops. 	
+#+BEGIN_SRC emacs-lisp
+  (setq-default tab-width 3)
+  (setq-default tab-stop-list '(3 6 9 12 15 18 21 24 27 30 33 36 39 42 45 48 51))
+  (setq-default lisp-indent-offset 3)
+#+END_SRC
+
+Now, set indentation key.
+#+BEGIN_SRC emacs-lisp
+  ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
+  (bind-key* "C-j" 'indent-for-tab-command)
+    ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+    ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+    
+    (defun cg/ess-indent-buffer ()
+       "apply ess-indent to complete buffer"
+       (interactive)
+       (save-excursion
+          (let ((line-counter (line-number-at-pos (point-min)))
+                  (number-of-lines (count-lines (point-min) (point-max))))
+             (goto-char (point-min))
+             (while (<= line-counter number-of-lines)
+                (progn
+                   (ess-indent-command)
+                   (forward-line)
+                   (setq line-counter (+ line-counter 1))
+                   )
+                )
+             )
+          )
+       )
+    (defun cg/ac-indent-buffer ()
+       "apply automatic indentation to complete buffer"
+       (interactive)
+       (save-excursion
+          (let ((line-counter (line-number-at-pos (point-min)))
+                  (number-of-lines (count-lines (point-min) (point-max))))
+             (goto-char (point-min))
+             (while (<= line-counter number-of-lines)
+                (progn
+                   (indent-for-tab-command)
+                   (forward-line)
+                   (setq line-counter (+ line-counter 1))
+                   )
+                )
+             )
+          )
+       )
+  (bind-key* "C-M-j" 'cg/ac-indent-buffer)
+    ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
+    ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
+    ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
+#+END_SRC
+
+Furthermore, when relying completely on automatic indentation, it
+usually is more appropriate to automatically set the next line to
+adequate indentation. Hence, my standard settings for new lines will
+be with indentation.
+#+BEGIN_SRC emacs-lisp
+;;  (bind-key "<return>" 'newline-and-indent) ; this overwrites ret in minibuffer
+  (bind-key* "<C-M-return>" 'newline)
+  (bind-key* "<C-M-S-return>" 'indent-new-comment-line)
+  
+ (global-set-key (kbd "RET") 'newline-and-indent)
+    ;; (global-set-key (kbd "C-M-<return>") 'newline)
+    ;; (global-set-key (kbd "C-M-S-<return>") 'indent-new-comment-line)
+#+END_SRC
+The following code should originally force emacs to use real TABs
+instead of spaces. Furthermore, tab-to-tab-stop allows only stop at
+the stops given by tab-stop-list. The function cg/insert-tab inserts
+TAB at point. More sophisticated behaviour like on regions still has
+to be inserted, as well as an inverting command.
+#+BEGIN_SRC emacs-lisp  
+  (setq-default indent-tabs-mode nil)
+  (setq indent-tabs-mode t)
+  
+  (defun cg/kill-tab ()
+     "delete one TAB for current line"
+     (interactive)
+     (save-excursion
+        (let (indent-begin curr-column nearest-tab-stop shortened-tab-list)
+           (setq shortened-tab-list tab-stop-list)
+           ;; go to first indentation
+           (back-to-indentation)
+           
+           (setq indent-begin (point))
+           (setq curr-column (current-column)) 
+           
+           ;; if indent smaller than first tab stop
+           (if (<= curr-column (car tab-stop-list))
+              (progn
+                 (back-to-indentation)
+                 (cg/kill-start-of-line)
+                 )
+              (progn
+                 
+                 (while (< (car (cdr shortened-tab-list)) curr-column)
+                    ;; as long as next tab stop is not yet larger
+                    (setq shortened-tab-list (cdr shortened-tab-list))
+                    )
+                 (setq nearest-tab-stop (car shortened-tab-list))
+                 (move-to-column nearest-tab-stop)
+                 (delete-region (point) indent-begin)      
+                 )
+              )
+           
+           )
+        )
+     )
+  
+  (bind-key "M-J" 'cg/kill-tab)
+  
+  (defun cg/insert-tab (arg)
+     "insert or delete TAB at point"
+     (interactive "P")
+     (save-excursion
+        (if arg
+           (cg/kill-tab)
+           (back-to-indentation)
+           (insert-tab)
+           )
+        )
+     )
+  (bind-key "M-j" 'cg/insert-tab)
+  ;;(global-set-key (kbd "M-j") 'cg/insert-tab)
+#+END_SRC
+
+Both functions should be extended with a convenient application to
+regions. 
+
+*** Indentation according to org-outline
+Org documents can be indented according to their underlying outline
+structure. That means, lower-level subtrees will be indented
+more. However, I will rely on the default setting here, since
+org-indent-mode will waste precious display space.
+#+BEGIN_SRC emacs-lisp
+  (org-indent-mode nil)
+#+END_SRC
+
+
+** Syntax-based motion and deletion
+[[http://www.slac.stanford.edu/comp/unix/gnu-info/elisp_32.html][link to info about syntax tables]]
+Syntax-based motion is the key to fast cursor movements. Hence, I
+heavily rely on some in-built motion commands, which I slightly adapt
+for customized syntax interpretation. 
+Since my cursor movements mainly consist of word-based and sexp-based
+syntax, I did adapt their key bindings, in order to have them set to
+the best accessible keys.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ace-jump-mode
+  :bind ("C-." . ace-jump-mode))
+#+END_SRC
+
+
+*** Modify syntax tables
+#+BEGIN_SRC emacs-lisp
+    ;; modify default syntax table
+    
+    (defun cg/modify-current-syntax-table ()
+       (interactive)
+       ;(modify-syntax-entry ?\C-\j "-") ; newline as whitespace
+       (modify-syntax-entry ?. "'")
+       (modify-syntax-entry ?$ "'")
+       (modify-syntax-entry ?- "_")
+       (modify-syntax-entry ?' "'")
+       )
+    
+  (add-to-list 'ess-mode-hook 'cg/modify-current-syntax-table)
+  ;;(add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
+    
+    (modify-syntax-entry ?\C-\j "-") ; newline as whitespace
+    (modify-syntax-entry ?. "'")
+    (modify-syntax-entry ?$ "'")
+    (modify-syntax-entry ?- "_")
+    (modify-syntax-entry ?' "'")
+    
+
+    ;; modify ess-mode syntax table
+;;    (modify-syntax-entry ?. "'" ess-mode-syntax-table) ;; stop symbol motions at . / sexp does
+                                 ;; not stop at prefixes
+;;    (modify-syntax-entry ?$ "'" ess-mode-syntax-table) ;; stop symbol motions at $ / sexp does
+                                 ;; not stop at prefixes
+;;    (modify-syntax-entry ?- "_" ess-mode-syntax-table) ;; make symbol constituent
+;;    (modify-syntax-entry ?' "'" ess-mode-syntax-table)
+#+END_SRC
+*** Word-based
+Word based motions and copying operations are always incorporating
+"M". While basic operations are already implemented, copying
+behavior based on previous motion are initialized. 
+#+BEGIN_SRC emacs-lisp
+  ;; (global-set-key (kbd "M-n") 'forward-word)
+  ;; (global-set-key (kbd "M-p") 'backward-word)
+  ;; (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
+  ;; (global-set-key (kbd "M-d") 'kill-word)
+  (bind-key* "M-n" 'forward-word)
+  (bind-key* "M-p" 'backward-word)
+  (bind-key* "M-<backspace>" 'backward-kill-word)
+  (bind-key* "M-d" 'kill-word)
+  
+  (defun cg/copy-current-word ()
+     "copy word at point"
+     (save-excursion
+        (kill-new (word-at-point))
+        (message (word-at-point)))
+     )
+  
+  (defun cg/copy-forward-word ()
+     "copy current or next word"
+     (save-excursion
+        (forward-word)
+        (backward-word)
+        (thing-at-point 'word)
+        (message (thing-at-point 'word))
+        )
+     )
+  
+  (defun cg/copy-backward-word ()
+     "copy current or previous word"
+     (save-excursion
+        (backward-word)
+        (forward-word)
+        (kill-new (word-at-point))
+        (message (word-at-point)))
+     )
+  
+  (defun cg/copy-word-with-direction-guess ()
+     "based on last movement, try to guess whether previous or next
+         word shall be copied to kill-ring"
+     (interactive)
+     
+     ;; init list of last motions for comparison
+     (setq last-motion-to-next-guess-alist
+        '((forward-char    . cg/copy-forward-word)
+            (forward-word     . cg/copy-forward-word)
+            (forward-sexp  . cg/copy-forward-word)   
+            (backward-char    . cg/copy-backward-word)
+            (backward-word  . cg/copy-backward-word)
+            (backward-sexp . cg/copy-backward-word)))
+     ;; remark: possibly extend to search commands
+     
+     ;; set default value, if motions don't match
+     (setq default-motion 'cg/copy-current-word)
+     
+     ;; store last command
+     (let ((input-motion last-command)
+             copy-function)
+        
+        ;; compare last command to list of possible motions
+        (if (assoc-string input-motion last-motion-to-next-guess-alist)
+           (setq copy-function (cdr (assoc-string input-motion
+                                       last-motion-to-next-guess-alist)))
+           ;; else: default motion
+           (setq copy-function default-motion)
+           )
+        ;;(print copy-function)
+        (funcall copy-function)
+        )
+     )
+  
+;;  (global-set-key (kbd "M-ä") 'cg/copy-word-with-direction-guess)
+(bind-key* "M-ä" 'cg/copy-word-with-direction-guess)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; (defun sacha/search-word-backward ()
+  ;;   "Find the previous occurrence of the current word."
+  ;;   (interactive)
+  ;;   (let ((cur (point)))
+  ;;     (skip-syntax-backward "w_")
+  ;;     (goto-char
+  ;;      (if (re-search-backward (concat "\\_<" (current-word) "\\_>") nil t)
+  ;;          (match-beginning 0)
+  ;;        cur))))
+#+END_SRC  
+*** Sexp-based
+
+#+BEGIN_SRC emacs-lisp
+    (require 'thingatpt)
+    
+    ;; (global-set-key (kbd "C-M-n") 'forward-sexp)
+    ;; (global-set-key (kbd "C-M-p") 'backward-sexp)
+    ;; (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+    ;; (global-set-key (kbd "C-M-d") 'kill-sexp)
+    (bind-key* "C-M-n" 'forward-sexp)
+    (bind-key* "C-M-p" 'backward-sexp)
+    (bind-key* "C-M-<backspace>" 'backward-kill-sexp)
+    (bind-key* "C-M-d" 'kill-sexp)
+  
+    
+  (defun cg/copy-current-sexp ()
+       "copy sexp at point"
+       (save-excursion
+          (kill-new (thing-at-point 'sexp))
+          (message (thing-at-point 'sexp)))
+       )
+    
+    (defun cg/copy-forward-sexp ()
+       "copy current or next sexp"
+       (save-excursion
+          (forward-sexp)
+          (backward-sexp)
+          (kill-new (thing-at-point 'sexp))
+          (message (thing-at-point 'sexp))
+          )
+       )
+    
+    (defun cg/copy-backward-sexp ()
+       "copy current or previous sexp"
+       (save-excursion
+          (backward-sexp)
+          (forward-sexp)
+          (backward-char)
+          (kill-new (thing-at-point 'sexp))
+          (message (thing-at-point 'sexp))
+          )
+       )
+    
+    (defun cg/copy-sexp-with-direction-guess ()
+     "based on last movement, try to guess whether previous or next
+     sexp shall be copied to kill-ring"
+     (interactive)
+     
+     ;; init list of last motions for comparison
+     (setq last-motion-to-next-guess-alist
+     '((forward-char    . cg/copy-forward-sexp)
+         (forward-word     . cg/copy-forward-sexp)
+         (forward-sexp  . cg/copy-forward-sexp)   
+         (backward-char    . cg/copy-backward-sexp)
+         (backward-word  . cg/copy-backward-sexp)
+         (backward-sexp . cg/copy-backward-sexp)))
+     ;; remark: possibly extend to search commands
+  
+     ;; set default value, if motions don't match
+     (setq default-motion 'cg/copy-current-sexp)
+  
+     ;; store last command
+     (let ((input-motion last-command)
+             copy-function)
+  
+        ;; compare last command to list of possible motions
+        (if (assoc-string input-motion last-motion-to-next-guess-alist)
+           (setq copy-function (cdr (assoc-string input-motion
+        last-motion-to-next-guess-alist)))
+           ;; else: default motion
+           (setq copy-function default-motion)
+           )
+        ;;(print copy-function)
+        (funcall copy-function)
+        )
+     )
+  ;; (global-set-key (kbd "C-M-ä") 'cg/copy-sexp-with-direction-guess)
+  (bind-key* "C-M-ä" 'cg/copy-sexp-with-direction-guess)
+    
+#+END_SRC
+*** Symbol-based
+#+BEGIN_SRC emacs-lisp
+  (defun backward-symbol ()
+     "move backwards based on symbol syntax: stop at "
+     (interactive)
+     (skip-syntax-backward "w_")
+     )
+  
+  (defun cg/copy-current-symbol ()
+     "copy symbol at point"
+     (save-excursion
+        (kill-new (thing-at-point 'symbol))
+        (message (thing-at-point 'symbol))
+        )
+     )
+  
+  (defun cg/kill-symbol-forward ()
+     "kill symbol at point"
+     (interactive)
+     (let ((original-point (point)))
+        (forward-symbol 1)
+        (backward-symbol)
+        (kill-region original-point (end-of-thing 'symbol))
+        )
+     )
+  
+  ;; (global-set-key (kbd "C-S-<backspace>") 'cg/kill-symbol-forward)
+  (global-set-key (kbd "C-S-d") 'cg/kill-symbol-forward)
+  
+  (defun cg/copy-current-symbol ()
+     "copy symbol at point"
+     (save-excursion
+        (kill-new (thing-at-point 'symbol))
+        (message (thing-at-point 'symbol)))
+     )
+  
+  (defun cg/copy-forward-symbol ()
+     "copy current or next symbol"
+     (save-excursion
+        (forward-symbol)
+        (backward-symbol)
+        (kill-new (thing-at-point 'symbol))
+        (message (thing-at-point 'symbol))
+        )
+     )
+  
+  (defun cg/copy-backward-symbol ()
+     "copy current or previous symbol"
+     (save-excursion
+        (backward-symbol)
+        (forward-symbol)
+        (backward-char)
+        (kill-new (thing-at-point 'symbol))
+        (message (thing-at-point 'symbol))
+        )
+     )
+  
+  (defun cg/copy-symbol-with-direction-guess ()
+     "based on last movement, try to guess whether previous or next
+       symbol shall be copied to kill-ring"
+     (interactive)
+     
+     ;; init list of last motions for comparison
+     (setq last-motion-to-next-guess-alist
+        '((forward-char    . cg/copy-forward-symbol)
+            (forward-word     . cg/copy-forward-symbol)
+            (forward-sexp  . cg/copy-forward-symbol)   
+            (backward-char    . cg/copy-backward-symbol)
+            (backward-word  . cg/copy-backward-symbol)
+            (backward-sexp . cg/copy-backward-symbol)))
+     ;; remark: possibly extend to search commands
+     
+     ;; set default value, if motions don't match
+     (setq default-motion 'cg/copy-current-symbol)
+     
+     ;; store last command
+     (let ((input-motion last-command)
+             copy-function)
+        
+        ;; compare last command to list of possible motions
+        (if (assoc-string input-motion last-motion-to-next-guess-alist)
+           (setq copy-function (cdr (assoc-string input-motion
+                                       last-motion-to-next-guess-alist)))
+           ;; else: default motion
+           (setq copy-function default-motion)
+           )
+        ;;(print copy-function)
+        (funcall copy-function)
+        )
+     )
+  (global-set-key (kbd "S-C-ä") 'cg/copy-symbol-with-direction-guess)
+  
+  
+  (global-set-key (kbd "M-C-f") 'forward-symbol)
+  (global-set-key (kbd "M-C-b") 'backward-symbol)
+  (global-set-key (kbd "S-C-p") 'up-list)
+  (global-set-key (kbd "S-C-n") 'down-list)
+  
+  
+#+END_SRC
+*** Whitespace-based
+#+BEGIN_SRC emacs-lisp
+  
+  
+  (defun forward-nowhitespace (&optional other-direction)
+     "required as input for nowhitespace movements with thing-at-point"
+     (interactive "p")
+     (if (= other-direction -1)
+        (skip-syntax-backward "^->") ; no whitespaces and comment
+                                     ; delimiters (in order to stop at
+                                     ; newline)
+        (skip-syntax-forward "^->")
+        )
+     )
+  
+  (defun cg/copy-current-nowhitespace ()
+     "copy nowhitespace at point"
+     (interactive)
+         (save-excursion
+            (kill-new (thing-at-point 'nowhitespace))
+            (message (thing-at-point 'nowhitespace)))
+     )
+  
+  (defun cg/copy-current-double-sexp ()
+     "copy nowhitespace at point"
+     (interactive)
+         (save-excursion
+            (let ((beg)
+                    (end ))
+               (forward-sexp 1)
+               (forward-sexp -1)
+               (setq beg (point))
+               (forward-sexp 2)
+               (setq end (point))
+               (copy-region-as-kill beg end)
+               )
+            (message (car kill-ring)))
+     )
+  
+  (defun cg/copy-nowhitespace-or-double-sexp ()
+     "if pressed once, copy current nowhitespace, else if pressed twice, copy
+     double sexp"
+     (interactive)
+     (let ((input-motion last-command)
+             copy-function)
+        (if (string= input-motion "cg/copy-nowhitespace-or-double-sexp")
+           ;; increase copying region
+           (setq copy-function 'cg/copy-current-double-sexp)
+           (setq copy-function 'cg/copy-current-nowhitespace))
+        (funcall copy-function)
+        )
+     )
+  
+  (global-set-key (kbd "C-ä") 'cg/copy-nowhitespace-or-double-sexp)
+  
+#+END_SRC
+*** Sentence-based 
+Adapt sentence syntax to end with single space.
+#+BEGIN_SRC emacs-lisp
+  (setq sentence-end-double-space nil)
+#+END_SRC
+*** Line based 
+Enable killing to begin of line.
+#+BEGIN_SRC emacs-lisp
+  (defun cg/kill-start-of-line ()
+    "kill from point to start of line"
+    (interactive)
+    (kill-line 0)
+    )
+  (global-set-key (kbd "M-k") 'cg/kill-start-of-line)
+#+END_SRC
+
+*** Possible keys for motion / deletion / copying  
+C-f -> cursor default
+C-b -> cursor default
+C-n -> good: cursor default
+C-p -> good: cursor default
+M-f -> bad: word default
+M-b -> bad: word default
+M-n -> good: word
+M-p -> good: word
+C-M-n -> good: sexp
+C-M-p -> good: sexp
+S-M-p -> good - doesn't work
+S-M-n -> good - doesn't work
+S-C-f -> good
+S-C-b -> good
+S-C-n -> good: symbol
+S-C-p -> good: symbol
+
+*** Keybindings overview
+
+|-----------+---------+----------|
+| item      | command | shortcut |
+|-----------+---------+----------|
+| pointwise |         |          |
+|-----------+---------+----------|
+|           | forw    | C-f      |
+|           | backw   | C-b      |
+|           | up      | C-p      |
+|           | down    | C-n      |
+| deletion  |         |          |
+|           | forw    | C-d      |
+|           | backw   | C-DEL    |
+|           | backw   | DEL      |
+|-----------+---------+----------|
+| words           |       |         |
+|-----------------+-------+---------|
+|                 | forw  | M-n     |
+|                 | backw | M-p     |
+| deletion        |       |         |
+|                 | forw  | M-d     |
+|                 | backw | M-DEL   |
+|-----------------+-------+---------|
+| line            |       |         |
+|-----------------+-------+---------|
+|                 | forw  | C-e     |
+|                 | backw | C-a     |
+| deletion        |       |         |
+|                 | forw  | C-k     |
+|                 | backw | C-DEL   |
+|                 | backw | M-k     |
+|-----------------+-------+---------|
+| sentence        |       |         |
+|-----------------+-------+---------|
+|                 | forw  | M-e     |
+|                 | backw | M-a     |
+| deletion        |       |         |
+|                 | forw  |         |
+|                 | backw |         |
+|-----------------+-------+---------|
+| sexp            |       |         |
+|-----------------+-------+---------|
+|                 | forw  | C-M-n   |
+|                 | backw | C-M-p   |
+| deletion        |       |         |
+|                 | forw  | C-M-d   |
+|                 | backw | C-M-DEL |
+|-----------------+-------+---------|
+| non-white-space |       |         |
+|-----------------+-------+---------|
+|                 | forw  | S-C-f   |
+|                 | backw | S-C-b   |
+| deletion        |       |         |
+|                 | forw  | S-C-D   |
+|                 | backw | S-C-DEL |
+
+** Windows and buffers
+*** Source code block
+Since I encounter source code blocks very often, I changed the
+step-in / step-out keybind, since the default C-c '-setting is too
+long for me.
+#+BEGIN_SRC emacs-lisp  
+  (bind-key "C-ü" 'org-edit-special org-mode-map)
+  (bind-key "C-ü" 'org-edit-src-exit org-src-mode-map)
+    ;; (define-key org-mode-map (kbd "C-ü") 'org-edit-special)
+    ;; (define-key org-src-mode-map (kbd "C-ü") 'org-edit-src-exit)
+#+END_SRC
+Also, I adapted the color of source code blocks.
+#+BEGIN_SRC emacs-lisp
+  (defface org-block-begin-line
+    '((t (:underline "#A7A6AA" :foreground "#ff0000" :background "#262626")))
+    "Face used for the line delimiting the begin of source blocks.")
+  
+  (defface org-block-background
+    '((t (:background "#262626")))
+    "Face used for the source block background.")
+  
+  (defface org-block-end-line
+    '((t (:overline "#A7A6AA" :foreground "#ff0000" :background "#262626")))
+    "Face used for the line delimiting the end of source blocks.")
+  
+  
+#+END_SRC
+
+*** Other window
+Also one of my most frequently used functions.  Hence, faster
+keybinding is used, as well as for inverse direction.
+#+BEGIN_SRC emacs-lisp
+(bind-key "<M-SPC>" 'other-window)
+;;    (global-set-key (kbd "M-SPC") 'other-window)
+    (defun cg/inverse-other-window ()
+      "window cycling in inverse direction"
+       (interactive)
+      (other-window -1)
+      )
+   (bind-key "M-S-SPC" 'cg/inverse-other-window)
+    ;;(global-set-key (kbd "M-S-SPC") 'cg/inverse-other-window)
+#+END_SRC
+
+*** Window resize operations
+Often it is necessary to resize, create and delete windows. Possible
+keybindings here are:
+- C-+
+- M-+
+- C-x +
+- C-x C-+
+Probably something like text-scale-adjust would be desirable, where I
+start adjustment mode once, and then I'm able to perform increase and
+decrease operations with + and -, and equal size with =, and default
+size with 0.
+**** Current window
+Increase current window by two lines, either horizontally or
+vertically. 
+#+BEGIN_SRC emacs-lisp
+  (defun cg/increase-current-window ()
+    "Increase current window by two lines"
+    (interactive)
+    (enlarge-window 2)
+    )
+(bind-key "C-+" 'cg/increase-current-window)
+;;  (global-set-key (kbd "C-+") 'cg/increase-current-window)
+#+END_SRC
+Decrease current window.
+#+BEGIN_SRC emacs-lisp
+  (defun cg/decrease-current-window ()
+    "Decrease current window by two lines"
+    (interactive)
+    (other-window 1)
+    (enlarge-window 2)
+    (other-window -1)
+    )
+(bind-key "M-+" 'cg/decrease-current-window)
+;;  (global-set-key (kbd "M-+") 'cg/decrease-current-window)
+#+END_SRC
+Toogle major window: given that two windows exist, alternately
+increase other window. This function is helpful for when one window
+contains a code script, while the second one contains a console.
+#+BEGIN_SRC emacs-lisp
+  (defun toggle-major-window ()
+    "Set focus on second window, and enlargen it
+  to cover about 3/4 of overall area"
+    (interactive)
+    (if (not (one-window-p))              ; if more than one window
+        (progn
+          (other-window 1)                ; switch to other window
+          (balance-windows)               ; split overall area equally
+          (enlarge-window 8))))           ; enlargen current window by 8 lines
+      ;;(global-set-key (kbd "C-M-+") 'toggle-major-window)
+      (bind-key "C-M-+" 'toggle-major-window)
+#+END_SRC
+
+**** Operations on other-window
+The operations here could be: open buffer, file or directory in other
+window. Scroll other window, set focus in other window, kill other
+window, kill buffer in other window, kill both.
+#+BEGIN_SRC emacs-lisp
+(defun set-focus-lower-window ()
+  "Move focus of lower window so that last line of buffer
+exactly matches last line of frame"
+    (interactive)
+    (if (not (one-window-p))		; if more than one window
+    (progn
+      (other-window 1)			; move point to second window
+      (end-of-buffer)			; go to end of buffer
+      (recenter -1)			; move point to last line of frame
+      (other-window 1))))		; move point back again
+(bind-key "C-x C-l" 'set-focus-lower-window)
+;;(global-set-key (kbd "C-x C-l") 'set-focus-lower-window)
+#+END_SRC
+
+
+(global-set-key (kbd "C-x t") 'kill-buffer-and-window)
+
+(defun kill-other-buffer-and-window ()
+  "Kill other window with buffer also."
+  (interactive)
+  (other-window 1)
+  (kill-buffer-and-window))
+
+(global-set-key (kbd "C-x C-t") 'kill-other-buffer-and-window)
+
+(defun open-pic-at-point ()
+  "Open link to pic in horizontally splitted window."
+  (interactive)
+  (split-window-horizontally)
+  (org-open-at-point))
+
+(global-set-key (kbd "C-x C-o") 'open-pic-at-point)
+(image-mode)
+(define-key image-mode-map (kbd "k") 'kill-buffer-and-window)
+(emacs-lisp-mode)
+
+*** Buffers
+Since I only very seldomly use list-buffers, I rebound the key to
+the command ido-switch-buffer-other-window, which allows to choose a
+buffer for the second window. If no other window exists, a
+horizontal split will be conducted, and the chosen buffer will be
+inserted in the newly opened window.
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-x C-b" 'ido-switch-buffer-other-window)
+  (bind-key "C-x C-d" 'dired-other-window)
+  (bind-key "C-x C-f" 'ido-find-file-other-window)
+  (bind-key "C-x 4 b" 'list-buffers)
+  
+  ;; (global-set-key (kbd "C-x C-b") 'ido-switch-buffer-other-window)
+  ;; (global-set-key (kbd "C-x C-d") 'dired-other-window)
+  ;; (global-set-key (kbd "C-x C-f") 'ido-find-file-other-window)
+  ;; (global-set-key (kbd "C-x 4 b") 'list-buffers)
+#+END_SRC
+
+**** File opening
+As already have set default settings for auto-fill-mode, which I
+adjust only very seldomly, there is no need for me to keep
+set-fill-column as key binding. Hence, to comply with my buffer
+settings, I rebind ido-find-file.
+#+BEGIN_SRC emacs-lisp
+(bind-key "C-x f" 'ido-find-file)
+#+END_SRC
+This way, after some familiarization, I can bind
+ido-find-file-other-window to "C-x C-f".
+
+** Commenting
+Although emacs already is equipped quite sophisticated
+do-what-I-mean commenting powers, I still want to be able to toggle
+between commented and uncommented for the current line or highlighted
+region. I bound the command to "C-#" since many command languages
+use # as comment symbol. Another natural choice would be "M-," which
+is more in resemblance to the emacs commenting binding "S-M-;".
+#+BEGIN_SRC emacs-lisp
+   (defun comment-or-uncomment-line ()
+     (interactive)
+     (comment-or-uncomment-region (line-beginning-position)
+                                  (line-end-position)))
+   
+  (bind-key "C-#" 'comment-or-uncomment-line)
+   
+   ;; (global-set-key (kbd "C-#") 'comment-or-uncomment-line)
+   ;; (define-key org-mode-map (kbd "C-#") 'comment-or-uncomment-line)
+#+END_SRC
+Keep in mind that in order to extend existing comments into the next
+line you can use indent-new-comment-line bound to "M-S-RET".
+
+** Misc
+Enable emacsclient
+#+BEGIN_SRC emacs-lisp
+(server-start)
+#+END_SRC
+
+* org-mode INITIALIZATION                                               :org:
+** Set global key bindings
+At first, we want to set the most important key bindings.
+#+BEGIN_SRC emacs-lisp
+  (bind-key "\C-cl" 'org-store-link)
+  (bind-key "\C-cc" 'org-capture)
+  (bind-key "\C-ca" 'org-agenda)
+  (bind-key "\C-cb" 'org-iswitchb)
+  ;; (global-set-key "\C-cl" 'org-store-link)
+  ;; (global-set-key "\C-cc" 'org-capture)
+  ;; (global-set-key "\C-ca" 'org-agenda)
+  ;; (global-set-key "\C-cb" 'org-iswitchb)
+  (bind-key "C-t C-t" 'next-error org-mode-map)
+#+END_SRC
+
+** Org-mode file formats
+Automatically use org-mode for .org files, .txt files and org_archive
+files.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode)) 
+#+END_SRC
+
+** Org task manager                                                     :gtd:
+This chapter determines all customized settings for using org-mode as
+task planer. The settings are chosen in compliance with the Getting
+things done methodology.
+
+*** Determine files for org agenda
+First, we have to define which files to use when searching for tasks.
+In this setting, most files in the /~/customs/ directory are on the path
+list, and the file used as inbox bucket for captured notes is set to
+/~/org/refile.org/. In order to synchronize these files privately
+over multiple computers, the complete /~/customs/ directory is only a
+symbolic link to a folder stored in my dropbox. However, I want to
+allow other people to set up the same emacs environment as I have,
+and do not want to force them to use Dropbox, too. Hence, nowhere in
+my emacs settings the directories in Dropbox should be used directly.
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-files
+     (quote (
+               ;; task manager files: private
+               "~/customs/gtd/todo.org"
+               "~/customs/gtd/refile.org"
+               
+               ;; software instruction notes
+               "~/customs/notes/priv_comp_notes.org" ; private
+               "~/how_to/comp_records.org"           ; public
+               
+               ;; link collection: private
+               "~/customs/chronicle/oracle.org"
+               
+               ;; literature collection: private
+               "~/literature/lit_man/opac.org")))
+  ;;  (setq org-default-notes-file "~/org/refile.org") 
+#+END_SRC
+
+In addition to the files required for my task manager, I also keep
+files in my agenda list that contain instructions about computer
+usage. These files thereby all become conveniently search-able through
+built-in org-mode tools.
+
+The file containing most of my written instructions and shortcuts for
+emacs, ubuntu in general, statistical programming languages etc will
+be publicly available through github in my how_to repository.
+
+All other files contain private information and hence are not made
+publicly available. However, I will provide some "dummy" files for
+them, so that emacs will not throw any errors if you haven't already
+set up these files on your own. Furthermore, these "dummy" files
+additionally should give you an impression of how I use them.
+
+*** Todo states                                                        :todo:
+I keep the following todo states:
+- TODO :: every individual task generally gets a TODO mark
+- NEXT :: if any higher-level task or project brings forth any
+          subtask, then this is marked as NEXT. This way I shift tasks
+          from my external projects to my agenda, without immediately
+          integrating the complete major project. Furthermore,
+          long-term targets are forced to be splitted into minor
+          tasks, which are much better to focus on.
+- DONE :: the classic label for finished tasks
+- WAITING :: if a task is still prevailing, but can not be processed
+             right now since it depends on someone else's action.
+             Could be used to indicate some chronological temporal
+             dependency on a different task. However, chronological
+             ordering at best should be implemented directly.
+- CANCELLED :: any task that suddenly is not required anymore
+- SOMEDAYS :: captures any unconcrete long-term targets or just things
+              that probably would be nice to having it doing
+**** State definitions
+Entering any todo state automatically will create a timestamp. While
+the timestamp for TODO and NEXT will be made at its creation, all
+other states are told to log the entry time with a "!" sign in the
+state definition. Additionally, WAITING and CANCELLED will call for a
+note, so that an explanation can be added. Also, most states will log
+exiting times as well. Fast access for todo states are guaranteed with
+shortcut letters for each state, which also have to be enabled:
+#+BEGIN_SRC emacs-lisp
+  (setq org-use-fast-todo-selection t)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keywords
+     (quote ((sequence "HABIT(h)" "TODO(t)" "NEXT(n)" "STEADY(a)" "|" "DONE(d!/!)")
+               (sequence "WAITING(w@/!)" "|" "CANCELLED(c@/!)" "SOMEDAY(s!/!)" "PROJECT(p)"))))
+#+END_SRC
+Here I determine custom face colors for my task state keywords.
+#+BEGIN_SRC emacs-lisp
+  (setq org-todo-keyword-faces
+     (quote (("TODO" :foreground "red" :weight bold)
+               ("NEXT" :foreground "blue" :weight bold)
+               ("HABIT" :foreground "deep pink" :weight bold)
+               ("STEADY" :foreground "yellow")
+               ("DONE" :foreground "forest green" :weight bold)
+               ("WAITING" :foreground "orange" :weight bold)
+               ("PROJECT" :foreground "yellow" :weight bold)
+               ("SOMEDAY" :foreground "spring green" :weight bold)
+               ("CANCELLED" :foreground "sea green" :weight bold))))
+#+END_SRC
+When skipping through todo states for minor corrections with shift
+key, log processing will be disabled. Otherwise we will get to many
+timestamps.
+#+BEGIN_SRC emacs-lisp
+  (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+#+END_SRC
+
+*** Org-capture                                                     :capture:
+The process of capturing tasks and notes is probably one of the most
+important parts of the complete system. It is absolutely crucial to
+the system that any information can be temporarily captured and shoved
+away fast and without disturbing the current workflow. That means,
+with very few shortcuts any information can be captured in a highly
+adapted template tailored to the specific information requirements. At
+a header level, information is classified as one of several main
+topics: 
+- TODO task
+- email response
+- event, appointment, date
+- note
+At the second layer, more specific patterns are distinguished, like
+storage location, prompts, tags and the like.
+**** Capturing tasks
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        (quote (
+                  ("t" "TASK templates")
+                  
+                  ; TODO entry, inactive timestamp, heading needs to be inserted, manual scheduling
+                  ("tt" "task, manual scheduling"
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                     "* TODO %? \nAdded: %U\n"
+                      :clock-resume t) 
+                  
+                  ;; TODO entry, inactive timestamp, prompt for tag, heading needs to be inserted 
+                  ("tT" "task, tag prompt"
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                     "* TODO %? %^G \nAdded: %U\n"
+                      :clock-resume t)
+  
+                  ;; Checklist entries to steady challenges
+                  ("tc" "checkitem: COMPUTER improvements"
+                     checkitem (file+olp "~/customs/gtd/todo.org"
+                     "Computational science" "Computer improvements")
+                     " [ ] %?")
+  
+                  ("te" "checkitem: EMACS improvements"
+                     checkitem (file+olp "~/customs/gtd/todo.org"
+                     "Computational science" "Emacs improvements")
+                     " [ ] %?")
+  
+                  ("tk" "checkitem: KNOWLEDGE improvements"
+                     checkitem (file+olp "~/customs/gtd/todo.org"
+                     "Education" "Knowledge improvements")
+                     " [ ] %?") 
+    
+                  ;; TODO entry, active timestamp, prompt for yanking
+                  ("ty" "task with yanking" entry (file+headline
+                  "~/customs/gtd/refile.org" "tasks") 
+                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
+                      :clock-resume t)
+                  
+                  ;; TODO entry, active timestamp, prompt for tag and clipboard entry
+                  ("tY" "task with tag and yanking"
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                     "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
+                      :clock-resume t)
+                  
+                  ;; New research project: create project heading in todo.org under research projects
+                  ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
+                                          ; project related tasks with link to origin
+                  ("tP" "project with tag, automatic source"
+                     entry (file+headline "~/customs/gtd/todo.org" "Research")
+                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\n%a\nAdded: %U\n "
+                      :clock-resume t)
+  
+                  
+                  ("tp" "project task"
+                     entry (file+headline "~/customs/gtd/todo.org" "Research")
+                     "* NEXT %? :%^{TAG?}: \nSCHEDULED: %t\nAdded: %U\n "
+                      :clock-resume t)         
+                  ;; write function to shift todo tasks from project file to agenda ! 
+                  
+                  ("r" "EMAIL response"
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                     "* TODO Respond to %:from on %:subject :EMAIL:\n%a\n"
+                      :clock-resume t :immediate-finish t
+                     )
+                  
+                  ("h" "HABIT"
+                     entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                     "* HABIT %?\n%U\nSCHEDULED: %t .+1d/3d\n
+  :PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: HABIT\n:END:\n")
+  
+                  )
+           )
+     )
+#+END_SRC
+
+**** Capturing events
+#+BEGIN_SRC emacs-lisp
+    (setq org-capture-templates  
+  (append org-capture-templates
+       (quote (
+                 ("e" "EVENT templates")
+                 
+                 ;; Future event: prompt for date without time
+                 ("ee" "daily event without time"
+                 entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                    "* %? :calendar: \n%^{Which date?}t \nAdded:%U\n"
+                     :clock-resume t)
+                 
+                 ;; Future event: prompt for date WITH time
+                 ("et" "event with time specification"
+                 entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                    "* %? :calendar: \n%^{Which date and time?}T \nAdded: %U\n"
+                     :clock-resume t)
+    
+                 ;; Future event lasting for multiple days
+                 ("ed" "enduring event"
+                 entry (file+headline "~/customs/gtd/refile.org" "tasks")
+                    "* %? :calendar: \n%^{Starting time?}T--%^{Ending time?}T \nAdded: %U\n"
+                     :clock-resume t)
+  
+                 ;; Entry in tracking file
+                 ("eh" "tracking history event"
+                 entry (file+datetree "~/customs/gtd/tracker.org")
+                      "* %^{Activity?|haircut|handy_charge|dentist|grandparents} %?"
+                       :clock-resume t)
+  
+                 ;; Birthday entry into anniversaries calendar with prompt
+                 ;; for date; date is active -> appears in agenda
+                 ("ea" "annually repeating event"
+                 plain (file+headline "~/customs/gtd/todo.org" "Anniversaries")
+                    "(org-anniversary %?) %^{Which event? Also, add %% in front} %d"
+                     :clock-resume t)
+                 
+                 ;; Entry in log: at current time finished activity with completion
+                 ("el" "logbook: finished activities"
+                 entry (file+datetree "~/customs/gtd/log.org")
+                    "* %U - %^{Activity?|lunch|break|buy|program|read|work|research|torture} "
+                     :clock-resume t)
+                 
+                 ;; Stopwatch activity without prompt
+                 ("es" "stopwatch"
+                 entry (file+datetree "~/customs/gtd/log.org")
+                    "* Stopwatch %? \nStarted: %U\n"
+                     :clock-resume t)
+                 
+                 ;; Entry in creditcard with prompt for sum and cursor for item specification
+                 ("ec" "credit-card info"
+                 entry (file+datetree "~/customs/gtd/creditcard.org")
+                    "* %? - %^{Amount?} \nAdded: %U\n"
+                     :clock-resume t)
+                 
+                 )
+          )
+       )
+  )
+
+#+END_SRC
+
+;; Capture templates for: TODO tasks, Notes, appointments, phone
+calls, and org-protocol
+**** Capturing desired products
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates  
+(append org-capture-templates
+     (quote (
+               ("b" "BUY templates")
+    
+               ;; append to shop list
+               ("bs" "product from SHOP"
+                  checkitem (file+olp "~/customs/gtd/todo.org" "Buy" "Shop")
+                  " [ ] %? ") 
+    
+               ;; append to mall list
+               ("bm" "product from MALL"
+                  checkitem (file+olp "~/customs/gtd/todo.org" "Buy" "Mall")
+                  " [ ] %? ") 
+    
+               ;; append to regular list
+               ("br" "REGULAR product"
+                  checkitem (file+olp "~/customs/gtd/todo.org" "Buy" "Regulars")
+                  " [ ] %? ") 
+      
+               )
+        )
+     )
+)
+#+END_SRC
+**** Capturing notes
+Plain notes without any code, yanking or source file link.
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+       (append org-capture-templates
+          (quote (
+                    ;; notes without code or yanking
+                    ;("n" "Plain notes without code or yanking")
+    
+                    ;; git-note
+                    ("n" "plain note"
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
+                       "* %? ")
+  
+                    ("N" "note with yanking"
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
+                       "* %? \n%^C")
+  
+                    
+                    ("o" "note with origin and yanking"
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
+                       "* %? \nFrom: %A\n%^C")
+  
+                    ("s" "shortcut"
+                         table-line (file+headline "~/customs/gtd/refile.org" "shortcuts")
+                         "| %? | |")
+                    
+                    ("S" "shortcut with yanking"
+                         table-line (file+headline "~/customs/gtd/refile.org" "shortcuts")
+                         "| ^C | |")
+    
+                    )
+             )
+          )
+)
+    
+#+END_SRC
+Notes with code snippet in clipboard or kill ring, and source file link.
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates       
+(append org-capture-templates
+          (quote (
+                    ;; code yanking
+                    ("c" "note with code"
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
+                       "* %? \n#+begin_src
+                    %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n")
+  
+                    ;; code yanking with source recording for w3m
+                    ("w" "note with code, source "
+                       entry (file+headline "~/customs/gtd/refile.org" "notes")
+                       "* %? \n#+begin_src
+                    %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n")
+             )
+          )
+       )
+)      
+#+END_SRC
+Additional notes to store:
+- emacs command / with shortcut / explanation
+- track things:
+  - vacation days / costs
+  - handy balance
+- registration / password
+**** Capturing present ideas
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+     (append org-capture-templates
+        (quote (
+                  ("p" "PRESENT idea"
+                     checkitem
+                     (file+headline "~/customs/gtd/todo.org" "Presents")
+                     " [ ] %? " :prepend)
+                  )
+           )
+        )
+     )
+  
+#+END_SRC
+**** Refile targets
+
+#+BEGIN_SRC emacs-lisp  
+(setq org-refile-use-outline-path t)
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps t)
+  (setq org-refile-allow-creating-parent-nodes (quote confirm))
+  ;; (setq org-completion-use-ido t)
+  ;; (setq ido-everywhere t)
+  ;; (setq ido-max-directory-size 100000)
+  ;; (ido-mode (quote both))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; refile targets
+  (setq org-refile-targets
+     (quote
+        (
+           ("~/customs/gtd/todo.org" :maxlevel . 1)
+           ("~/how_to/comp_records.org" :maxlevel . 1)
+           ("~/customs/notes/priv_comp_notes.org" :maxlevel . 1)
+           ("~/customs/chronicle/oracle.org" :maxlevel . 1)
+           ("~/customs/gtd/creditcard.org" :maxlevel . 1)
+           ("~/literature/lit_man/opac.org" :maxlevel . 1)
+           )))
+#+END_SRC
+
+*** Push line to agenda
+Here I want to enable an easy way to push any header, plain list item
+or checkbox item as a NEXT task to the agenda. Reason for this is
+that a do not want to scan all individual project files directly for
+tasks each time I evaluate the agenda. Furthermore, I have large
+lists of things that I want to perform anywhere in the future, and
+these lists shall not appear in the agenda itself. Only individual
+entries of these lists shall become present temporarily.
+
+First, I need a lisp-function that will push point to any given line
+of text in any arbitrary file. Of course, the text line only can be
+specified through its content, since line numbers will change
+steadily. Hence, I will use search commands.
+#+BEGIN_SRC emacs-lisp  
+    (defun cg/move-to-file-and-content (file text)
+       "function performs search for TEXT in FILE"
+       (push-mark)
+       ;; open file
+       (find-file file)
+       ;; go to result of search for content
+    
+       (goto-char (point-min))
+       (goto-char
+          (search-forward text)
+          )
+       )
+    
+    (defun cg/push-as-next-to-agenda ()
+       "create NEXT task from current line"
+       (interactive)
+       (let (text_content beg_line beg_content end_line file_name
+               link_part complete_link)
+          (save-excursion
+             ;; get line begin
+             (move-beginning-of-line nil)
+             (setq beg_line (point))
+    
+             ;; get content begin
+             (search-forward-regexp "[a-zA-Z0-9]")
+             (backward-char)
+             (setq beg_content (point))
+    
+             ;; get line end
+             (move-end-of-line nil)
+             (setq end_line (point))
+    
+             ;; get content
+             (setq text_content
+                (buffer-substring beg_content end_line)
+                )
+    
+             ;;  get file
+             (setq file_name (buffer-file-name))
+    
+             ;; create link
+             (setq link_part
+                (concat "elisp:(cg/move-to-file-and-content \"" file_name "\" \"" text_content "\")")
+                )
+    
+             (setq complete_link
+                (concat "* NEXT [["link_part"]["text_content"]]")
+                )
+    
+             ;; create entry at end of file
+             (end-of-buffer)
+             (newline)
+             (insert complete_link)
+  
+             (org-refile)
+             )
+                                
+          )
+       
+       )
+#+END_SRC
+
+*** Org-agenda                                                       :agenda:
+Set number of days ahead shown in agenda view:
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-span 8)
+#+END_SRC
+Restore window settings as they were before the call of org-agenda.
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-restore-windows-after-quit t)
+#+END_SRC
+Treat any tasks with associated timestamp as irrelevant for todo-list.
+#+BEGIN_SRC emacs-lisp  
+  (setq org-agenda-todo-ignore-scheduled t)
+  (setq org-agenda-todo-ignore-deadlines t)
+  (setq org-agenda-todo-ignore-timestamp 'all)
+#+END_SRC
+Set order in agenda views.
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-sorting-strategy 
+     '(
+         (agenda time-up  todo-state-up habit-up category-keep)
+         (todo priority-down todo-state-up category-keep)
+         )
+     )
+#+END_SRC
+Show clock-report per default.
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-start-with-clockreport-mode t)
+#+END_SRC
+Determine additional files for text search. So far, I do not need
+additional files to be searched, hence tangling is off.
+#+BEGIN_SRC emacs-lisp :tangle no
+  (setq org-agenda-text-search-extra-files
+     '("~/Dropbox/knowledge_base/oracle.org"
+         "~/comp_science/git_notes.org"
+         "~/comp_science/ssh_notes.org"
+"~/comp_science/bash_notes.org"
+"~/comp_science/gtd_notes.org"
+"~/comp_science/emacs_notes.org"
+"~/comp_science/ubuntu_notes.org"
+"~/.emacs.d/init-org.org"))
+#+END_SRC
+Customized searches:
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-custom-commands
+     '(
+         ("k" "agenda and todo-list"
+            ((todo "")
+            (agenda "")))
+         ("o" tags-tree "+vip+documentation")
+         )
+     )
+#+END_SRC
+Stuck projects:
+#+BEGIN_SRC emacs-lisp
+  (setq org-stuck-projects
+     '("-ANY/+PROJECT|SOMEDAY" ("NEXT" "TODO"))
+     )
+#+END_SRC
+*** OrgMobile
+Synchronization via orgmobile needs a server to sync the files to the
+mobile phone. In this case, I set it up with my Dropbox folder, which
+I explicitly name here. This could make problems on other computers,
+where Dropbox is not installed.
+#+BEGIN_SRC emacs-lisp :tangle no
+  (setq org-mobile-directory "~/Dropbox/MobileOrg")
+#+END_SRC
+
+*** Customize variables
+#+BEGIN_SRC emacs-lisp
+  (custom-set-variables
+     '(org-deadline-warning-days 14)
+     '(org-agenda-show-all-dates t)
+     '(org-clock-into-drawer t)
+     '(org-agenda-skip-deadline-if-done t)
+     '(org-agenda-skip-scheduled-if-done t)
+     '(org-agenda-start-on-weekday nil) ; start agenda at current day
+     '(org-reverse-note-order nil) ; append new nodes
+     '(org-fast-tag-selection-single-key nil) ; you have to press RET to
+                                          ; exit tag menu
+     '(calendar-longitude 11.580) ; Munich coordinates to get sunrise
+                                  ; /sunset times
+     '(calendar-latitude 48.139)
+     )
+  (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+         (latex . t)
+         (sh . t)
+         (R . t)))
+  
+#+END_SRC
+
+** Org babel                                                          :babel:
+http://nakkaya.com/2010/09/07/writing-papers-using-org-mode/
+
+Disable confirmation query for code evaluation and evaluation on export.
+#+BEGIN_SRC emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+  (setq org-export-babel-evaluate nil)
+#+END_SRC
+
+Load languages.
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+      'org-babel-load-languages
+      '((emacs-lisp . nil)
+          (R . t)
+          (matlab . t)
+          (sh . t)))
+#+END_SRC
+
+Open edit-src-block in same window.
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'current-window)
+#+END_SRC
+Show source-blocks in native faces
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t)
+#+END_SRC
+*** source code templates
+#+BEGIN_SRC emacs-lisp
+  (defun cg/insert-source-code (language name)
+     "interactively specify language, name and picture properties of
+  source code block"
+     (interactive "sSpecify language: \nsName of source block: ")
+     (let (src_str)
+        (setq src_str (concat "#+name: " name "\n"))
+        (if (y-or-n-p "Include picture?")
+           (progn
+              (setq src_str (concat src_str "#+BEGIN_SRC " language
+                               " :results graphics :file ./pics/" name
+                               ".pdf\n")) 
+              (setq src_str (concat src_str "\n#+END_SRC\n\n"))
+              (setq src_str (concat src_str "#+attr_latex:"
+                               " width=0.8\\textwidth,placement=[h!]\n"))
+              (setq src_str (concat src_str "#+label: fig:\n"))
+              (setq src_str (concat src_str "#+caption: \n"))
+              (setq src_str (concat src_str "#+RESULTS: " name "\n"))
+              )
+           (setq src_str (concat src_str "#+BEGIN_SRC " language "\n\n"))
+           (setq src_str (concat src_str "#+END_SRC"))
+           )
+        (insert src_str)
+        )
+     )
+  
+;;  (global-set-key (kbd "C-3") 'cg/insert-source-code)
+  (bind-key "C-3" 'cg/insert-source-code)
+  
+  
+#+END_SRC
+** Org tex-commands                                                   :latex:
+Since all my scientific publications are written in org-babel, I
+often have to include tex-commands even in org-mode for inline
+mathematical formulas. Hence, Greek letters, sub- and super-indices
+and basic mathematical operators should be easily accessible. Only
+environmental commands are not required here.
+
+*** Greek letters 
+Greek letters shall be set in compliance with auctex.
+Lowercase Greek letters.
+#+BEGIN_SRC emacs-lisp
+  (bind-key "M-g a"
+     '(lambda () (interactive) (insert "\\alpha")))
+  (bind-key "M-g b"
+     '(lambda () (interactive) (insert "\\beta")))
+  (bind-key "M-g g"
+     '(lambda () (interactive) (insert "\\gamma")))
+  (bind-key "M-g d"
+     '(lambda () (interactive) (insert "\\gamma")))
+  (bind-key "M-g e"
+     '(lambda () (interactive) (insert "\\epsilon")))
+  (bind-key "M-g z"
+     '(lambda () (interactive) (insert "\\zeta")))
+  (bind-key "M-g h"
+     '(lambda () (interactive) (insert "\\eta")))
+  (bind-key "M-g j"
+     '(lambda () (interactive) (insert "\\theta")))
+  (bind-key "M-g k"
+     '(lambda () (interactive) (insert "\\kappa")))
+  (bind-key "M-g l"
+     '(lambda () (interactive) (insert "\\lambda")))
+  (bind-key "M-g m"
+     '(lambda () (interactive) (insert "\\mu")))
+  (bind-key "M-g n"
+     '(lambda () (interactive) (insert "\\nu")))
+  (bind-key "M-g x"
+     '(lambda () (interactive) (insert "\\xi")))
+  (bind-key "M-g p"
+     '(lambda () (interactive) (insert "\\pi")))
+  (bind-key "M-g r"
+     '(lambda () (interactive) (insert "\\rho")))
+  (bind-key "M-g s"
+     '(lambda () (interactive) (insert "\\sigma")))
+  (bind-key "M-g t"
+     '(lambda () (interactive) (insert "\\tau")))
+  (bind-key "M-g u"
+     '(lambda () (interactive) (insert "\\upsilon")))
+  (bind-key "M-g f"
+     '(lambda () (interactive) (insert "\\phi")))
+  (bind-key "M-g q"
+     '(lambda () (interactive) (insert "\\chi")))
+  (bind-key "M-g y"
+     '(lambda () (interactive) (insert "\\psi")))
+  (bind-key "M-g w"
+     '(lambda () (interactive) (insert "\\omega")))
+  (bind-key "M-g v e"
+     '(lambda () (interactive) (insert "\\varepsilon")))
+  (bind-key "M-g v j"
+     '(lambda () (interactive) (insert "\\vartheta")))
+  (bind-key "M-g v p"
+     '(lambda () (interactive) (insert "\\varpi")))
+  (bind-key "M-g v r"
+     '(lambda () (interactive) (insert "\\varrho")))
+  (bind-key "M-g v s"
+     '(lambda () (interactive) (insert "\\varsigma")))
+  (bind-key "M-g v f"
+     '(lambda () (interactive) (insert "\\varphi")))
+#+END_SRC
+Greek uppercase letters.
+#+BEGIN_SRC emacs-lisp  
+  (bind-key "M-g G"
+       '(lambda () (interactive) (insert "\\Gamma")))
+  (bind-key "M-g D"
+       '(lambda () (interactive) (insert "\\Delta")))
+  (bind-key "M-g J"
+       '(lambda () (interactive) (insert "\\Theta")))
+  (bind-key "M-g L"
+       '(lambda () (interactive) (insert "\\Lambda")))
+  (bind-key "M-g X"
+       '(lambda () (interactive) (insert "\\Xi")))
+  (bind-key "M-g P"
+       '(lambda () (interactive) (insert "\\Pi")))
+  (bind-key "M-g S"
+       '(lambda () (interactive) (insert "\\Sigma")))
+  (bind-key "M-g U"
+       '(lambda () (interactive) (insert "\\Upsilon")))
+  (bind-key "M-g F"
+       '(lambda () (interactive) (insert "\\Phi")))
+  (bind-key "M-g Y"
+       '(lambda () (interactive) (insert "\\Psi")))
+  (bind-key "M-g W"
+       '(lambda () (interactive) (insert "\\Omega")))
+#+END_SRC
+
+*** Math-mode
+
+* auto-complete-mode INITIALIZATION
+The general idea of auto-complete-mode is to provide both static as
+well as dynamic completion on the fly, listed in a small pop-up
+window if first guess should not be accurate.
+
+Thereby static completion consists of unchanging word lists, while
+dynamic completion relies on other functions to come up with lists
+depending on content and environment. For example, auto-complete-mode
+allows completion of file names, which are different on each computer
+and evolving through time. 
+
+Despite being unchangeable itself, whether specific file lists are
+used or not can be determined dynamically nevertheless. That is,
+depending on the currently used major-mode, either word lists with
+Latex-specific or C-language words can be used.
+
+Auto-completion-mode handles these separate ways of static and
+content-specific word lists as sources. For example, one source for
+completion could be file names, while another source for completion
+would be all words in the current buffer.
+
+One now can either define a default set of possible ac-sources which
+will be used for all buffers, or render actually used ac-sources
+conditional on the major-mode of buffers. It seems, however, that you
+have to be very cautious not to specify any default settings if you
+want to take the more individualistic route, because any
+customizations would be overwritten otherwise.
+
+** Description of sources
+Some words on the sources I use, as well as their intended scope.
+
+ac-source-filename provides completion of file names. This is useful
+for nearly every major-mode, as it is quite commonly required to link
+to other files.
+
+ac-source-functions, ac-source-variables and ac-source-symbols
+provide completion of emacs-lisp context. While very much
+appreciated in emacs-lisp-mode buffers, it also becomes necessary for
+example in org-mode buffers with emacs-lisp source blocks and for
+operations like buffer-file-name, org-table, ...
+
+ac-source-semantic should provide completion of files in context.
+That is, functions relied on, other functions in project,... However,
+it only works in combination with cedet, which is mainly designed for
+famous machine code languages like C++, java,...
+
+ac-source-dictionary is a list of user-defined words. I use this
+variable to provide me with completion to the most frequently
+appearing words of the English language with more than 3 letters. In
+detail, this source consists of two parts: some word lists defined
+in ac-user-dictionary-files, which will be used throughout all modes,
+(this could be email addresses, English words), and a folder
+ac-dictionary-directories containing mode-specific word lists as well
+as word lists for individual file extensions (.txt files, .org files).
+
+ac-source-etags is another way to provide completion based on content
+functions. For example, you want to have auto-completion to all your
+matlab functions in a given project directory. This is a very
+convenient feature for statistical programming, as you can give
+self-explanatory names to your functions (e.g.
+fitBivCopUnderGaussianAssum) without unbearably increasing typing
+effort. This feature will be explained in more detail below, as it
+relies on the creation of etags for your project directories, which
+is not completely trivial. Also, you must specify a tags table,
+otherwise ac-source-etags will throw an error.
+
+Additional sources can be found at
+http://emacswiki.org/AutoCompleteSources. 
+
+** Implementation of word-lists
+*** Set paths 
+At first, we will have to make sure that all files installed are
+found by emacs and are loaded at startup.
+
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
+(add-to-list 'load-path "~/.emacs.d/extensions")
+(require 'ac-math)
+(require 'auto-complete-etags)
+(require 'auto-complete-config)
+#+END_SRC
+
+*** Initialization of static word lists 
+Syntax should be (setq ac-user-dictionary-files '("fileA" "fileB")).
+#+BEGIN_SRC emacs-lisp
+(setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete_own_words/own_word_list"))
+(setq ac-dictionary-files
+     '("~/.emacs.d/extensions/auto-complete/dict/"))
+#+END_SRC
+
+
+*** Set active completion modes
+This will set default ac-sources valid for all buffers. One could
+easily define differing settings for individual modes. This way, one
+only needs to define a function loading the respective ac-sources and
+add it as hook to the respective mode. 
+#+BEGIN_SRC emacs-lisp
+  (setq-default ac-sources '(ac-source-filename
+                               ;; ac-source-features
+                               ac-source-functions
+                               ac-source-variables
+                               ac-source-symbols
+                               ;; ac-source-abbrev
+                               ac-source-dictionary
+                               ac-source-words-in-same-mode-buffers
+                               ;; ac-source-semantic
+                               ac-source-latex-commands
+                               ac-source-math-latex
+                               ac-source-etags
+                               ac-source-math-unicode))
+#+END_SRC
+
+
+*** Enable language switching
+Enable language switching to german, mainly for answering of german
+emails. Actually, instead of two separate functions, in the future I will
+implement one function that simply switches between both languages.
+
+In order to come up with new word lists, one just has to copy some arbitrary
+list of words separated with newline into a plain text file. However, in order
+to avoid completion of words with less than 4 letters, all short words should
+be deleted upfront. This can be done by search for regexp ^.\{1,4\}$
+#+BEGIN_SRC emacs-lisp
+  (defun cg/ac_toggle_language_german ()
+    "Switch autocompletion language to german"
+    (interactive)
+    (setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete/dict/german_words"))
+    (ac-clear-dictionary-cache)
+  )
+  
+  (defun cg/ac_toggle_language_english ()
+    "Switch autocompletion language to english"
+    (interactive)
+    (setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete/dict/own_word_list"))
+    (ac-clear-dictionary-cache)
+  )
+#+END_SRC
+
+** Configuration
+Start auto-completion automatically at start-up, and differentiate between lower and upper case letters.
+#+BEGIN_SRC emacs-lisp
+(auto-complete-mode t)
+(setq ac-ignore-case nil)		; do not ignore cases
+#+END_SRC
+
+*** Key settings
+Main trigger key is combination is C-i, so that TAB key is less
+effected. Also, specify abortion key.
+
+Best configuration: use same key, to perform:
+- expansion of shown word
+- restart and move forward one proposed completion
+#+BEGIN_SRC emacs-lisp :tangle no
+(ac-set-trigger-key "C-o")
+(global-set-key (kbd "C-o") 'ac-expand)	; use C-j as trigger key / problem with new line?
+(define-key ac-completing-map "\M-/" 'ac-stop) ; undo completion
+(define-key ac-mode-map (kbd "C-o") 'auto-complete) ; restart ac-mode
+(define-key ac-mode-map (kbd "C-o") 'ac-complete) ; restart ac-mode
+
+
+(global-set-key (kbd "C-o") 'auto-complete)
+(global-set-key (kbd "C-o") 'ac-expand)
+(ac-set-trigger-key "C-o")
+(global-set-key (kbd "C-o") 'ac-complete)
+
+#+END_SRC
+
+*** Menu settings
+#+BEGIN_SRC emacs-lisp
+(setq ac-auto-start 3)			; minimum number of typed characters to start
+(setq ac-delay 0)			; delay time to start auto-completion
+(setq ac-auto-show-menu 1.4)	        ; delay time to show menu
+#+END_SRC
+*** Startup settings
+Use auto-complete in nearly every mode.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'ac-modes 'text-mode)
+(add-to-list 'ac-modes 'org-mode)
+(add-to-list 'ac-modes 'fundamental-mode)
+(add-to-list 'ac-modes 'matlab-mode)
+(add-to-list 'ac-modes 'ess-mode)
+(add-to-list 'ac-modes 'emacs-lisp-mode)
+(add-to-list 'ac-modes 'LaTeX-mode)
+(add-to-list 'ac-modes 'latex-mode)
+(add-to-list 'ac-modes 'org-src-mode)
+(add-to-list 'ac-modes 'LaTeX-math-mode)
+(add-to-list 'ac-modes 'message-mode)
+(global-auto-complete-mode t)
+#+END_SRC
+
+
+Enable tooltips for R objects, hints to function arguments and debugging.
+#+BEGIN_SRC emacs-lisp :tangle no
+  (require 'ess-r-args)
+  (require 'ess-R-object-tooltip)
+#+END_SRC
+
+* R settings
+
+** Ess-tracebug:
+Enable ess-tracebug:
+
+#+BEGIN_SRC emacs-lisp
+  (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
+  (setq ess-use-tracebug t)
+  (setq ess-tracebug-inject-source-p t)
+  ;; (add-hook 'ess-post-run-hook 'ess-tracebug) ; activate ess-tracebug every time R session starts
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun r-debug-narrowed-region ()
+     "Debug narrowed region or current block remotely. Region must load previous
+  workspace if require."
+     (interactive)
+     (let ((fileName buffer-file-name)   ; store current file name
+             (processName ess-local-process-name)       ; store current process name
+             )
+        
+        ;; (goto-char (point-min))
+        (backward-block)
+        (push-mark)
+        ;; (forward-block)
+        (goto-char (point-max))
+  
+        (kill-ring-save (point) (mark))                     ; copy region
+  
+  
+        (if (get-buffer "tmp_debug_file.r")     ; if temp buffer already exists, kill it
+           (kill-buffer "tmp_debug_file.r")
+           )
+        (switch-to-buffer "tmp_debug_file.r")
+  
+        (yank)                               ; yank copied text
+        (write-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; save modified file in same directory
+        (ess-force-buffer-current " " processName) ; attach same process to tmp_debug_file
+                                          ; ess-local-process-name
+        (switch-to-buffer "tmp_debug_file.r")
+        (ess-tracebug 1)                        ; Enable ess-tracebug
+        ;; (ess-tracebug-source-current-file)
+        )
+     )
+  
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun cg/r-debug-org-edit-src-code ()
+     "Debug currently edited source code block of org-babel file."
+     (interactive)
+     (let ((fileName buffer-file-name)   ; store current file name
+             (buffName (buffer-name))
+             (processName ess-local-process-name)       ; store current process name
+             )
+  
+        ;; if temp buffer already exists, kill it
+        (if (get-buffer "tmp_debug_file.r") 
+           (kill-buffer "tmp_debug_file.r")
+           )
+        
+        (delete-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; delete old version of file
+        
+        (goto-char (point-min))
+        (push-mark)
+        (goto-char (point-max))
+        
+        (kill-ring-save (point) (mark))                    ; copy region
+        
+        (switch-to-buffer "tmp_debug_file.r")
+  
+        (yank)                              ; yank copied text
+        (write-file (concat (file-name-directory fileName) "tmp_debug_file.r")) ; save modified file in same directory
+        (ess-force-buffer-current " " processName) ; attach same process to tmp_debug_file
+                                          ; ess-local-process-name
+        ;; (switch-to-buffer buffName)
+        ;; (setq buffer-file-name (concat (file-name-directory fileName) "tmp_debug_file.r"))
+        ;; (kill-buffer "tmp_debug_file.r")
+        (ess-tracebug 1)                       ; Enable ess-tracebug
+        ;; (ess-tracebug-source-current-file)
+        )
+     )
+#+END_SRC
+
+#+BEGIN_EXAMPLE
+(defun r-select-superior ()
+  "Select superior word encompassing point."
+  (interactive)
+  (search-backward-regexp "[^a-zA-Z0-9_$.]") ; go back to first char not part of word
+  (forward-char)			     
+  (push-mark)				; push mark
+  (search-forward-regexp "[^a-zA-Z0-9_]") ; go forth to first char not part in superior word
+  (backward-char)
+  (copy-region-as-kill (point) (mark))	; copy region
+  )
+
+(define-key ess-mode-map (kbd "C-c C-<SPC>") 'r-select-superior)
+
+(defun r-select-inferior ()
+  "Select superior word encompassing point."
+  (interactive)
+  (search-backward-regexp "[^a-zA-Z0-9_$.]") ; go back to first char not part of word
+  (forward-char)			     
+  (push-mark)				; push mark
+  (search-forward-regexp "[^a-zA-Z0-9_$.]") ; go forth to first char not part in superior word
+  (backward-char)
+  (copy-region-as-kill (point) (mark))	; copy region
+  )
+
+(define-key ess-mode-map (kbd "C-c <SPC>") 'r-select-inferior)
+
+(defun r-show-head ()
+  (interactive)
+  (save-excursion
+    (ess-request-a-process ess-local-process-name)
+    (insert "head(")
+    (yank)
+    (insert ")")
+    (inferior-ess-send-input)
+    (end-of-buffer)
+    (recenter -1)
+    )
+  )
+
+(define-key ess-mode-map (kbd "C-c 1") 'r-show-head)
+
+(defun r-show-str ()
+  (interactive)
+  (save-excursion
+    (ess-request-a-process ess-local-process-name)
+    (insert "str(")
+    (yank)
+    (insert ")")
+    (inferior-ess-send-input)
+    (end-of-buffer)
+    (recenter -1)
+    )
+  )
+(define-key ess-mode-map (kbd "C-c 2") 'r-show-str)
+
+#+END_EXAMPLE
+
+
+
+** underscore properties
+#+BEGIN_SRC emacs-lisp :tangle no
+  (defun cg/R-assign ()
+     "Insert assignment sign of R language"
+     (interactive)
+     (insert " <- "))
+  
+  (define-key ess-mode-map (kbd "C-M--") 'cg/R-assign)
+  (define-key ess-mode-map (kbd "_") 'self-insert-command)
+  (define-key inferior-ess-mode-map (kbd "C-M--") 'cg/R-assign)
+  (define-key inferior-ess-mode-map (kbd "_") 'self-insert-command)
+  (global-set-key (kbd "_") 'self-insert-command)
+  (global-set-key (kbd "C-M--") 'cg/R-assign)
+#+END_SRC
+
+
+
+
+
+
+
+

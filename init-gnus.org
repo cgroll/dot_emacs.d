@@ -230,9 +230,3 @@ Lower numbers mean being more subscribed.
   (setq starttls-gnutls-program "gnutls-cli")
   (setq starttls-extra-arguments nil)
 #+end_src
-* BBDB
-#+BEGIN_SRC emacs-lisp :tangle no
-  (add-to-list 'load-path "~/.emacs.d/extensions/bbdb/lisp/")
-  (require 'bbdb)
-  (bbdb-initialize 'gnus 'message)
-#+END_SRC

@@ -1,86 +1,112 @@
-;; measure start-up time
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       measuring start-up time
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defvar *emacs-load-start* (current-time))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       set some load-paths
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d/extensions/")
-(require 'use-package)
+(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
+(add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/org")
 
-;; (use-package ace-jump-mode
-;;   :bind ("C-." . ace-jump-mode))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       require org-mode and use-package
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (use-package ace-jump-mode
-;;   :defer t
-;;   :init
-;;   (progn
-;;     (autoload 'ace-jump-mode "ace-jump-mode" nil t)
-;;     (bind-key "C-." 'ace-jump-mode)))
+(require 'org-install)
+(require 'use-package)                  ; enables autoloading of functions
 
-(use-package ace-jump-mode
- :commands abc-fun
- :config
-(message "Yay, ace-jump-mode was actually loaded!")
- :init
- (bind-key "C-." 'abc-fun))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       IDO-mode
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package ess-site
-	:load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/"
+;; ido
+(require 'ido)
+(ido-mode t)
 
-   :init 
-	(bind-key "C-j" 'ess-indent-command)
-	(bind-key "C-M-j" 'cg/ess-indent-buffer)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       bbdb
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; allow bbdb to be loaded through call to bbdb function
+;; externally, bbdb should be called whenever gnus is activated
+(use-package bbdb
+   :defer t
+   :command (bbdb )
+   :init
+   (autoload 'bbdb "bbdb" nil t)
+   
+   :load-path "~/.emacs.d/extensions/bbdb/lisp/"
    :config
-   (message "Yay, ESS was actually loaded!")
+   (bbdb-initialize 'gnus 'message)
    )
 
-;; (use-package ascii
-;;   :commands (ascii-on ascii-toggle)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       auto-complete-mode
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'auto-complete)
+(ac-set-trigger-key "C-o")
+
+(require 'yasnippet)
+(yas-global-mode 1)
+(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
+(org-babel-load-file "~/.emacs.d/init-ac.org")
+(global-set-key (kbd "C-o") 'yas-prev-field)
+(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+
+;; ;; auto-complete
+;; (add-to-list 'load-path "~/.emacs.d/extensions/")
+;; (org-babel-load-file "~/.emacs.d/init-ac.org")
+
+
+
+(org-babel-load-file "~/.emacs.d/init-all.org")
+
+;; (use-package matlab
+;;    :commands (matlab-shell matlab-mode)
+;;    :mode ("\\.m$" . matlab-mode)
+;;    :
+;;    )
+
+
+;; (use-package ess-site
+;; 	:load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/"
+
+;;    :init 
+;; 	(bind-key "C-j" 'ess-indent-command)
+;; 	(bind-key "C-M-j" 'cg/ess-indent-buffer)
+
+;;    :config
+;;    (message "Yay, ESS was actually loaded!")
+;;    )
+
+
+;; (use-package matlab
+;;   :commands matlab
 ;;   :init
+;;   (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
+;;   :config
 ;;   (progn
-;;     (defun ascii-toggle ()
-;;       (interactive)
-;;       (if ascii-display
-;;           (ascii-off)
-;;         (ascii-on)))
+;;     (matlab-cedet-setup)
+;;      (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)))
 
-;;     (bind-key "C-c e A" 'ascii-toggle)))
-
-(use-package matlab
-  :commands matlab
-  :init
-  (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
-  :config
-  (progn
-    (matlab-cedet-setup)
-     (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)))
-
-
-
-;(setq inferior-julia-program-name "/path/to/julia/julia-release-basic")
-
-;; (defface org-block-begin-line
-;;   '((t (:underline "#A7A6AA" :foreground "#ff0000" :background "#6b6b6b")))
-;;   "Face used for the line delimiting the begin of source blocks.")
-
-;; (defface org-block-background
-;;   '((t (:background "#262626")))
-;;   "Face used for the source block background.")
-
-;; (defface org-block-end-line
-;;   '((t (:overline "#A7A6AA" :foreground "#ff0000" :background "#6b6b6b")))
-;;   "Face used for the line delimiting the end of source blocks.")
-
-(defface org-block-begin-line
-  '((t (:underline "#A7A6AA" :foreground "#ff0000" :background "#262626")))
-  "Face used for the line delimiting the begin of source blocks.")
-
-(defface org-block-background
-  '((t (:background "#262626")))
-  "Face used for the source block background.")
-
-(defface org-block-end-line
-  '((t (:overline "#A7A6AA" :foreground "#ff0000" :background "#262626")))
-  "Face used for the line delimiting the end of source blocks.")
 
 
 ;; remove old .el files
@@ -98,8 +124,50 @@
 
 ;; load tags-table, so that ac-source-etags will not fail
 (visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
-(setq inferior-julia-program-name
-   "~/julia/usr/bin/julia-release-basic")
+;; (setq inferior-julia-program-name
+;;    "~/julia/usr/bin/julia-release-basic")
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       matlab
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; allow matlab to be loaded through call to matlab-mode or
+;; matlab-shell
+;; follow-ups: load cedet, etags
+(use-package matlab
+   :defer t
+   :load-path "~/matlab-emacs"   
+   :if (file-exists-p "/home/chris/MATLAB/R2012a/bin/matlab")
+   :commands (matlab-shell matlab-mode)
+   :mode ("\\.m$" . matlab-mode)
+   :init
+   (progn
+      (autoload 'matlab-shell "matlab" nil t)
+      (autoload 'matlab-mode "matlab" nil t)
+      )
+   :config
+   (progn
+      (require 'matlab-load)
+      ;(matlab-cedet-setup)
+      (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)
+      (setq matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
+      )
+   )
+
+;;Setup cedet:
+;;   (load-file "~/cedet-1.1/common/cedet.el")
+;;   (semantic-load-enable-semantic-debugging-helpers)      ; Enable prototype help and smart completion 
+;; (require 'semantic-ia)
+;; ;  (global-ede-mode 1)                      ; Enable the Project management system
+;;   (global-srecode-minor-mode 1)            ; Enable template insertion menu
+;; (semantic-add-system-include "~/MATLAB/R2012a/toolbox/" 'matlab-shell-mode)
+;; (require 'semanticdb)
+;; (global-semanticdb-minor-mode 1)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -107,6 +175,51 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/")
+;(require 'ess-site)
+
+;; allow julia to be loaded through call to julia-mode or
+;; ess-inferior process
+;; follow-ups: etags?
+(use-package julia-mode
+   :defer t
+   :load-path "~/julia/contrib"   
+   :if (file-exists-p "~/julia/contrib/julia-mode.el")
+   :commands julia-mode
+   :mode ("\\.jl$" . julia-mode)
+   :init
+   (progn
+      (autoload 'julia-mode "julia-mode" nil t)
+      )
+   :config
+   (progn
+      (add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
+      (setq inferior-julia-program-name "~/julia/usr/bin/julia-release-basic")
+      )
+   )
+
+(use-package ess-julia.el
+   :defer t
+   :load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/"
+   :if (file-exists-p "~/julia/usr/bin/julia-release-basic")
+   :commands julia
+   :init
+   (progn
+      (autoload 'julia "ess-julia.el" nil t)
+      )
+   :config
+   (progn
+      (require 'julia-mode)
+      (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/ess-site")
+      (require 'ess-site)
+      (setq inferior-julia-program-name
+         "~/julia/usr/bin/julia-release-basic")
+      )
+   )
+;; in order to add ess-process afterward, apply julia-mode again on
+;; open buffers
+
+;; OLD CODE:
 
 ;; (add-to-list 'load-path "~/julia/contrib/") ;Tell emacs to look for the file there.
 ;; (require 'julia-mode)                             ;Tell it to load it.
@@ -120,18 +233,33 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;;;;       org-mode
+;;;;;       R
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; org
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/org")
-(require 'org-install)
 
-;; individual org-mode settings
-(org-babel-load-file "~/.emacs.d/init-org.org")
+(use-package ess-site
+   :defer t
+   :load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/"
+   :commands R
+   :mode ("\\.[Rr]$" . R-mode)
+   :config
+   (progn
+      )
+   )
 
-(org-babel-load-file "~/.emacs.d/init-bibtex-config.org")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       magit
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package
+   :defer t
+   :load-path "/usr/share/emacs/site-lisp/magit-master"
+   :commands magit-status
+   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -181,7 +309,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(org-babel-load-file "~/.emacs.d/init-bibtex-config.org")
+;; (org-babel-load-file "~/.emacs.d/init-bibtex-config.org")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -191,9 +319,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;(org-babel-load-file "~/.emacs.d/init-gnus.org")
-  (add-to-list 'load-path "~/.emacs.d/extensions/bbdb/lisp/")
-  (require 'bbdb)
-  (bbdb-initialize 'gnus 'message)
+  ;; (add-to-list 'load-path "~/.emacs.d/extensions/bbdb/lisp/")
+  ;; (require 'bbdb)
+  ;; (bbdb-initialize 'gnus 'message)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -203,21 +331,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; auctex
-(org-babel-load-file "~/.emacs.d/init-latex.org")
+;; (org-babel-load-file "~/.emacs.d/init-latex.org")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;;;;       emacs extensions
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; minor extensions
-(add-to-list 'load-path "~/.emacs.d/extensions/")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       parentheses
+;;;;;       autopair: parentheses matching
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -236,102 +355,115 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; load w3m
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m/")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m")
-(require 'w3m)
-(require 'mime-w3m)
+;; ;; load w3m
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m/")
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m")
+;; (require 'w3m)
+;; (require 'mime-w3m)
 
-;; load settings
-(org-babel-load-file "~/.emacs.d/init-w3m.org")
+;; ;; load settings
+;; (org-babel-load-file "~/.emacs.d/init-w3m.org")
 
 
-;; magit
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/magit-master")
-(require 'magit)
+;; ;; magit
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/magit-master")
+;; (require 'magit)
 
-;; ido
-(require 'ido)
-(ido-mode t)
 
-;; ess: better is probably autoload in order to speed up starting procedure
-;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/")
-;; (require 'ess-site)
-;; (org-babel-load-file "~/.emacs.d/init-R.org")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       configurations
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(org-babel-load-file "~/.emacs.d/init-config.org")   
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       google-translate
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;
+;; ;;;;;       google-translate
+;; ;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'google-translate)
+(use-package
+   :command (google-translate-query-translate-reverse
+               google-translate-query-translate
+               google-translate-at-point
+               google-translate-at-point-reverse)
+   :init
+   (progn
+      (unbind-key "C-t" global-map)
+      (bind-key "C-t l" 'google-translate-query-translate-reverse)
+      (bind-key "C-t L" 'google-translate-query-translate)
+      (bind-key "C-t K" 'google-translate-at-point)
+      (bind-key "C-t k" 'google-translate-at-point-reverse)
+      )
+   :config
+   (org-babel-load-file "~/.emacs.d/init-google-translate.org")
+   )
 
-;; load settings
-(org-babel-load-file "~/.emacs.d/init-google-translate.org")
+;; ;; load settings
+;; (org-babel-load-file "~/.emacs.d/init-google-translate.org")
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       thesaurus.el
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;
+;; ;;;;;       thesaurus.el
+;; ;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'thesaurus)
-(org-babel-load-file "~/Dropbox/personal_data/thesaurus_api_setup.org")
-(define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       matlab
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; load matlab only on some computers
-
-(if (string= system-name "chris-wk")
-   (org-babel-load-file "~/.emacs.d/init-matlab.org")
-   (custom-set-variables
-      '(matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
+(use-package thesaurus
+   :config
+   (progn
+      (org-babel-load-file "~/Dropbox/personal_data/thesaurus_api_setup.org")
+      (bind-key "C-t u" 'thesaurus-choose-synonym-and-replace)
       )
    )
 
-;; (if (string= system-name "chris-lpt")
+;; (require 'thesaurus)
+;; (org-babel-load-file "~/Dropbox/personal_data/thesaurus_api_setup.org")
+;; (define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;
+;; ;;;;;       matlab
+;; ;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; ;; load matlab only on some computers
+
+;; (if (string= system-name "chris-wk")
 ;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
 ;;    (custom-set-variables
-;;       '(matlab-shell-command "~/remote_matlab")
+;;       '(matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
 ;;       )
 ;;    )
 
-;; (if (string= system-name "chris-ntb")
-;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
-;;    (custom-set-variables
-;;       '(matlab-shell-command "~/remote_matlab")
-;;       )
-;;    )
+;; ;; (if (string= system-name "chris-lpt")
+;; ;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
+;; ;;    (custom-set-variables
+;; ;;       '(matlab-shell-command "~/remote_matlab")
+;; ;;       )
+;; ;;    )
+
+;; ;; (if (string= system-name "chris-ntb")
+;; ;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
+;; ;;    (custom-set-variables
+;; ;;       '(matlab-shell-command "~/remote_matlab")
+;; ;;       )
+;; ;;    )
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       org-drill
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;
+;; ;;;;;       org-drill
+;; ;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/.emacs.d/extensions/org/contrib/lisp/")
-
-(require 'org-drill)
-(setq org-drill-add-random-noise-to-intervals-p t) ; add random noise
-(setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
-(setq org-drill-maximum-duration 20)
-(setq org-drill-learn-fraction 0.35)
+(use-package org-drill
+   :defer t
+   :load-path "~/.emacs.d/extensions/org/contrib/lisp/"
+   :command org-drill
+   :config
+   (progn
+      (setq org-drill-add-random-noise-to-intervals-p t) ; add random noise
+      (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
+      (setq org-drill-maximum-duration 20)
+      (setq org-drill-learn-fraction 0.35)
+      )
+   )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
