@@ -268,7 +268,6 @@
    :config
    (progn
       (unbind-key "_" ess-mode-map)
-      (unbind-key)
       (unbind-key "_" inferior-ess-mode-map)      
       (bind-key "C-M--" 'cg/R-assign ess-mode-map)
       (bind-key "C-M--" 'cg/R-assign inferior-ess-mode-map)
@@ -373,10 +372,10 @@
 ;; ;;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;(require 'google-translate)
+;; (require 'google-translate)
 (use-package google-translate
    :defer t
-   :command (google-translate-query-translate-reverse
+   :commands (google-translate-query-translate-reverse
                google-translate-query-translate
                google-translate-at-point
                google-translate-at-point-reverse)
