@@ -67,7 +67,7 @@
 (require 'yasnippet)
 (yas-global-mode 1)
 (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-(org-babel-load-file "~/.emacs.d/init-ac.org")
+;(org-babel-load-file "~/.emacs.d/init-ac.org")
 (global-set-key (kbd "C-o") 'yas-prev-field)
 (define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
 
@@ -75,38 +75,51 @@
 ;; (add-to-list 'load-path "~/.emacs.d/extensions/")
 ;; (org-babel-load-file "~/.emacs.d/init-ac.org")
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       auto-complete-mode
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
+(add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
+(require 'auto-complete)
+(ac-set-trigger-key "C-o")
+(require 'yasnippet)
+(yas-global-mode 1)
+(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
+;(org-babel-load-file "~/.emacs.d/init-ac.org")
+(global-set-key (kbd "C-o") 'yas-prev-field)
+(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+
+;; ;; auto-complete
+;; (add-to-list 'load-path "~/.emacs.d/extensions/")
+;; (org-babel-load-file "~/.emacs.d/init-ac.org")
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;
+;; ;;;;;       yasnippet
+;; ;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (add-to-list 'load-path
+;;               "~/.emacs.d/extensions/yasnippet")
+;; (require 'yasnippet)
+;; (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
+;; (add-hook 'LaTeX-mode-hook '(lambda ()
+;;                             (yas-minor-mode 1)))
+;; (add-hook 'org-mode-hook '(lambda () (yas-minor-mode 1)))
+
+;; (yas/reload-all)
+;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
+;; (define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+;; (define-key yas-minor-mode-map (kbd "C-S-o") 'yas-prev-field)
+
 
 
 (org-babel-load-file "~/.emacs.d/init-all.org")
-
-;; (use-package matlab
-;;    :commands (matlab-shell matlab-mode)
-;;    :mode ("\\.m$" . matlab-mode)
-;;    :
-;;    )
-
-
-;; (use-package ess-site
-;; 	:load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/"
-
-;;    :init 
-;; 	(bind-key "C-j" 'ess-indent-command)
-;; 	(bind-key "C-M-j" 'cg/ess-indent-buffer)
-
-;;    :config
-;;    (message "Yay, ESS was actually loaded!")
-;;    )
-
-
-;; (use-package matlab
-;;   :commands matlab
-;;   :init
-;;   (add-to-list 'auto-mode-alist '("\\.m$" . matlab-mode))
-;;   :config
-;;   (progn
-;;     (matlab-cedet-setup)
-;;      (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)))
-
 
 
 ;; remove old .el files
@@ -214,6 +227,10 @@
       (require 'ess-site)
       (setq inferior-julia-program-name
          "~/julia/usr/bin/julia-release-basic")
+      (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
+      (setq ess-use-tracebug t)           ; tracebug is called for R
+                                        ; AND JULIA!!
+      (setq ess-tracebug-inject-source-p t)
       )
    )
 ;; in order to add ess-process afterward, apply julia-mode again on
@@ -233,10 +250,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;;;;       R
+;;;;;       R-mode
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun cg/R-assign ()
+   "Insert assignment sign of R language"
+   (interactive)
+   (insert " <- ")
+   )
 
 (use-package ess-site
    :defer t
@@ -245,9 +267,25 @@
    :mode ("\\.[Rr]$" . R-mode)
    :config
    (progn
+      (unbind-key "_" ess-mode-map)
+      (unbind-key)
+      (unbind-key "_" inferior-ess-mode-map)      
+      (bind-key "C-M--" 'cg/R-assign ess-mode-map)
+      (bind-key "C-M--" 'cg/R-assign inferior-ess-mode-map)
+      (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
+      (setq ess-use-tracebug t)           ; tracebug is called for R
+                                        ; AND JULIA!!
+      (setq ess-tracebug-inject-source-p t)
       )
    )
 
+  
+ ; (define-key ess-mode-map (kbd "C-M--") 'cg/R-assign)
+;  (define-key ess-mode-map (kbd "_") 'self-insert-command)
+;  (define-key inferior-ess-mode-map (kbd "C-M--") 'cg/R-assign)
+;  (define-key inferior-ess-mode-map (kbd "_") 'self-insert-command)
+;  (global-set-key (kbd "_") 'self-insert-command)
+ ; (global-set-key (kbd "C-M--") 'cg/R-assign)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -255,53 +293,12 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package
+(use-package magit
    :defer t
    :load-path "/usr/share/emacs/site-lisp/magit-master"
    :commands magit-status
    )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       auto-complete-mode
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
-(add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
-(require 'auto-complete)
-(ac-set-trigger-key "C-o")
-(require 'yasnippet)
-(yas-global-mode 1)
-(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-(org-babel-load-file "~/.emacs.d/init-ac.org")
-(global-set-key (kbd "C-o") 'yas-prev-field)
-(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
-
-;; ;; auto-complete
-;; (add-to-list 'load-path "~/.emacs.d/extensions/")
-;; (org-babel-load-file "~/.emacs.d/init-ac.org")
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;
-;; ;;;;;       yasnippet
-;; ;;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (add-to-list 'load-path
-;;               "~/.emacs.d/extensions/yasnippet")
-;; (require 'yasnippet)
-;; (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-;; (add-hook 'LaTeX-mode-hook '(lambda ()
-;;                             (yas-minor-mode 1)))
-;; (add-hook 'org-mode-hook '(lambda () (yas-minor-mode 1)))
-
-;; (yas/reload-all)
-;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
-;; (define-key yas-minor-mode-map (kbd "C-S-o") 'yas-prev-field)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -376,8 +373,9 @@
 ;; ;;;
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'google-translate)
-(use-package
+;;(require 'google-translate)
+(use-package google-translate
+   :defer t
    :command (google-translate-query-translate-reverse
                google-translate-query-translate
                google-translate-at-point
@@ -543,9 +541,9 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.8 :width expanded))))
- '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.6 :width normal))))
- '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.4 :width normal))))
+ '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.5 :width expanded))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.4 :width normal))))
+ '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.3 :width normal))))
  '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.2))))
  '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
 (put 'upcase-region 'disabled nil)

@@ -1,4 +1,5 @@
-#+TITLE: Setup Gnus for Mail, RSS and News
+* Gnus INITIALIZATION
+
 This file basically handles the setup of gnus. That is, while gnus
 usually falls back on ~/.gnus on startup, .gnus only contains a single
 line which loads in this init-gnus file.
@@ -9,7 +10,7 @@ My personal requirements for gnus consist of:
 - reading rss feeds
 - experimenting with scientific news servers
 
-* Email
+** Email
 As already mentioned, my gnus setting has to be able to handle two
 accounts simultaneously.
 
@@ -89,7 +90,7 @@ will not be shown in sent folder. That is, use "m" in Group buffer, instead of C
 
 
 
-* News
+** News
 In order to get news from a news server, try something like:
 #+begin_src emacs-lisp :tangle no
 (setq gnus-select-method '(nntp "sci.stat.edu"))
@@ -98,7 +99,7 @@ In order to get news from a news server, try something like:
 #+end_src
 Be careful not to overwrite previous settings, since email is handled
 with gnus-select-method, too.
-* Settings
+** Settings
 - do not check for new groups on startup -> saves startup time
 #+begin_src emacs-lisp
 (setq gnus-check-new-newgroups nil)
@@ -230,3 +231,30 @@ Lower numbers mean being more subscribed.
   (setq starttls-gnutls-program "gnutls-cli")
   (setq starttls-extra-arguments nil)
 #+end_src
+
+#+TITLE: Initialization of latex and alike
+
+Load auctex and preview latex.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/auctex-11.87/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/auctex-11.87/preview/")
+  (load "auctex.el" nil t t)
+  (load "preview-latex.el" nil t t)
+#+END_SRC
+
+Use article class as standard, and define, how headers will be
+  translated into sections.
+#+BEGIN_SRC emacs-lisp
+  (require 'org-latex)
+  (unless (boundp 'org-export-latex-classes)
+     (setq org-export-latex-classes nil))
+  (add-to-list 'org-export-latex-classes
+     '("article"
+         "\\documentclass{article}"
+         ("\\section{%s}" . "\\section*{%s}")
+         ("\\subsection{%s}" . "\\subsection*{%s}")
+         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+         ("\\paragraph{%s}" . "\\paragraph*{%s}")
+         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  
+#+END_SRC
