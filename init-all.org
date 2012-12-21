@@ -152,7 +152,7 @@ stops.
 Now, set indentation key.
 #+BEGIN_SRC emacs-lisp
   ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
-  (bind-key* "C-j" 'indent-for-tab-command)
+  (bind-key "C-j" 'indent-for-tab-command)
     ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
     ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
     
@@ -340,7 +340,7 @@ behavior based on previous motion are initialized.
   (bind-key* "M-n" 'forward-word)
   (bind-key* "M-p" 'backward-word)
   (bind-key* "M-<backspace>" 'backward-kill-word)
-  (bind-key* "M-d" 'kill-word)
+  (bind-key "M-d" 'kill-word)
   
   (defun cg/copy-current-word ()
      "copy word at point"

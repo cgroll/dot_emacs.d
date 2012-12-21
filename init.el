@@ -31,10 +31,23 @@
 ;;;;;       IDO-mode
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+ 
 ;; ido
-(require 'ido)
+;; (require 'ido)                          
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
 (ido-mode t)
+(setq ido-use-filename-at-point 'guess)
+(setq ido-file-extensions-order
+   '(".org" ".m" ".jl" ".r" ".el" ".txt"))
+(setq ido-ignore-extensions t)
+(unbind-key "C-t" global-map)
+(bind-key* "C-t C-r" 'ido-toggle-regexp)
+
+
+
+(use-package browse-kill-ring
+   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -381,7 +394,6 @@
                google-translate-at-point-reverse)
    :init
    (progn
-      (unbind-key "C-t" global-map)
       (bind-key "C-t l" 'google-translate-query-translate-reverse)
       (bind-key "C-t L" 'google-translate-query-translate)
       (bind-key "C-t K" 'google-translate-at-point)
