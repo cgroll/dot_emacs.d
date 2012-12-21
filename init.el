@@ -6,6 +6,19 @@
 
 (defvar *emacs-load-start* (current-time))
 
+;; show bookmark list at startup
+(setq inhibit-splash-screen t)
+(require 'bookmark)
+(bookmark-bmenu-list)
+(split-window-horizontally)
+(switch-to-buffer "*Messages*")
+(switch-to-buffer-other-window "*Bookmark List*")
+(recentf-mode 1)
+
+
+;; (bookmark-bmenu-list)
+;; (switch-to-buffer-other-window "*Bookmark List*")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       set some load-paths
@@ -31,6 +44,7 @@
 ;;;;;       IDO-mode
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
  
 ;; ido
 ;; (require 'ido)                          
@@ -42,12 +56,19 @@
    '(".org" ".m" ".jl" ".r" ".el" ".txt"))
 (setq ido-ignore-extensions t)
 (unbind-key "C-t" global-map)
-(bind-key* "C-t C-r" 'ido-toggle-regexp)
+(bind-key* "C-t r" 'ido-toggle-regexp)
 
-
+;; occur / multi-occur
+(bind-key "C-t o" 'occur)
+(bind-key "C-t O" 'multi-occur)
 
 (use-package browse-kill-ring
    )
+
+;; for bookmarks of recent files
+(bind-key "C-t b" 'recentf-open-files)
+(bind-key "C-x r B" 'bookmark-jump-other-window)
+(bind-key "C-M-ü" 'bookmark-jump-other-window)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -309,6 +330,8 @@
    :defer t
    :load-path "/usr/share/emacs/site-lisp/magit-master"
    :commands magit-status
+   :init
+   (bind-key "C-t m" 'magit-status)
    )
 
 

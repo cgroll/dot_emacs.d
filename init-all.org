@@ -86,8 +86,7 @@ dictionary to work
           )
        (message "Language switched to %s" cg-current-language) 
        )
-(unbind-key "C-t")
-  (bind-key "C-t C-s" 'cg/switch-language)
+  (bind-key "C-t s" 'cg/switch-language)
   ;; (global-set-key (kbd "C-t C-s")   'cg/switch-language)
 #+END_SRC
 
@@ -151,49 +150,51 @@ stops.
 
 Now, set indentation key.
 #+BEGIN_SRC emacs-lisp
-  ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
-  (bind-key "C-j" 'indent-for-tab-command)
-    ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
-    ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
-    
-    (defun cg/ess-indent-buffer ()
-       "apply ess-indent to complete buffer"
-       (interactive)
-       (save-excursion
-          (let ((line-counter (line-number-at-pos (point-min)))
-                  (number-of-lines (count-lines (point-min) (point-max))))
-             (goto-char (point-min))
-             (while (<= line-counter number-of-lines)
-                (progn
-                   (ess-indent-command)
-                   (forward-line)
-                   (setq line-counter (+ line-counter 1))
-                   )
-                )
-             )
-          )
-       )
-    (defun cg/ac-indent-buffer ()
-       "apply automatic indentation to complete buffer"
-       (interactive)
-       (save-excursion
-          (let ((line-counter (line-number-at-pos (point-min)))
-                  (number-of-lines (count-lines (point-min) (point-max))))
-             (goto-char (point-min))
-             (while (<= line-counter number-of-lines)
-                (progn
-                   (indent-for-tab-command)
-                   (forward-line)
-                   (setq line-counter (+ line-counter 1))
-                   )
-                )
-             )
-          )
-       )
-  (bind-key* "C-M-j" 'cg/ac-indent-buffer)
-    ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
-    ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
-    ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
+    ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
+  ;; REMARK: C-j has to set for each mode separately, since it is not
+  ;; possible to change C-j as trigger key for multi-occur search!!
+    (bind-key "C-j" 'indent-for-tab-command)
+      ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+      ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+      
+      (defun cg/ess-indent-buffer ()
+         "apply ess-indent to complete buffer"
+         (interactive)
+         (save-excursion
+            (let ((line-counter (line-number-at-pos (point-min)))
+                    (number-of-lines (count-lines (point-min) (point-max))))
+               (goto-char (point-min))
+               (while (<= line-counter number-of-lines)
+                  (progn
+                     (ess-indent-command)
+                     (forward-line)
+                     (setq line-counter (+ line-counter 1))
+                     )
+                  )
+               )
+            )
+         )
+      (defun cg/ac-indent-buffer ()
+         "apply automatic indentation to complete buffer"
+         (interactive)
+         (save-excursion
+            (let ((line-counter (line-number-at-pos (point-min)))
+                    (number-of-lines (count-lines (point-min) (point-max))))
+               (goto-char (point-min))
+               (while (<= line-counter number-of-lines)
+                  (progn
+                     (indent-for-tab-command)
+                     (forward-line)
+                     (setq line-counter (+ line-counter 1))
+                     )
+                  )
+               )
+            )
+         )
+    (bind-key* "C-M-j" 'cg/ac-indent-buffer)
+      ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
+      ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
+      ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
 #+END_SRC
 
 Furthermore, when relying completely on automatic indentation, it
@@ -948,7 +949,7 @@ At first, we want to set the most important key bindings.
   ;; (global-set-key "\C-cc" 'org-capture)
   ;; (global-set-key "\C-ca" 'org-agenda)
   ;; (global-set-key "\C-cb" 'org-iswitchb)
-  (bind-key "C-t C-t" 'next-error org-mode-map)
+  (bind-key "C-t n" 'next-error)
 #+END_SRC
 
 ** Org-mode file formats
@@ -1256,26 +1257,22 @@ Plain notes without any code, yanking or source file link.
                     ;("n" "Plain notes without code or yanking")
     
                     ;; git-note
-                    ("n" "plain note"
+                    ("n" "plain NOTE"
                        entry (file+headline "~/customs/gtd/refile.org" "notes")
-                       "* %? ")
+                       "* %? %^G \n")
   
-                    ("N" "note with yanking"
+                    ("N" "NOTE with YANKING"
                        entry (file+headline "~/customs/gtd/refile.org" "notes")
-                       "* %? \n%^C")
+                       "* %? %^G \n%^C \n")
   
-                    
-                    ("o" "note with origin and yanking"
-                       entry (file+headline "~/customs/gtd/refile.org" "notes")
-                       "* %? \nFrom: %A\n%^C")
-  
-                    ("s" "shortcut"
+                    ("s" "SHORTCUT"
                          table-line (file+headline "~/customs/gtd/refile.org" "shortcuts")
                          "| %? | |")
                     
-                    ("S" "shortcut with yanking"
-                         table-line (file+headline "~/customs/gtd/refile.org" "shortcuts")
-                         "| ^C | |")
+                    ("S" "shortcutS as HEADER"
+                         entry (file+headline "~/customs/gtd/refile.org" "notes")
+                         "* %? :scut: %^G \n :PROPERTIES:\n:type: scut \n :END: \n 
+| Shortcut | command | mode | description | \n")
     
                     )
              )
@@ -1283,8 +1280,11 @@ Plain notes without any code, yanking or source file link.
 )
     
 #+END_SRC
-Notes with code snippet in clipboard or kill ring, and source file link.
-#+BEGIN_SRC emacs-lisp
+Notes with code snippet in clipboard or kill ring, and source file
+link.
+However, I have disabled these commands recently, since I never used
+them. Perhaps they might help someone else.
+#+BEGIN_SRC emacs-lisp :tangle no
   (setq org-capture-templates       
 (append org-capture-templates
           (quote (
@@ -1339,17 +1339,18 @@ Additional notes to store:
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;; refile targets
-  (setq org-refile-targets
-     (quote
-        (
-           ("~/customs/gtd/todo.org" :maxlevel . 1)
-           ("~/how_to/comp_records.org" :maxlevel . 1)
-           ("~/customs/notes/priv_comp_notes.org" :maxlevel . 1)
-           ("~/customs/chronicle/oracle.org" :maxlevel . 1)
-           ("~/customs/gtd/creditcard.org" :maxlevel . 1)
-           ("~/literature/lit_man/opac.org" :maxlevel . 1)
-           )))
+    ;; refile targets
+    (setq org-refile-targets
+       (quote
+          (
+             ("~/customs/gtd/todo.org" :maxlevel . 1)
+             ("~/how_to/comp_records.org" :maxlevel . 1)
+             ("~/customs/notes/priv_comp_notes.org" :maxlevel . 1)
+             ("~/customs/notes/priv_install_notes.org" :maxlevel . 1)
+             ("~/customs/chronicle/oracle.org" :maxlevel . 1)
+             ("~/customs/gtd/creditcard.org" :maxlevel . 1)
+             ("~/literature/lit_man/opac.org" :maxlevel . 1)
+             )))
 #+END_SRC
 
 *** Push line to agenda
