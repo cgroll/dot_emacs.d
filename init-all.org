@@ -790,7 +790,13 @@ keybinding is used, as well as for inverse direction.
    (bind-key "M-S-SPC" 'cg/inverse-other-window)
     ;;(global-set-key (kbd "M-S-SPC") 'cg/inverse-other-window)
 #+END_SRC
-
+Using windmove for multiple windows:
+#+BEGIN_SRC emacs-lisp
+  (bind-key* "<M-left>" 'windmove-left)          ; move to left windnow
+  (bind-key* "<M-right>" 'windmove-right)        ; move to right window
+  (bind-key* "<M-up>" 'windmove-up)              ; move to upper window
+  (bind-key* "<M-down>" 'windmove-down)          ; move to downer window
+#+END_SRC
 *** Window resize operations
 Often it is necessary to resize, create and delete windows. Possible
 keybindings here are:
