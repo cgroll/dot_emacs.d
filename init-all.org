@@ -47,13 +47,14 @@ e.g. to copy from emacs to firefox.
 ** Spell checking
 Enable flyspell for all org-mode buffers.
 #+BEGIN_SRC emacs-lisp
-(ispell-change-dictionary "american")
-  (add-hook 'org-mode-hook
-     (lambda()
-        (ac-flyspell-workaround) ; to avoid interference with ac-mode
-        (flyspell-mode t)
-        )
-     )
+  (ispell-change-dictionary "american")
+    (add-hook 'org-mode-hook
+       (lambda()
+          (ac-flyspell-workaround) ; to avoid interference with ac-mode
+          (flyspell-mode t)
+          (unbind-key "C-." flyspell-mode-map)
+          )
+       )
 #+END_SRC
 
 Enable switching through languages:
@@ -150,51 +151,52 @@ stops.
 
 Now, set indentation key.
 #+BEGIN_SRC emacs-lisp
-    ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
+  ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
   ;; REMARK: C-j has to set for each mode separately, since it is not
   ;; possible to change C-j as trigger key for multi-occur search!!
-    (bind-key "C-j" 'indent-for-tab-command)
-      ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
-      ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
-      
-      (defun cg/ess-indent-buffer ()
-         "apply ess-indent to complete buffer"
-         (interactive)
-         (save-excursion
-            (let ((line-counter (line-number-at-pos (point-min)))
-                    (number-of-lines (count-lines (point-min) (point-max))))
-               (goto-char (point-min))
-               (while (<= line-counter number-of-lines)
-                  (progn
-                     (ess-indent-command)
-                     (forward-line)
-                     (setq line-counter (+ line-counter 1))
-                     )
-                  )
-               )
-            )
-         )
-      (defun cg/ac-indent-buffer ()
-         "apply automatic indentation to complete buffer"
-         (interactive)
-         (save-excursion
-            (let ((line-counter (line-number-at-pos (point-min)))
-                    (number-of-lines (count-lines (point-min) (point-max))))
-               (goto-char (point-min))
-               (while (<= line-counter number-of-lines)
-                  (progn
-                     (indent-for-tab-command)
-                     (forward-line)
-                     (setq line-counter (+ line-counter 1))
-                     )
-                  )
-               )
-            )
-         )
-    (bind-key* "C-M-j" 'cg/ac-indent-buffer)
-      ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
-      ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
-      ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
+  (bind-key "C-j" 'indent-for-tab-command)
+  (bind-key "C-j" 'indent-for-tab-command org-mode-map)
+  ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+  ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+  
+  (defun cg/ess-indent-buffer ()
+     "apply ess-indent to complete buffer"
+     (interactive)
+     (save-excursion
+        (let ((line-counter (line-number-at-pos (point-min)))
+                (number-of-lines (count-lines (point-min) (point-max))))
+           (goto-char (point-min))
+           (while (<= line-counter number-of-lines)
+              (progn
+                 (ess-indent-command)
+                 (forward-line)
+                 (setq line-counter (+ line-counter 1))
+                 )
+              )
+           )
+        )
+     )
+  (defun cg/ac-indent-buffer ()
+     "apply automatic indentation to complete buffer"
+     (interactive)
+     (save-excursion
+        (let ((line-counter (line-number-at-pos (point-min)))
+                (number-of-lines (count-lines (point-min) (point-max))))
+           (goto-char (point-min))
+           (while (<= line-counter number-of-lines)
+              (progn
+                 (indent-for-tab-command)
+                 (forward-line)
+                 (setq line-counter (+ line-counter 1))
+                 )
+              )
+           )
+        )
+     )
+  (bind-key* "C-M-j" 'cg/ac-indent-buffer)
+  ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
+  ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
+  ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
 #+END_SRC
 
 Furthermore, when relying completely on automatic indentation, it
@@ -293,8 +295,9 @@ syntax, I did adapt their key bindings, in order to have them set to
 the best accessible keys.
 
 #+BEGIN_SRC emacs-lisp
-(use-package ace-jump-mode
-  :bind ("C-." . ace-jump-mode))
+  (use-package ace-jump-mode
+     :config
+     (bind-key* "C-." 'ace-jump-mode))
 #+END_SRC
 
 
@@ -338,8 +341,8 @@ behavior based on previous motion are initialized.
   ;; (global-set-key (kbd "M-p") 'backward-word)
   ;; (global-set-key (kbd "M-<backspace>") 'backward-kill-word)
   ;; (global-set-key (kbd "M-d") 'kill-word)
-  (bind-key* "M-n" 'forward-word)
-  (bind-key* "M-p" 'backward-word)
+  (bind-key "M-n" 'forward-word)
+  (bind-key "M-p" 'backward-word)
   (bind-key* "M-<backspace>" 'backward-kill-word)
   (bind-key "M-d" 'kill-word)
   
@@ -1755,15 +1758,17 @@ found by emacs and are loaded at startup.
 (add-to-list 'load-path "~/.emacs.d/extensions")
 (require 'ac-math)
 (require 'auto-complete-etags)
-(require 'auto-complete-config)
+;(require 'auto-complete-config)
 #+END_SRC
 
 *** Initialization of static word lists 
 Syntax should be (setq ac-user-dictionary-files '("fileA" "fileB")).
 #+BEGIN_SRC emacs-lisp
-(setq ac-user-dictionary-files '("~/.emacs.d/extensions/auto-complete_own_words/own_word_list"))
-(setq ac-dictionary-files
-     '("~/.emacs.d/extensions/auto-complete/dict/"))
+  (setq ac-user-dictionary-files
+     '("~/.dict" 
+         "~/.emacs.d/extensions/auto-complete_own_words/own_word_list"))
+  ;(setq ac-dictionary-files
+  ;     '("~/.emacs.d/extensions/auto-complete/dict/"))
 #+END_SRC
 
 
@@ -1784,7 +1789,8 @@ add it as hook to the respective mode.
                                ;; ac-source-semantic
                                ac-source-latex-commands
                                ac-source-math-latex
-                               ac-source-etags
+                               ;; ac-source-etags
+                               ;; ac-source-R
                                ac-source-math-unicode))
 #+END_SRC
 
@@ -1831,10 +1837,10 @@ Best configuration: use same key, to perform:
 #+BEGIN_SRC emacs-lisp :tangle no
 (ac-set-trigger-key "C-o")
 (global-set-key (kbd "C-o") 'ac-expand)	; use C-j as trigger key / problem with new line?
-(define-key ac-completing-map "\M-/" 'ac-stop) ; undo completion
+;; (define-key ac-completing-map "\M-/" 'ac-stop) ; undo completion
+(bind-key* "M-/" 'ac-stop) ; undo completion
 (define-key ac-mode-map (kbd "C-o") 'auto-complete) ; restart ac-mode
 (define-key ac-mode-map (kbd "C-o") 'ac-complete) ; restart ac-mode
-
 
 (global-set-key (kbd "C-o") 'auto-complete)
 (global-set-key (kbd "C-o") 'ac-expand)
@@ -1874,6 +1880,36 @@ Enable tooltips for R objects, hints to function arguments and debugging.
 #+END_SRC
 
 * R settings
+**
+#+BEGIN_SRC emacs-lisp
+(defun r-show-head ()
+  (interactive)
+  (save-excursion
+    (ess-request-a-process ess-local-process-name)
+    (insert "head(")
+    (yank)
+    (insert ")")
+    (inferior-ess-send-input)
+    (end-of-buffer)
+    (recenter -1)
+    )
+  )
+
+
+(defun r-show-str ()
+  (interactive)
+  (save-excursion
+    (ess-request-a-process ess-local-process-name)
+    (insert "str(")
+    (yank)
+    (insert ")")
+    (inferior-ess-send-input)
+    (end-of-buffer)
+    (recenter -1)
+    )
+  )
+
+#+END_SRC
 ** Ess-tracebug:
 Enable ess-tracebug:
 
@@ -1983,34 +2019,6 @@ Enable ess-tracebug:
 
 (define-key ess-mode-map (kbd "C-c <SPC>") 'r-select-inferior)
 
-(defun r-show-head ()
-  (interactive)
-  (save-excursion
-    (ess-request-a-process ess-local-process-name)
-    (insert "head(")
-    (yank)
-    (insert ")")
-    (inferior-ess-send-input)
-    (end-of-buffer)
-    (recenter -1)
-    )
-  )
-
-(define-key ess-mode-map (kbd "C-c 1") 'r-show-head)
-
-(defun r-show-str ()
-  (interactive)
-  (save-excursion
-    (ess-request-a-process ess-local-process-name)
-    (insert "str(")
-    (yank)
-    (insert ")")
-    (inferior-ess-send-input)
-    (end-of-buffer)
-    (recenter -1)
-    )
-  )
-(define-key ess-mode-map (kbd "C-c 2") 'r-show-str)
 
 #+END_EXAMPLE
 
@@ -2622,7 +2630,19 @@ I find a very natural operation. Hence, this will be changed.
 If latex is not accessed through org-mode, I want to enable pdf-mode
 on startup.
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'latex-mode-hook 'TeX-PDF-mode)
+  ;;  (add-hook 'latex-mode-hook 'TeX-PDF-mode)
   (add-hook 'LaTeX-mode-hook 'TeX-PDF-mode)
+  (add-hook 'LaTeX-mode-hook 
+     (lambda () (bind-key "C-j" 'indent-for-tab-command LaTeX-mode-map)))
+  (add-hook 'latex-mode-hook
+     (lambda () (bind-key "C-j" 'indent-for-tab-command latex-mode-map)))
+  (add-hook 'LaTeX-mode-hook
+     (lambda () (setq-default TeX-master t)))
+  (add-hook 'latex-mode-hook
+     (lambda () (setq-default TeX-master t)))
+  
+  ;; (add-hook 'TeX-mode-hook
+  ;; (lambda () (bind-key "C-j" 'indent-for-tab-command TeX-mode-map)))
+  
 #+END_SRC
 

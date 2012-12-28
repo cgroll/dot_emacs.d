@@ -410,11 +410,13 @@ If there is no common part, this will be nil.")
 
 (defvar ac-completing-map
   (let ((map (make-sparse-keymap)))
-    (define-key map "\t" 'ac-expand)
-    (define-key map [tab] 'ac-expand)
-    (define-key map "\r" 'ac-complete)
-    (define-key map [return] 'ac-complete)
-    (define-key map (kbd "M-TAB") 'auto-complete)
+
+     ;; chapter changed by CG!!
+
+     (define-key map "C-o" 'ac-expand)
+     (define-key map "\r" 'ac-complete)
+     ;(define-key map "C-o" 'ac-complete)
+     ;(define-key map (kbd "M-TAB") 'auto-complete)
 
     (define-key map "\M-n" 'ac-next)
     (define-key map "\M-p" 'ac-previous)
@@ -430,6 +432,30 @@ If there is no common part, this will be nil.")
     (define-key map [C-up] 'ac-quick-help-scroll-up)
     (define-key map "\C-\M-n" 'ac-quick-help-scroll-down)
     (define-key map "\C-\M-p" 'ac-quick-help-scroll-up)
+
+
+
+
+     ;; (define-key map "\t" 'ac-expand)
+    ;; (define-key map [tab] 'ac-expand)
+    ;; (define-key map "\r" 'ac-complete)
+    ;; (define-key map [return] 'ac-complete)
+    ;; (define-key map (kbd "M-TAB") 'auto-complete)
+
+    ;; (define-key map "\M-n" 'ac-next)
+    ;; (define-key map "\M-p" 'ac-previous)
+    ;; (define-key map [down] 'ac-next)
+    ;; (define-key map [up] 'ac-previous)
+
+    ;; (define-key map [f1] 'ac-help)
+    ;; (define-key map [M-f1] 'ac-persist-help)
+    ;; (define-key map (kbd "C-?") 'ac-help)
+    ;; (define-key map (kbd "C-M-?") 'ac-persist-help)
+
+    ;; (define-key map [C-down] 'ac-quick-help-scroll-down)
+    ;; (define-key map [C-up] 'ac-quick-help-scroll-up)
+    ;; (define-key map "\C-\M-n" 'ac-quick-help-scroll-down)
+    ;; (define-key map "\C-\M-p" 'ac-quick-help-scroll-up)
 
     (dotimes (i 9)
       (let ((symbol (intern (format "ac-complete-%d" (1+ i)))))

@@ -6,6 +6,8 @@
 
 (defvar *emacs-load-start* (current-time))
 
+;; (setq tags-file-name nil)
+
 ;; show bookmark list at startup
 (setq inhibit-splash-screen t)
 (require 'bookmark)
@@ -59,16 +61,16 @@
 (bind-key* "C-t r" 'ido-toggle-regexp)
 
 ;; occur / multi-occur
-(bind-key "C-t o" 'occur)
-(bind-key "C-t O" 'multi-occur)
+(bind-key* "C-t o" 'occur)
+(bind-key* "C-t O" 'multi-occur)
 
 (use-package browse-kill-ring
    )
 
 ;; for bookmarks of recent files
-(bind-key "C-t b" 'recentf-open-files)
+(bind-key* "C-t b" 'recentf-open-files)
 (bind-key "C-x r B" 'bookmark-jump-other-window)
-(bind-key "C-M-ü" 'bookmark-jump-other-window)
+(bind-key* "C-M-ü" 'bookmark-jump-other-window)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -91,43 +93,61 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;;;;       auto-complete-mode
+;;;;;       auto-complete-mode and yasnippet
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'auto-complete)
-(ac-set-trigger-key "C-o")
-
-(require 'yasnippet)
-(yas-global-mode 1)
-(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-;(org-babel-load-file "~/.emacs.d/init-ac.org")
-(global-set-key (kbd "C-o") 'yas-prev-field)
-(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
-
-;; ;; auto-complete
-;; (add-to-list 'load-path "~/.emacs.d/extensions/")
-;; (org-babel-load-file "~/.emacs.d/init-ac.org")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       auto-complete-mode
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
 (add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
-(require 'auto-complete)
-(ac-set-trigger-key "C-o")
-(require 'yasnippet)
-(yas-global-mode 1)
-(setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-;(org-babel-load-file "~/.emacs.d/init-ac.org")
-(global-set-key (kbd "C-o") 'yas-prev-field)
-(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
 
-;; ;; auto-complete
-;; (add-to-list 'load-path "~/.emacs.d/extensions/")
-;; (org-babel-load-file "~/.emacs.d/init-ac.org")
+(use-package yasnippet
+   :config
+   (progn
+      (yas-global-mode 1)
+      (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
+      )
+   )
+(global-set-key (kbd "C-i") 'yas-expand)
+
+(define-key yas-minor-mode-map (kbd "C-i") 'yas-expand)
+;(define-key yas-minor-mode-map (kbd "C-u") 'yas-next-field)
+;(define-key yas-minor-mode-map (kbd "C-U") 'yas-prev-field)
+(define-key yas-minor-mode-map (kbd "C-I") 'yas-prev-field)
+; REMARK: it behaves completely different than what the settings say:
+; C-u is yas-prev-field, while TAB is yas-next-field
+
+(use-package auto-complete-config
+   :config
+   (progn
+      ;(ac-set-trigger-key "C-o")
+      (bind-key "C-o" 'ac-expand ac-mode-map)
+      (bind-key "C-o" 'ac-complete) 
+      ;(unbind-key "M-/")
+      ;(bind-key "M-/" 'ac-stop)
+      )
+
+   )
+
+(org-babel-load-file "~/.emacs.d/init-all.org")
+(bind-key "C-o" 'ac-complete)
+(bind-key "C-o" 'ac-expand ac-mode-map)
+
+
+;(require 'auto-complete)
+
+
+;(require 'yasnippet)
+;(global-set-key (kbd "C-o") 'yas-prev-field)
+;(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
+
+
+;; Add ac-source-dictionary to ac-sources of all buffer
+(defun cg/ac-add-ess-functionality ()
+   "allow manually adding etags-source, so that it is not loaded from
+startup"
+   (interactive)
+  (setq ac-sources (append ac-sources '(ac-source-etags ac-source-R))))
+
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;
@@ -153,7 +173,6 @@
 
 
 
-(org-babel-load-file "~/.emacs.d/init-all.org")
 
 
 ;; remove old .el files
@@ -170,7 +189,7 @@
    (error nil))
 
 ;; load tags-table, so that ac-source-etags will not fail
-(visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
+ (visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
 ;; (setq inferior-julia-program-name
 ;;    "~/julia/usr/bin/julia-release-basic")
 
@@ -188,7 +207,7 @@
 (use-package matlab
    :defer t
    :load-path "~/matlab-emacs"   
-   :if (file-exists-p "/home/chris/MATLAB/R2012a/bin/matlab")
+;;   :if (file-exists-p "/home/chris/MATLAB/R2012a/bin/matlab")
    :commands (matlab-shell matlab-mode)
    :mode ("\\.m$" . matlab-mode)
    :init
@@ -268,7 +287,8 @@
       )
    )
 ;; in order to add ess-process afterward, apply julia-mode again on
-;; open buffers
+;; open buffers - probably ess-julia.el has to be loaded again also:
+;; M-x load-file ess-julia.el
 
 ;; OLD CODE:
 
@@ -309,6 +329,11 @@
       (setq ess-use-tracebug t)           ; tracebug is called for R
                                         ; AND JULIA!!
       (setq ess-tracebug-inject-source-p t)
+      (require 'ess-r-args)
+      (require 'ess-R-object-tooltip)
+      (define-key ess-mode-map (kbd "C-c 1") 'r-show-head)
+      (define-key ess-mode-map (kbd "C-c 2") 'r-show-str)
+
       )
    )
 
@@ -325,6 +350,10 @@
 ;;;;;       magit
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; depending on computer, actual path could be different
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/magit-master")
 
 (use-package magit
    :defer t
@@ -548,8 +577,6 @@
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(LaTeX-math-abbrev-prefix "M-g")
- '(ac-dictionary-files (quote ("~/.emacs.d/extensions/auto-complete/dict/own_word_list")))
- '(ac-trigger-key "C-o")
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(global-auto-complete-mode t)
@@ -566,10 +593,11 @@
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-reverse-note-order nil)
  '(safe-local-variable-values (quote ((org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export))))
- '(yas-fallback-behavior (quote call-other-command))
- '(yas-prompt-functions (quote (yas-ido-prompt yas-x-prompt yas-dropdown-prompt yas-completing-prompt yas-ido-prompt yas-no-prompt)))
- '(yas-triggers-in-field t)
- '(yas-wrap-around-region t))
+ ;; '(yas-fallback-behavior (quote call-other-command))
+ ;; '(yas-prompt-functions (quote (yas-ido-prompt yas-x-prompt yas-dropdown-prompt yas-completing-prompt yas-ido-prompt yas-no-prompt)))
+ ;; '(yas-triggers-in-field t)
+ ;; '(yas-wrap-around-region t)
+   )
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
