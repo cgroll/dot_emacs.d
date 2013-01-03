@@ -151,52 +151,55 @@ stops.
 
 Now, set indentation key.
 #+BEGIN_SRC emacs-lisp
-  ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
-  ;; REMARK: C-j has to set for each mode separately, since it is not
-  ;; possible to change C-j as trigger key for multi-occur search!!
-  (bind-key "C-j" 'indent-for-tab-command)
-  (bind-key "C-j" 'indent-for-tab-command org-mode-map)
-  ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
-  ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
-  
-  (defun cg/ess-indent-buffer ()
-     "apply ess-indent to complete buffer"
-     (interactive)
-     (save-excursion
-        (let ((line-counter (line-number-at-pos (point-min)))
-                (number-of-lines (count-lines (point-min) (point-max))))
-           (goto-char (point-min))
-           (while (<= line-counter number-of-lines)
-              (progn
-                 (ess-indent-command)
-                 (forward-line)
-                 (setq line-counter (+ line-counter 1))
-                 )
-              )
-           )
-        )
-     )
-  (defun cg/ac-indent-buffer ()
-     "apply automatic indentation to complete buffer"
-     (interactive)
-     (save-excursion
-        (let ((line-counter (line-number-at-pos (point-min)))
-                (number-of-lines (count-lines (point-min) (point-max))))
-           (goto-char (point-min))
-           (while (<= line-counter number-of-lines)
-              (progn
-                 (indent-for-tab-command)
-                 (forward-line)
-                 (setq line-counter (+ line-counter 1))
-                 )
-              )
-           )
-        )
-     )
-  (bind-key* "C-M-j" 'cg/ac-indent-buffer)
-  ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
-  ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
-  ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
+    ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
+    ;; REMARK: C-j has to set for each mode separately, since it is not
+    ;; possible to change C-j as trigger key for multi-occur search!!
+    (bind-key "C-j" 'indent-for-tab-command)
+  (add-hook 'org-mode-hook
+     (lambda ()
+        (bind-key "C-j" 'indent-for-tab-command org-mode-map)))
+    
+    ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+    ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+    
+    (defun cg/ess-indent-buffer ()
+       "apply ess-indent to complete buffer"
+       (interactive)
+       (save-excursion
+          (let ((line-counter (line-number-at-pos (point-min)))
+                  (number-of-lines (count-lines (point-min) (point-max))))
+             (goto-char (point-min))
+             (while (<= line-counter number-of-lines)
+                (progn
+                   (ess-indent-command)
+                   (forward-line)
+                   (setq line-counter (+ line-counter 1))
+                   )
+                )
+             )
+          )
+       )
+    (defun cg/ac-indent-buffer ()
+       "apply automatic indentation to complete buffer"
+       (interactive)
+       (save-excursion
+          (let ((line-counter (line-number-at-pos (point-min)))
+                  (number-of-lines (count-lines (point-min) (point-max))))
+             (goto-char (point-min))
+             (while (<= line-counter number-of-lines)
+                (progn
+                   (indent-for-tab-command)
+                   (forward-line)
+                   (setq line-counter (+ line-counter 1))
+                   )
+                )
+             )
+          )
+       )
+    (bind-key* "C-M-j" 'cg/ac-indent-buffer)
+    ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
+    ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
+    ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
 #+END_SRC
 
 Furthermore, when relying completely on automatic indentation, it
@@ -1132,6 +1135,10 @@ storage location, prompts, tags and the like.
                      entry (file+headline "~/customs/gtd/refile.org" "tasks")
                      "* TODO %? %^G \nSCHEDULED: %t \n%^C\nAdded: %U\n"
                       :clock-resume t)
+
+                  ("tU" "SOFTWARE update on some computer"
+                     table-line (file+headline "~/customs/gtd/refile.org" "software update")
+                     "| %? | | | |")
                   
                   ;; New research project: create project heading in todo.org under research projects
                   ;; includes: link to file, timestamp, prompt for project tag as property %^{TAGS}p
@@ -1875,6 +1882,7 @@ Use auto-complete in nearly every mode.
 (add-to-list 'ac-modes 'org-src-mode)
 (add-to-list 'ac-modes 'LaTeX-math-mode)
 (add-to-list 'ac-modes 'message-mode)
+(add-to-list 'ac-modes 'julia-mode)
 (global-auto-complete-mode t)
 #+END_SRC
 

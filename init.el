@@ -17,7 +17,6 @@
 (switch-to-buffer-other-window "*Bookmark List*")
 (recentf-mode 1)
 
-
 ;; (bookmark-bmenu-list)
 ;; (switch-to-buffer-other-window "*Bookmark List*")
 
@@ -112,7 +111,7 @@
 (define-key yas-minor-mode-map (kbd "C-i") 'yas-expand)
 ;(define-key yas-minor-mode-map (kbd "C-u") 'yas-next-field)
 ;(define-key yas-minor-mode-map (kbd "C-U") 'yas-prev-field)
-(define-key yas-minor-mode-map (kbd "C-I") 'yas-prev-field)
+(define-key yas-minor-mode-map (kbd "C-S-i") 'yas-prev-field)
 ; REMARK: it behaves completely different than what the settings say:
 ; C-u is yas-prev-field, while TAB is yas-next-field
 
@@ -130,6 +129,7 @@
 
 (org-babel-load-file "~/.emacs.d/init-all.org")
 (bind-key "C-o" 'ac-complete)
+(bind-key* "C-O" 'auto-complete)
 (bind-key "C-o" 'ac-expand ac-mode-map)
 
 
