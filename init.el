@@ -130,6 +130,7 @@
 (org-babel-load-file "~/.emacs.d/init-all.org")
 (bind-key "C-o" 'ac-complete)
 (bind-key* "C-O" 'auto-complete)
+(bind-key* "C-S-o" 'auto-complete)
 (bind-key "C-o" 'ac-expand ac-mode-map)
 
 
