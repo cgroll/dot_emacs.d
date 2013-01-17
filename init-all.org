@@ -1533,6 +1533,7 @@ where Dropbox is not installed.
      '((emacs-lisp . t)
          (latex . t)
          (sh . t)
+         (gnuplot . t)
          (R . t)))
   
 #+END_SRC

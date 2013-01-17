@@ -150,6 +150,8 @@ startup"
   (setq ac-sources (append ac-sources '(ac-source-etags ac-source-R))))
 
 
+
+
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;
 ;; ;;;;;       yasnippet
@@ -345,6 +347,24 @@ startup"
 ;  (define-key inferior-ess-mode-map (kbd "_") 'self-insert-command)
 ;  (global-set-key (kbd "_") 'self-insert-command)
  ; (global-set-key (kbd "C-M--") 'cg/R-assign)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       gnuplot
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; load the file
+(require 'gnuplot)
+
+;; specify the gnuplot executable (if other than /usr/bin/gnuplot)
+;; (setq gnuplot-program "/sw/bin/gnuplot")
+
+;; automatically open files ending with .gp or .gnuplot in gnuplot mode
+(setq auto-mode-alist 
+   (append '(("\\.\\(gp\\|gnuplot\\)$" . gnuplot-mode)) auto-mode-alist))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
