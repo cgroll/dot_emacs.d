@@ -366,6 +366,14 @@ startup"
 (setq auto-mode-alist 
    (append '(("\\.\\(gp\\|gnuplot\\)$" . gnuplot-mode)) auto-mode-alist))
 
+(add-hook 'gnuplot-mode-hook
+   '(lambda ()
+       (define-key gnuplot-mode-map (kbd "C-c C-n") 'gnuplot-send-line-and-forward)
+       (define-key gnuplot-mode-map (kbd "C-c C-j") 'gnuplot-send-line-to-gnuplot)
+       (define-key gnuplot-mode-map (kbd "C-c C-t") 'gnuplot-negate-option)
+       (define-key gnuplot-mode-map (kbd "C-c C-s") 'gnuplot-gui-set-options-and-insert)
+       ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       magit

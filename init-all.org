@@ -1533,7 +1533,7 @@ where Dropbox is not installed.
      '((emacs-lisp . t)
          (latex . t)
          (sh . t)
-         (gnuplot . t)
+;;         (gnuplot . t)
          (R . t)))
   
 #+END_SRC
@@ -1884,6 +1884,7 @@ Use auto-complete in nearly every mode.
 (add-to-list 'ac-modes 'LaTeX-math-mode)
 (add-to-list 'ac-modes 'message-mode)
 (add-to-list 'ac-modes 'julia-mode)
+(add-to-list 'ac-modes 'gnuplot-mode)
 (global-auto-complete-mode t)
 #+END_SRC
 
