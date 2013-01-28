@@ -42,6 +42,15 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;;;;;       auctex
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;;;;       IDO-mode
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -356,8 +365,22 @@ startup"
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+;;--------------------------------------------------------------------
+;; Lines enabling gnuplot-mode
+
+;; move the files gnuplot.el to someplace in your lisp load-path or
+;; use a line like
+;;  (setq load-path (append (list "/path/to/gnuplot") load-path))
+(add-to-list 'load-path "~/.emacs.d/extensions/gnuplot")
+
+;; these lines enable the use of gnuplot mode
+  (autoload 'gnuplot-mode "gnuplot" "gnuplot major mode" t)
+  (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot mode" t)
+
 ;; load the file
-(require 'gnuplot)
+;; (add-to-list 'load-path "/usr/bin")
+;; (require 'gnuplot)
 
 ;; specify the gnuplot executable (if other than /usr/bin/gnuplot)
 ;; (setq gnuplot-program "/sw/bin/gnuplot")
