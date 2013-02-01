@@ -257,6 +257,7 @@ startup"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09/lisp/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-12.09-02/lisp/")
 ;(require 'ess-site)
 
 ;; allow julia to be loaded through call to julia-mode or
