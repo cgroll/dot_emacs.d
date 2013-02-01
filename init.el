@@ -30,6 +30,7 @@
 (add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
 (add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/org")
+(add-to-list 'load-path "/usr/share/emacs/23.3/lisp/org/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
