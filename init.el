@@ -648,12 +648,7 @@ startup"
  '(org-fast-tag-selection-single-key nil)
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-reverse-note-order nil)
- '(safe-local-variable-values (quote ((org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export))))
- ;; '(yas-fallback-behavior (quote call-other-command))
- ;; '(yas-prompt-functions (quote (yas-ido-prompt yas-x-prompt yas-dropdown-prompt yas-completing-prompt yas-ido-prompt yas-no-prompt)))
- ;; '(yas-triggers-in-field t)
- ;; '(yas-wrap-around-region t)
-   )
+ '(safe-local-variable-values (quote ((TeX-master . evt_main\.tex) (org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export)))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
