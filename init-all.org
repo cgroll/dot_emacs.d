@@ -2327,7 +2327,7 @@ bibtex-entry-field-alist
            (bibtex-end-of-entry)
            (setq end_point (point))
            (setq clean_bibtex_entry
-              (substring (buffer-string) beg_point
+              (substring (buffer-string) (- beg_point 1)
                  end_point))
            )
   
@@ -2597,7 +2597,7 @@ Set math prefix.
          (reftex-parse-all))
     (define-key org-mode-map (kbd "C-c (") 'reftex-citation))
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-(setq reftex-default-bibliography (quote "~/Dropbox/literature/management/references.bib"))
+(setq reftex-default-bibliography (quote "~/literature/lit_man/references.bib"))
 #+END_SRC
 
 
