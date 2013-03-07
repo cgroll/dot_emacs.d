@@ -215,6 +215,13 @@ startup"
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun cg/modify-matlab-keybindings ()
+   "adapt matlab-emacs keybindings"
+   (bind-key "M-j" 'cg/insert-tab matlab-mode-map)
+   (bind-key "C-j" 'indent-for-tab-command matlab-mode-map)
+   (bind-key "C-#" 'comment-or-uncomment-line matlab-mode-map)
+   (bind-key "M-;" 'comment-dwim matlab-mode-map)
+   )
 
 ;; allow matlab to be loaded through call to matlab-mode or
 ;; matlab-shell
@@ -235,6 +242,7 @@ startup"
       (require 'matlab-load)
       ;(matlab-cedet-setup)
       (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)
+      (add-to-list 'matlab-mode-hook 'cg/modify-matlab-keybindings)
       (setq matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
       )
    )

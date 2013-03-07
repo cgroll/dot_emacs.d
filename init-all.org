@@ -1904,6 +1904,7 @@ Use auto-complete in nearly every mode.
 (add-to-list 'ac-modes 'julia-mode)
 (add-to-list 'ac-modes 'gnuplot-mode)
 (add-to-list 'ac-modes 'makefile-mode)
+(add-to-list 'ac-modes 'M-Shell-mode)
 (global-auto-complete-mode t)
 #+END_SRC
 
