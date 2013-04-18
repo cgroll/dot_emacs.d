@@ -1224,7 +1224,7 @@ storage location, prompts, tags and the like.
                  ;; for date; date is active -> appears in agenda
                  ("ea" "annually repeating event"
                  plain (file+headline "~/customs/gtd/todo.org" "Anniversaries")
-                    "(org-anniversary %?) %^{Which event? Also, add %% in front} %d"
+                    "(org-anniversary 1984 09 09%?) %^{Which event? Correct date and add %% in front} %d"
                      :clock-resume t)
                  
                  ;; Entry in log: at current time finished activity with completion
@@ -1711,6 +1711,83 @@ Greek uppercase letters.
 
 *** Math-mode
 
+** org2blog                                                            :blog:
+Install [[https://github.com/punchagan/metaweblog.el/blob/master/metaweblog.el][metaweblog]], include:
+#+BEGIN_example 
+(defun metaweblog-upload-file (blog-xmlrpc user-name password blog-id file)
+  "Uploads file to the blog. FILE will be an alist name, type,
+bits, as keys mapped to name of the file, mime type and the
+data."
+  (let ((file-name (cdr (assoc "name" file)))
+(file-type (cdr (assoc "type" file)))
+(file-bits (cdr (assoc "bits" file))))
+
+    (xml-rpc-xml-to-response
+     (xml-rpc-request
+      blog-xmlrpc
+      `((methodCall
+         nil
+         (methodName nil "metaWeblog.newMediaObject")
+         (params nil
+                 (param nil (value nil (string nil ,blog-id)))
+                 (param nil (value nil (string nil ,user-name)))
+                 (param nil (value nil (string nil ,password)))
+                 (param nil (value nil
+                                   (struct
+                                    nil
+                                    (member nil
+                                            (name nil "name")
+                                            (value nil ,file-name))
+                                    (member nil
+                                            (name nil "bits")
+                                            (base64 nil ,file-bits))
+                                    (member nil
+                                            (name nil "type")
+                                            (value nil ,file-type))
+                                    (member nil
+                                            (name nil "overwrite")
+                                            (value nil "t")))))
+                 )))))))
+
+(defun get-file-properties (file)
+  "Gets the properties of a file."
+  (let* (base64-str type name)
+    (save-excursion
+      (save-restriction
+(with-current-buffer (find-file-noselect file)
+          (fundamental-mode)
+(setq name (file-name-nondirectory file))
+(setq base64-str (base64-encode-string (buffer-string)))
+(setq type (mailcap-extension-to-mime (file-name-extension file)))
+          (kill-buffer)
+(setq file-props `(("name" . ,name)
+                             ("bits" . ,base64-str)
+                             ("type" . ,type))))))
+    file-props))
+#+END_example
+Install [[https://launchpadlibrarian.net/40270196/xml-rpc.el][xml-rpc]].
+#+BEGIN_SRC emacs-lisp
+(require 'xml-rpc)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (setq load-path (cons "~/.emacs.d/extensions/org2blog/" load-path))
+  (require 'org2blog-autoloads)
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+(setq org2blog/wp-blog-alist
+           '(("wordpress"
+              :url "http://grollchristian.wordpress.com/xmlrpc.php"
+              :username "grollc"
+
+              :default-title "Hello World"
+              :default-categories ("priv" "research")
+              :tags-as-categories nil)
+             ))
+#+END_SRC
+Allow emacs to find htmlize.el:
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/extensions/org/contrib/lisp")
+#+END_SRC
 * auto-complete-mode INITIALIZATION
 The general idea of auto-complete-mode is to provide both static as
 well as dynamic completion on the fly, listed in a small pop-up
