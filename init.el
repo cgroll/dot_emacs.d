@@ -243,8 +243,17 @@ startup"
       ;(matlab-cedet-setup)
       (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)
       (add-to-list 'matlab-mode-hook 'cg/modify-matlab-keybindings)
+      (add-to-list 'matlab-mode-hook 'cg/command-line-keybindings)
       (setq matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
       )
+   )
+
+(defun cg/command-line-keybindings ()
+   "set keybindings for searches with comint"
+   (interactive)
+   (bind-key* "C-c M-r" 'comint-history-isearch)
+   (bind-key* "M-r" 'comint-previous-matching-input-from-input)
+   (bind-key* "C-t p" 'move-to-window-line-top-bottom)
    )
 
 ;;Setup cedet:

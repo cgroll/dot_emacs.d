@@ -114,11 +114,23 @@ Following the practice of most heavy-weight programmers, I adjust my
 emacs face-colors in order to have a dark-colored background and
 colored letters. This allegedly should be less exhausting to the
 eyes.
+Color themes can be seen on this site:
+http://color-theme-select.heroku.com/#color-theme-light
+
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/extensions/color-theme-6.6.0")
-  (require 'color-theme)
-  (color-theme-initialize)
-  (color-theme-jsc-dark)
+    (add-to-list 'load-path "~/.emacs.d/extensions/color-theme-6.6.0")
+    (require 'color-theme)
+    (color-theme-initialize)
+  ;;  (color-theme-euphoria)
+  ;; (color-theme-late-night)                   
+  ;; (color-theme-simple-1)
+;;  (color-theme-ld-dark)
+
+;;  (color-theme-lethe)
+;;  (color-theme-clarity)  ;; good!
+;;  (color-theme-retro-orange)
+;; (color-theme-arjen)
+(color-theme-billw)
 #+END_SRC
 Remark: sadly, this configuration seems to distort my auto-completion
 tooltip menu.
