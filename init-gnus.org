@@ -232,29 +232,4 @@ Lower numbers mean being more subscribed.
   (setq starttls-extra-arguments nil)
 #+end_src
 
-#+TITLE: Initialization of latex and alike
 
-Load auctex and preview latex.
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/auctex-11.87/")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/auctex-11.87/preview/")
-  (load "auctex.el" nil t t)
-  (load "preview-latex.el" nil t t)
-#+END_SRC
-
-Use article class as standard, and define, how headers will be
-  translated into sections.
-#+BEGIN_SRC emacs-lisp
-  (require 'org-latex)
-  (unless (boundp 'org-export-latex-classes)
-     (setq org-export-latex-classes nil))
-  (add-to-list 'org-export-latex-classes
-     '("article"
-         "\\documentclass{article}"
-         ("\\section{%s}" . "\\section*{%s}")
-         ("\\subsection{%s}" . "\\subsection*{%s}")
-         ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-         ("\\paragraph{%s}" . "\\paragraph*{%s}")
-         ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  
-#+END_SRC
