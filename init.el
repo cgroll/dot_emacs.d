@@ -27,10 +27,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "~/.emacs.d/extensions/")
+(add-to-list 'load-path "~/")
 (add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
 (add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
 ;;(add-to-list 'load-path "/usr/share/emacs/23.3/lisp/org/")
 (add-to-list 'load-path "~/.emacs.d/extensions/org-mode/lisp")
+(add-to-list 'load-path "~/.emacs.d/extensions/org/lisp")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/org")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -667,15 +669,25 @@ startup"
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-reverse-note-order nil)
  '(safe-local-variable-values (quote ((TeX-master . evt_main\.tex) (org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export)))))
+;; (custom-set-faces
+;;   ;; custom-set-faces was added by Custom.
+;;   ;; If you edit it by hand, you could mess it up, so be careful.
+;;   ;; Your init file should contain only one such instance.
+;;   ;; If there is more than one, they won't work right.
+;;  '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.5 :width expanded))))
+;;  '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.4 :width normal))))
+;;  '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.3 :width normal))))
+;;  '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.2))))
+;;  '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.5 :width expanded))))
- '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.4 :width normal))))
- '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.3 :width normal))))
- '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.2))))
+ '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.1 :width expanded))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.1 :width normal))))
+ '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.1 :width normal))))
+ '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.1))))
  '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
 (put 'upcase-region 'disabled nil)
 

@@ -1958,18 +1958,20 @@ Best configuration: use same key, to perform:
 - expansion of shown word
 - restart and move forward one proposed completion
 #+BEGIN_SRC emacs-lisp :tangle no
-(ac-set-trigger-key "C-o")
-(global-set-key (kbd "C-o") 'ac-expand)	; use C-j as trigger key / problem with new line?
-;; (define-key ac-completing-map "\M-/" 'ac-stop) ; undo completion
-(bind-key* "M-/" 'ac-stop) ; undo completion
-(define-key ac-mode-map (kbd "C-o") 'auto-complete) ; restart ac-mode
-(define-key ac-mode-map (kbd "C-o") 'ac-complete) ; restart ac-mode
-
-(global-set-key (kbd "C-o") 'auto-complete)
-(global-set-key (kbd "C-o") 'ac-expand)
-(ac-set-trigger-key "C-o")
-(global-set-key (kbd "C-o") 'ac-complete)
-
+  (ac-set-trigger-key "C-o")              
+  (global-set-key (kbd "C-o") 'ac-expand)   ; use C-j as trigger key / problem with new line?
+  ;; (define-key ac-completing-map "\M-/" 'ac-stop) ; undo completion
+  (bind-key* "M-/" 'ac-stop) ; undo completion
+  (define-key ac-mode-map (kbd "C-o") 'auto-complete) ; restart ac-mode
+  (define-key ac-mode-map (kbd "C-o") 'ac-complete) ; restart ac-mode
+  
+  (global-set-key (kbd "C-o") 'auto-complete)
+  (global-set-key (kbd "C-o") 'ac-expand)
+  (ac-set-trigger-key "C-o")
+  (global-set-key (kbd "C-o") 'ac-complete)
+  
+  (unbind-key "C" ac-mode-map) 
+  
 #+END_SRC
 
 *** Menu settings
