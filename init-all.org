@@ -1800,8 +1800,15 @@ Install [[https://launchpadlibrarian.net/40270196/xml-rpc.el][xml-rpc]].
 #+END_SRC
 Allow emacs to find htmlize.el:
 #+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/extensions/org-mode/contrib/lisp")
   (add-to-list 'load-path "~/.emacs.d/extensions/org/contrib/lisp")
 #+END_SRC
+Allow resizing of images:
+#+BEGIN_SRC emacs-lisp
+  (setq org-image-actual-width nil)
+#+END_SRC
+
+
 * auto-complete-mode INITIALIZATION
 The general idea of auto-complete-mode is to provide both static as
 well as dynamic completion on the fly, listed in a small pop-up
