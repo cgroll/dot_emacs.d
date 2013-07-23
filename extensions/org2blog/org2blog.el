@@ -7,6 +7,7 @@
 ;; Copyright (C) 2010 Giovanni Moretti <Giovanni@reflections.co.nz>
 ;; Copyright (C) 2011 Mykola Nikishov <mn@mn.com.ua>
 ;; Copyright (C) 2010 Matt Price <matt@roke.mercey.dyndns.org>
+;; Copyright (C) 2013 Peter Vasil <mail@petervasil.net>
 
 ;; Author: Puneeth Chaganti <punchagan+org2blog@gmail.com>
 ;; Version: 0.5
@@ -19,11 +20,11 @@
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
-;; along with this program. If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;; A portion of the code in this file is based on blog.el posted to
 ;; http://www.mail-archive.com/gnu-emacs-sources@gnu.org/msg01576.html
@@ -40,18 +41,20 @@
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; if not, write to the Free Software
-;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+;; Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
 (require 'org)
-(require 'ox)
 (require 'xml-rpc)
 (require 'metaweblog)
+
+(unless (version-list-< (version-to-list (org-version)) '(8 0 0))
+  (require 'ox))
 
 (defgroup org2blog/wp nil
   "Post to weblogs from Emacs"
@@ -59,13 +62,13 @@
 
 (defcustom org2blog/wp-blog-alist nil
   "Association list to set information for each blog.
-Each element of the alist is a blog name. The CAR of each
-element is a string, uniquely identifying the project. The CDR
+Each element of the alist is a blog name.  The CAR of each
+element is a string, uniquely identifying the project.  The CDR
 of each element is a well-formed property list with an even
 number of elements, alternating keys and values, specifying
 parameters for the blog.
 
-(:property value :property value ... )
+     (:property value :property value ... )
 
 When a property is given a value in org2blog/wp-blog-alist, its
 setting overrides the value of the corresponding user
@@ -73,23 +76,23 @@ variable (if any) during publishing.
 
 Most properties are optional, but some should always be set:
 
-:url xmlrpc url of the blog.
-:username username to be used.
+  :url                     xmlrpc url of the blog.
+  :username                username to be used.
 
 All the other properties are optional. They over-ride the global variables.
 
-:password password to be used
-:default-title `org2blog/wp-default-title'
-:default-categories `org2blog/wp-default-categories'
-Use a list of categories.
-(\"category1\" \"category2\" ...)
-:tags-as-categories `org2blog/wp-use-tags-as-categories'
-:confirm `org2blog/wp-confirm-post'
-:show `org2blog/wp-show-post-in-browser'
-:keep-new-lines `org2blog/wp-keep-new-lines'
-:wp-latex `org2blog/wp-use-wp-latex'
-:wp-code `org2blog/wp-use-sourcecode-shortcode'
-:track-posts `org2blog/wp-track-posts'
+  :password                password to be used
+  :default-title           `org2blog/wp-default-title'
+  :default-categories      `org2blog/wp-default-categories'
+                           Use a list of categories.
+                           (\"category1\" \"category2\" ...)
+  :tags-as-categories      `org2blog/wp-use-tags-as-categories'
+  :confirm                 `org2blog/wp-confirm-post'
+  :show                    `org2blog/wp-show-post-in-browser'
+  :keep-new-lines          `org2blog/wp-keep-new-lines'
+  :wp-latex                `org2blog/wp-use-wp-latex'
+  :wp-code                 `org2blog/wp-use-sourcecode-shortcode'
+  :track-posts             `org2blog/wp-track-posts'
 "
   :group 'org2blog/wp
   :type '(alist :value-type plist))
@@ -138,9 +141,9 @@ Use a list of categories.
 
 (defcustom org2blog/wp-show-post-in-browser 'ask
   "A variable to configure if you want to view your post/draft in
-the browser. Setting it to 'ask will prompt you before opening
-it in the browser. Setting it to 'show will show it without
-prompting. Set it to nil, to turn off viewing posts in the
+the browser.  Setting it to 'ask will prompt you before opening
+it in the browser.  Setting it to 'show will show it without
+prompting.  Set it to nil, to turn off viewing posts in the
 browser."
   :group 'org2blog/wp
   :type 'boolean)
@@ -182,9 +185,9 @@ be on your emacs load-path for this to work."
    '("R" . "r")
    '("emacs-lisp" . "lisp"))
   "Association list for source code languages supported by Org
-and by SyntaxHighlighter. Each element of the list maps the
+and by SyntaxHighlighter.  Each element of the list maps the
 orgmode source code language (key) to the language spec that
-should be used for syntax highlighting in shortcode blocks. The
+should be used for syntax highlighting in shortcode blocks.  The
 target languages need to be in 'org2blog/wp-sourcecode-langs ."
   :group 'org2blog/wp
   :type '(alist :key-type string :value-type string))
@@ -246,7 +249,7 @@ Set to nil if you don't wish to track posts."
 (defun org2blog/wp-kill-buffer-hook ()
   "Prompt before killing buffer."
   (if (and org2blog/wp-buffer-kill-prompt
-(not (buffer-file-name)))
+	   (not (buffer-file-name)))
     (if (y-or-n-p "Save entry?")
         (progn
           (save-buffer)
@@ -256,14 +259,14 @@ Set to nil if you don't wish to track posts."
 ;; Set the mode map for org2blog.
 (unless org2blog/wp-entry-mode-map
   (setq org2blog/wp-entry-mode-map
-(let ((org2blog/wp-map (make-sparse-keymap)))
-(set-keymap-parent org2blog/wp-map org-mode-map)
-(define-key org2blog/wp-map (kbd "C-c p") 'org2blog/wp-post-buffer-and-publish)
-(define-key org2blog/wp-map (kbd "C-c P") 'org2blog/wp-post-buffer-as-page-and-publish)
-(define-key org2blog/wp-map (kbd "C-c d") 'org2blog/wp-post-buffer)
-(define-key org2blog/wp-map (kbd "C-c D") 'org2blog/wp-post-buffer-as-page)
-(define-key org2blog/wp-map (kbd "C-c t") 'org2blog/wp-complete-category)
-org2blog/wp-map)))
+	(let ((org2blog/wp-map (make-sparse-keymap)))
+	  (set-keymap-parent org2blog/wp-map org-mode-map)
+	  (define-key org2blog/wp-map (kbd "C-c p") 'org2blog/wp-post-buffer-and-publish)
+	  (define-key org2blog/wp-map (kbd "C-c P") 'org2blog/wp-post-buffer-as-page-and-publish)
+	  (define-key org2blog/wp-map (kbd "C-c d") 'org2blog/wp-post-buffer)
+	  (define-key org2blog/wp-map (kbd "C-c D") 'org2blog/wp-post-buffer-as-page)
+	  (define-key org2blog/wp-map (kbd "C-c t") 'org2blog/wp-complete-category)
+	  org2blog/wp-map)))
 
 ;;;###autoload
 (define-minor-mode org2blog/wp-mode
@@ -352,27 +355,27 @@ from currently logged in."
            (read-passwd (format "%s Weblog password? " org2blog/wp-blog-name)))
           ;; Fetch and save category list
           org2blog/wp-categories-list
-(mapcar (lambda (category) (cdr (assoc "categoryName" category)))
-(metaweblog-get-categories org2blog/wp-server-xmlrpc-url
-org2blog/wp-server-userid
+	  (mapcar (lambda (category) (cdr (assoc "categoryName" category)))
+		  (metaweblog-get-categories org2blog/wp-server-xmlrpc-url
+					     org2blog/wp-server-userid
                                              org2blog/wp-server-pass
-org2blog/wp-server-blogid))
+					     org2blog/wp-server-blogid))
           ;; Fetch and save tag list
           org2blog/wp-tags-list
-(mapcar (lambda (tag) (cdr (assoc "slug" tag)))
-(wp-get-tags org2blog/wp-server-xmlrpc-url
-org2blog/wp-server-userid
+	  (mapcar (lambda (tag) (cdr (assoc "slug" tag)))
+		  (wp-get-tags org2blog/wp-server-xmlrpc-url
+			       org2blog/wp-server-userid
                                org2blog/wp-server-pass
-org2blog/wp-server-blogid))
+			       org2blog/wp-server-blogid))
           ;; Fetch and save page list
           org2blog/wp-pages-list
-(mapcar (lambda (pg)
+	  (mapcar (lambda (pg)
                     (cons (cdr (assoc "page_title" pg))
                           (cdr (assoc "page_id" pg))))
-(wp-get-pagelist org2blog/wp-server-xmlrpc-url
-org2blog/wp-server-userid
-org2blog/wp-server-pass
-org2blog/wp-server-blogid)))
+		  (wp-get-pagelist org2blog/wp-server-xmlrpc-url
+				   org2blog/wp-server-userid
+				   org2blog/wp-server-pass
+				   org2blog/wp-server-blogid)))
     (setq org2blog/wp-logged-in t)
     (message "Logged in")))
 
@@ -380,13 +383,13 @@ org2blog/wp-server-blogid)))
   "Logs out from the blog and clears. Clears the internal data structures."
   (interactive)
   (setq org2blog/wp-server-xmlrpc-url nil
-org2blog/wp-server-userid nil
-org2blog/wp-server-blogid nil
-org2blog/wp-server-pass nil
-org2blog/wp-categories-list nil
-org2blog/wp-tags-list nil
-org2blog/wp-pages-list nil
-org2blog/wp-logged-in nil)
+	org2blog/wp-server-userid nil
+	org2blog/wp-server-blogid nil
+	org2blog/wp-server-pass nil
+	org2blog/wp-categories-list nil
+	org2blog/wp-tags-list nil
+	org2blog/wp-pages-list nil
+	org2blog/wp-logged-in nil)
   (message "Logged out"))
 
 ;;;###autoload
@@ -619,14 +622,16 @@ org2blog/wp-logged-in nil)
         ;; Get the syntaxhl params and other info about the src_block
         (let* ((info (org-babel-get-src-block-info))
                (params (nth 2 info))
-               (code (org-html-protect (nth 1 info)))
+               (code (if (version-list-< (version-to-list (org-version)) '(8 0 0))
+                         (org-html-protect (nth 1 info))
+                       (org-html-encode-plain-text (nth 1 info))))
                (org-src-lang
                  (or (cdr (assoc (nth 0 info) org2blog/wp-shortcode-langs-map))
                      (nth 0 info)))
                (lang (or (car
                           (member org-src-lang org2blog/wp-sourcecode-langs))
                          "text"))
-               (header (concat "[sourcecode language=\"" lang "\" "
+               (header (concat "[sourcecode language=\"" lang  "\" "
                                (if (assoc :syntaxhl params)
                                    (cdr (assoc :syntaxhl params))
                                  org2blog/wp-sourcecode-default-params)
@@ -696,17 +701,15 @@ org2blog/wp-logged-in nil)
           (setq post-title (or (plist-get
                                 ;; In org 8 this has been replaced by
                                 ;; org-export-get-enviroment
-                                (condition-case nil
+                                (if (version-list-< (version-to-list (org-version)) '(8 0 0))
                                     (org-infile-export-plist)
-                                  (void-function
-                                   (org-export-get-environment))
-                                  ) :title)
+                                  (org-export-get-environment))
+                                :title)
                                "No Title"))
-          (setq excerpt (plist-get (condition-case nil
+          (setq excerpt (plist-get (if (version-list-< (version-to-list (org-version)) '(8 0 0))
                                        (org-infile-export-plist)
-                                     (void-function
-                                      (org-export-get-environment))
-                                     ) :description))
+                                     (org-export-get-environment))
+                                   :description))
           (setq permalink (org2blog/wp-get-option "PERMALINK"))
           (setq post-id (org2blog/wp-get-option "POSTID"))
           (setq post-par (org2blog/wp-get-post-parent
@@ -745,21 +748,24 @@ org2blog/wp-logged-in nil)
         ;; Get the exported html
         (save-excursion
           (if (not narrow-p)
-              (setq html-text (org-export-as-html nil nil nil 'string))
-                    ;; ;;Starting with org-mode 7.9.3, org-export-as-html
-                    ;; ;;takes 4 optional args instead of 5.
-                    ;; (condition-case nil
-                    ;;     (org-export-as-html nil nil nil 'string t nil)
-                    ;;   (wrong-number-of-arguments
-                    ;;    (org-export-as-html nil nil 'string t nil))
-                    ;;   ;; In org 8 this function has ben renamed
-                    ;;   (void-function
-                    ;;    (org-export-as 'html nil nil t nil))))
+              (setq html-text
+                    ;;Starting with org-mode 7.9.3, org-export-as-html
+                    ;;takes 4 optional args instead of 5.
+                    (cond
+                     ((version-list-< (version-to-list (org-version)) '(7 9 3))
+                      (org-export-as-html nil nil nil 'string t nil))
+                     ((and (not (version-list-< (version-to-list (org-version)) '(7 9 3)))
+                           (version-list-< (version-to-list (org-version)) '(8 0 0)))
+                      (org-export-as-html nil nil 'string t nil))
+                     ((not (version-list-< (version-to-list (org-version)) '(8 0 0)))
+                      (org-export-as 'html nil nil t nil))))
             (setq html-text
-                  (org-export-region-as-html
-                   (1+ (and (org-back-to-heading) (line-end-position)))
-                   (org-end-of-subtree)
-                   t 'string)))
+                  (if (version-list-< (version-to-list (org-version)) '(8 0 0))
+                      (org-export-region-as-html
+                       (1+ (and (org-back-to-heading) (line-end-position)))
+                       (org-end-of-subtree)
+                       t 'string)
+                    (org-export-as 'html t nil t))))
           (setq html-text (org-no-properties html-text)))
 
         ;; Post-process as required.
@@ -775,20 +781,16 @@ org2blog/wp-logged-in nil)
      (cons "point" (point))
      (cons "subtree" narrow-p)
      (cons "date" post-date)
-     (cons "title" (condition-case nil
-                       ;; Fix api change in Org 8
+     (cons "title" (if (version-list-< (version-to-list (org-version)) '(8 0 0))
                        (org-html-do-expand post-title)
-                     (void-function
-                      (car post-title))))
+                     (org-element-interpret-data post-title)))
      (cons "tags" tags)
      (cons "categories" categories)
      (cons "post-id" post-id)
      (cons "parent" post-par)
-     (cons "excerpt" (condition-case nil
-                         ;; Fix api change in Org 8
+     (cons "excerpt" (if (version-list-< (version-to-list (org-version)) '(8 0 0))
                          (org-html-do-expand (or excerpt ""))
-                       (void-function
-                        (or excerpt ""))))
+                       (org-element-interpret-data (or excerpt ""))))
      (cons "permalink" (or permalink ""))
      (cons "description" html-text))))
 
@@ -902,9 +904,9 @@ org2blog/wp-logged-in nil)
                           (cons (cdr (assoc "title" pg))
                                 (cdr (assoc "page_id" pg))))
                         (wp-get-pagelist org2blog/wp-server-xmlrpc-url
-org2blog/wp-server-userid
-org2blog/wp-server-pass
-org2blog/wp-server-blogid)))
+					 org2blog/wp-server-userid
+					 org2blog/wp-server-pass
+					 org2blog/wp-server-blogid)))
           (if (cdr (assoc "subtree" post))
               (org-entry-put (point) "POSTID" post-id)
             (goto-char (point-min))
@@ -1019,24 +1021,24 @@ use absolute path or set org-directory")
           (cond
            ((looking-at "TAGS: ")
             (setq tag-or-cat-list org2blog/wp-tags-list)
-(setq tag-or-cat-prompt "Tag ?"))
+	    (setq tag-or-cat-prompt "Tag ?"))
            ((looking-at "CATEGORY: ")
             (setq tag-or-cat-list org2blog/wp-categories-list)
-(setq tag-or-cat-prompt "Category ?"))
+	    (setq tag-or-cat-prompt "Category ?"))
            ((looking-at "PARENT: ")
             (setq tag-or-cat-list org2blog/wp-pages-list)
-(setq tag-or-cat-prompt "Parent ?")))
+	    (setq tag-or-cat-prompt "Parent ?")))
           (goto-char current-pos)
-       (let ((word-match (or (current-word t) ""))
-       (completion-match nil))
-       (when word-match
-       (setq completion-match (completing-read tag-or-cat-prompt tag-or-cat-list nil nil word-match))
-       (when (stringp completion-match)
-       (search-backward word-match nil t)
+      	  (let ((word-match (or (current-word t) ""))
+      		(completion-match nil))
+      	    (when word-match
+      	      (setq completion-match (completing-read tag-or-cat-prompt tag-or-cat-list nil nil word-match))
+      	      (when (stringp completion-match)
+      		(search-backward word-match nil t)
                 (replace-match (concat completion-match ", ") nil t)))))
       (progn
-       (goto-char current-pos)
-       (command-execute (lookup-key org-mode-map (kbd "C-c t")))))))
+      	(goto-char current-pos)
+      	(command-execute (lookup-key org-mode-map (kbd "C-c t")))))))
 
 ;;;###autoload
 (defun org2blog/wp-post-subtree (&optional publish)
