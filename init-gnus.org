@@ -232,4 +232,56 @@ Lower numbers mean being more subscribed.
   (setq starttls-extra-arguments nil)
 #+end_src
 
+** Mail splitting
 
+#+BEGIN_SRC emacs-lisp
+(setq nnimap-split-inbox "INBOX") ;; (1)
+ (setq nnimap-split-predicate "UNDELETED") ;; (2)
+ (setq nnimap-split-rule
+       '(
+         ("INBOX.spam" "^Subject:.*Automatischer Spam-Report")
+         ("INBOX.work" "^To:.*Christian.Groll@stat.uni-muenchen.de")
+         ("INBOX.gmail" "^To:.*cgroll.ger@gmail.com")
+         ("INBOX.gmx" "^To:.*cgroll@gmx.de")
+         ("INBOX.lokalisten" "^From:.*support@lokalisten.de")    
+         ("INBOX.misc" "")   
+        ))
+
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+;; mail number, date
+(setq gnus-summary-line-format "%U%R%z%I%(%[%4N][%z|%d: %-23,23f%]%) %s\n")
+;; (setq gnus-summary-mode-line-format "Gnus: %g [%A] %Z")
+(setq gnus-cacheable-groups nil)
+
+(cond (window-system
+         (setq custom-background-mode 'light)
+         (defface my-group-face-1
+            '((t (:foreground "Red" :bold t))) "First group face")
+         (defface my-group-face-2
+            '((t (:foreground "DarkSeaGreen4" :bold t)))
+            "Second group face")
+         (defface my-group-face-3
+            '((t (:foreground "Green4" :bold t))) "Third group face")
+         (defface my-group-face-4
+            '((t (:foreground "SteelBlue" :bold t))) "Fourth group face")
+         (defface my-group-face-5
+            '((t (:foreground "Blue" :bold t))) "Fifth group face")))
+
+;; apply colors if conditions are fulfilled
+(setq gnus-group-highlight
+   '(((> unread 200) . my-group-face-1)
+       (mailp . my-group-face-3)
+       ((zerop unread) . my-group-face-4)
+       (t . my-group-face-5)))
+
+(setq gnus-topic-line-format "%i[ %n:  %A] %v\n")
+
+#+END_SRC
+some other stuff
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq nnmail-resplit-incoming t)
+
+
+#+END_SRC
