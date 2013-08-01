@@ -247,7 +247,9 @@ Change colors and line formats:
 (cond (window-system
          (setq custom-background-mode 'light)
          (defface my-group-face-1
-            '((t (:foreground "Red" :bold t))) "First group face")
+            '((t (:foreground "Red" :bold t))) "Unread mails group face")
+         (defface my-group-face-6
+            '((t (:foreground "tomato" :bold t))) "Mail group face")
          (defface my-group-face-2
             '((t (:foreground "DarkSeaGreen4" :bold t)))
             "Second group face")
@@ -261,7 +263,8 @@ Change colors and line formats:
 ;; apply colors if conditions are fulfilled
 (setq gnus-group-highlight
    '(((> unread 200) . my-group-face-3)
-       (mailp . my-group-face-1)
+       ((and mailp (> unread 0)) . my-group-face-1)
+       (mailp . my-group-face-6)
        ((zerop unread) . my-group-face-4)
        (t . my-group-face-5)))
 
@@ -275,26 +278,6 @@ Change colors and line formats:
 ** Mail splitting
 Create split rule with patterns differing between servers:
 #+BEGIN_SRC emacs-lisp 
-  ;; define split fancy for lrz server
-  (setq nnimap-split-fancy
-     '(|
-         (: nnmail-split-fancy-with-parent)
-         (any "cgroll@gmx.de" "INBOX.private")
-         (any "cgroll.ger@gmail.com" "INBOX.private")
-         (any "cgroll.ger@googlemail.com" "INBOX.private")
-         (any "\\.*[Bb]lokhina" "INBOX.private")
-         (any "marco.farsch@derpart.com" "INBOX.private")
-         (any "philipp.hell@unicreditgroup.de" "INBOX.private")
-         (any "allagnon2001@yahoo.fr" "INBOX.private")
-         (any "JOHANNES.LEITZ@ALLIANZ.COM" "INBOX.private")
-         (any "alexander.nikolaus.kerscher@gmail.com" "INBOX.private")
-         (any "Christian.Groll@stat.uni-muenchen.de" "INBOX.workMAIL")
-         (any "alle@stat.uni-muenchen.de" "INBOX.workMLIST") ; mailing list
-         (any "mitarb@stat.uni-muenchen.de" "INBOX.workMLIST")
-         ("INBOX.workMAIL")
-         )
-     )
-  
   ;; define split-rule
   (setq nnimap-split-rule
      '(("gmx"    (".*"    
@@ -328,6 +311,7 @@ Create split rule with patterns differing between servers:
                            ("gmail.spam" "^From:.*news@clubstars.net")
                            ("gmail.spam" "^From:.*mailings@gmxnet.de")
                            ("gmail.spam" "^Subject:.*LOVEFILM.*")
+                           ("gmail.HOLIDAY" "^From:.*cgroll@zoho.com")
                            ("gmail.MAIL" "")))
             )
          ("lrz"    (".*" nnimap-split-fancy))
