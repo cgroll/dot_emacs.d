@@ -232,28 +232,17 @@ Lower numbers mean being more subscribed.
   (setq starttls-extra-arguments nil)
 #+end_src
 
-** Mail splitting
-
-#+BEGIN_SRC emacs-lisp
-(setq nnimap-split-inbox "INBOX") ;; (1)
- (setq nnimap-split-predicate "UNDELETED") ;; (2)
- (setq nnimap-split-rule
-       '(
-         ("INBOX.spam" "^Subject:.*Automatischer Spam-Report")
-         ("INBOX.work" "^To:.*Christian.Groll@stat.uni-muenchen.de")
-         ("INBOX.gmail" "^To:.*cgroll.ger@gmail.com")
-         ("INBOX.gmx" "^To:.*cgroll@gmx.de")
-         ("INBOX.lokalisten" "^From:.*support@lokalisten.de")    
-         ("INBOX.misc" "")   
-        ))
-
-#+END_SRC
-
+Change colors and line formats:
 #+BEGIN_SRC emacs-lisp
 ;; mail number, date
-(setq gnus-summary-line-format "%U%R%z%I%(%[%4N][%z|%d: %-23,23f%]%) %s\n")
+(setq gnus-user-date-format-alist '((t . "%y-%m-%d %H:%M")))
+(setq gnus-summary-line-format "%U%R%z%I%(%[%4N][%&user-date;  %-15,15f  %B%s%)\n")
+
+;; gnus group format
+(setq gnus-group-line-format "    %i%M%S%B%([%y | %L]: %g%)%O: [%t]\n")
 ;; (setq gnus-summary-mode-line-format "Gnus: %g [%A] %Z")
-(setq gnus-cacheable-groups nil)
+(setq gnus-topic-line-format "%i[ %n:  %A] %v\n")
+(setq gnus-server-line-format "     {%(%h:%w%)} %s%a\n")
 
 (cond (window-system
          (setq custom-background-mode 'light)
@@ -271,17 +260,117 @@ Lower numbers mean being more subscribed.
 
 ;; apply colors if conditions are fulfilled
 (setq gnus-group-highlight
-   '(((> unread 200) . my-group-face-1)
-       (mailp . my-group-face-3)
+   '(((> unread 200) . my-group-face-3)
+       (mailp . my-group-face-1)
        ((zerop unread) . my-group-face-4)
        (t . my-group-face-5)))
 
-(setq gnus-topic-line-format "%i[ %n:  %A] %v\n")
-
+(setq gnus-group-default-list-level 3)
+(setq gnus-activate-level 1)
+(add-hook 'gnus-summary-exit-hook 'gnus-summary-bubble-group)
+(setq gnus-use-full-window nil)
 #+END_SRC
-some other stuff
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq nnmail-resplit-incoming t)
 
 
+** Mail splitting
+Create split rule with patterns differing between servers:
+#+BEGIN_SRC emacs-lisp 
+  ;; define split fancy for lrz server
+  (setq nnimap-split-fancy
+     '(|
+         (: nnmail-split-fancy-with-parent)
+         (any "cgroll@gmx.de" "INBOX.private")
+         (any "cgroll.ger@gmail.com" "INBOX.private")
+         (any "cgroll.ger@googlemail.com" "INBOX.private")
+         (any "\\.*[Bb]lokhina" "INBOX.private")
+         (any "marco.farsch@derpart.com" "INBOX.private")
+         (any "philipp.hell@unicreditgroup.de" "INBOX.private")
+         (any "allagnon2001@yahoo.fr" "INBOX.private")
+         (any "JOHANNES.LEITZ@ALLIANZ.COM" "INBOX.private")
+         (any "alexander.nikolaus.kerscher@gmail.com" "INBOX.private")
+         (any "Christian.Groll@stat.uni-muenchen.de" "INBOX.workMAIL")
+         (any "alle@stat.uni-muenchen.de" "INBOX.workMLIST") ; mailing list
+         (any "mitarb@stat.uni-muenchen.de" "INBOX.workMLIST")
+         ("INBOX.workMAIL")
+         )
+     )
+  
+  ;; define split-rule
+  (setq nnimap-split-rule
+     '(("gmx"    (".*"    
+                    (("gmx.lokal"
+                        "^From:.*support@lokalisten.de")
+                       ("gmx.lokal"
+                          "^From:.*no-reply@lokalisten.de")
+                       ("gmx.lokal"
+                          "^From:.*friends@lokalisten.de")
+                       ("gmx.amazon" "^From:.*bestellbestaetigung@amazon.de")
+                       ("gmx.amazon" "^From:.*mazon.de")
+                       ("gmx.spam" "^Subject:.*Spam-Report")
+                       ("gmx.spam" "^From:.*noreply@gmx.de")
+                       ("gmx.spam" "^From:.*news@clubstars.net")
+                       ("gmx.spam" "^From:.*mailings@gmxnet.de")
+                       ("gmx.spam" "^From:.*mailings@gmx.net")
+                       ("gmx.spam" "^Subject:.*LOVEFILM.*")
+                       ("gmx.MAIL" ""))
+                    )
+          )
+         ("gmail"    (".*"
+                        (("gmail.lokal"
+                            "^From:.*support@lokalisten.de")
+                           ("gmail.lokal"
+                              "^From:.*no-reply@lokalisten.de")
+                           ("gmail.amazon" "^From:.*bestellbestaetigung@amazon.de")
+                           ("gmail.amazon" "^From:.*mazon.de")
+                           ("gmail.spam" "^Subject:.*Automatischer
+      Spam-Report")
+                           ("gmx.spam" "^From:.*noreply@gmx.de")
+                           ("gmail.spam" "^From:.*news@clubstars.net")
+                           ("gmail.spam" "^From:.*mailings@gmxnet.de")
+                           ("gmail.spam" "^Subject:.*LOVEFILM.*")
+                           ("gmail.MAIL" "")))
+            )
+         ("lrz"    (".*" nnimap-split-fancy))
+         )
+     )
+  
+  
 #+END_SRC
+
+Allow testing of split rule through respooling: probably not possible
+with extended syntax. Otherwise B q and B t would display where any
+given mail would be moved. This probably is originally designed for
+news instead of mails.
+#+BEGIN_SRC emacs-lisp
+(setq gnus-summary-respool-default-method 'nnimap-split-rule)
+(setq nnmail-split-methods nnimap-split-rule)
+#+END_SRC
+
+Some settings on splitting:
+#+BEGIN_SRC emacs-lisp
+  ;; try to resplit old mails too
+  (setq nnmail-resplit-incoming t)
+  
+  ;; every undeleted mail is candidate for split
+  (setq nnimap-split-predicate "UNDELETED")
+  
+  ;; mails are only moved to one folder through splitting, which
+  ;; corresponds with first splitting rule that did match. with true,
+  ;; mail would be moved to each matching rule, thereby using hard links
+  ;; for mail duplicating
+  (setq nnmail-crosspost nil)
+  (setq nnimap-split-crosspost nil)
+  
+  ;; which folder should be used on each server to split mails 
+  (setq nnimap-split-inbox '("INBOX"))
+  
+  ;; use caching on nnimap only, and remove agent to only allow
+  ;; transparent manual caching
+  (setq gnus-use-cache t)
+  (setq gnus-cacheable-groups "^nnimap")
+  (setq gnus-agent nil)
+#+END_SRC
+- set level: S l
+- gnus-level-zombie
+- (setq gnus-group-default-list-level 3) will be shown after hitting l
+- (setq gnus-activate-level 1)
