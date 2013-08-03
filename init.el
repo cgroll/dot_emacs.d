@@ -499,7 +499,7 @@ startup"
 ;; (require 'mime-w3m)
 
 ;; ;; load settings
-;; (org-babel-load-file "~/.emacs.d/init-w3m.org")
+(org-babel-load-file "~/.emacs.d/init-w3m.org")
 
 
 ;; ;; magit

@@ -834,7 +834,13 @@ vertically.
     (interactive)
     (enlarge-window 2)
     )
+(defun cg/increase-current-window-horizontal ()
+    "Increase current window by two lines horizontally"
+    (interactive)
+    (enlarge-window 20 t)
+    )
 (bind-key "C-+" 'cg/increase-current-window)
+(bind-key "C-t h" 'cg/increase-current-window-horizontal)
 ;;  (global-set-key (kbd "C-+") 'cg/increase-current-window)
 #+END_SRC
 Decrease current window.
