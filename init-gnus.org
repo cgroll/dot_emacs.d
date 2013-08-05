@@ -358,3 +358,13 @@ Some settings on splitting:
 - gnus-level-zombie
 - (setq gnus-group-default-list-level 3) will be shown after hitting l
 - (setq gnus-activate-level 1)
+** Scoring
+#+BEGIN_SRC emacs-lisp
+(setq gnus­use­adaptive­scoring t)
+ (setq gnus­default­adaptive­score­alist
+      '((gnus­unread­mark)
+        (gnus­ticked­mark (subject 5))       
+        (gnus­read­mark  (subject 1))
+        (gnus­killed­mark  (subject ­5))
+        (gnus­catchup­mark  (subject ­1))))
+#+END_SRC
