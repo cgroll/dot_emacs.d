@@ -311,6 +311,7 @@ Create split rule with patterns differing between servers:
                            ("gmail.spam" "^From:.*news@clubstars.net")
                            ("gmail.spam" "^From:.*mailings@gmxnet.de")
                            ("gmail.spam" "^Subject:.*LOVEFILM.*")
+                           ("gmail.EDU" "^From:.*groll.christian.edu@gmail.com")
                            ("gmail.HOLIDAY" "^From:.*cgroll@zoho.com")
                            ("gmail.MAIL" "")))
             )
