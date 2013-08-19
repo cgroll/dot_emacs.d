@@ -10,6 +10,7 @@ My personal requirements for gnus consist of:
 - reading rss feeds
 - experimenting with scientific news servers
 
+
 ** Email
 As already mentioned, my gnus setting has to be able to handle two
 accounts simultaneously.
@@ -368,4 +369,14 @@ Some settings on splitting:
         (gnus­read­mark  (subject 1))
         (gnus­killed­mark  (subject ­5))
         (gnus­catchup­mark  (subject ­1))))
+#+END_SRC
+** Key bindings
+When using gnus, my usual configuration of changes between windows was
+not working. This needs to be adjusted:
+#+BEGIN_SRC emacs-lisp
+   (add-hook 'gnus-group-mode-hook
+      (lambda ()
+         (bind-key* "M-SPC" 'other-window)
+         )
+      )
 #+END_SRC

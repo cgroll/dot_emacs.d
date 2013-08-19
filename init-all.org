@@ -141,6 +141,24 @@ I also like to highlight the current line and cursor point.
   (global-hl-line-mode 1)
   (set-cursor-color "red")
 #+END_SRC
+
+Some displays do not look too nice with highlighted current line.
+Hence, I need to have a function that let's me directly switch
+highlighting on and off.
+
+#+BEGIN_SRC emacs-lisp
+   (defun cg/toggle-highlight-current-line ()
+      "Switch highlighting of current line on and off"
+      (interactive)
+      (if (global-hl-line-mode)
+         (global-hl-line-mode 1)
+         (global-hl-line-mode 0))
+      )
+   
+   
+   
+#+END_SRC
+
 *** Scrolling behaviour
 It seems clearer to me to scroll only one line in case that cursor
 leaves window boundaries.
@@ -156,64 +174,80 @@ For some special modes, however, special extensions of the function
 exist. 
 
 First, I will set the length of indentation, and the indentation
-stops. 	
+stops. Then, indentation will be aligned for ess-mode, as well as for
+leading white-spaces for org-babel source code blocks.
 #+BEGIN_SRC emacs-lisp
-  (setq-default tab-width 3)
-  (setq-default tab-stop-list '(3 6 9 12 15 18 21 24 27 30 33 36 39 42 45 48 51))
-  (setq-default lisp-indent-offset 3)
+   (setq-default tab-width 3)
+   (setq-default tab-stop-list '(3 6 9 12 15 18 21 24 27 30 33 36 39 42 45 48 51))
+   (setq-default lisp-indent-offset 3)
+   (setq ess-indent-level 3)
+   (setq org-edit-src-content-indentation 3)
 #+END_SRC
 
 Now, set indentation key.
 #+BEGIN_SRC emacs-lisp
-    ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
-    ;; REMARK: C-j has to set for each mode separately, since it is not
-    ;; possible to change C-j as trigger key for multi-occur search!!
-    (bind-key "C-j" 'indent-for-tab-command)
-  (add-hook 'org-mode-hook
-     (lambda ()
-        (bind-key "C-j" 'indent-for-tab-command org-mode-map)))
-    
-    ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
-    ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
-    
-    (defun cg/ess-indent-buffer ()
-       "apply ess-indent to complete buffer"
-       (interactive)
-       (save-excursion
-          (let ((line-counter (line-number-at-pos (point-min)))
-                  (number-of-lines (count-lines (point-min) (point-max))))
-             (goto-char (point-min))
-             (while (<= line-counter number-of-lines)
-                (progn
-                   (ess-indent-command)
-                   (forward-line)
-                   (setq line-counter (+ line-counter 1))
-                   )
-                )
-             )
-          )
-       )
-    (defun cg/ac-indent-buffer ()
-       "apply automatic indentation to complete buffer"
-       (interactive)
-       (save-excursion
-          (let ((line-counter (line-number-at-pos (point-min)))
-                  (number-of-lines (count-lines (point-min) (point-max))))
-             (goto-char (point-min))
-             (while (<= line-counter number-of-lines)
-                (progn
-                   (indent-for-tab-command)
-                   (forward-line)
-                   (setq line-counter (+ line-counter 1))
-                   )
-                )
-             )
-          )
-       )
-    (bind-key* "C-M-j" 'cg/ac-indent-buffer)
-    ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
-    ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
-    ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
+   ;; (global-set-key (kbd "C-j") 'indent-for-tab-command)
+   ;; REMARK: C-j has to set for each mode separately, since it is not
+   ;; possible to change C-j as trigger key for multi-occur search!!
+   (bind-key "C-j" 'indent-for-tab-command)
+   (add-hook 'org-mode-hook
+      (lambda ()
+         (bind-key "C-j" 'indent-for-tab-command org-mode-map)))
+   
+   ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
+   ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
+   
+   (defun cg/ess-indent-buffer ()
+      "apply ess-indent to complete buffer"
+      (interactive)
+      (save-excursion
+         (let ((line-counter (line-number-at-pos (point-min)))
+                 (number-of-lines (count-lines (point-min) (point-max))))
+            (goto-char (point-min))
+            (while (<= line-counter number-of-lines)
+               (progn
+                  (ess-indent-command)
+                  (forward-line)
+                  (setq line-counter (+ line-counter 1))
+                  )
+               )
+            )
+         )
+      )
+   (defun cg/ac-indent-buffer ()
+      "apply automatic indentation to complete buffer"
+      (interactive)
+      (save-excursion
+         (let ((line-counter (line-number-at-pos (point-min)))
+                 (number-of-lines (count-lines (point-min) (point-max))))
+            (goto-char (point-min))
+            (while (<= line-counter number-of-lines)
+               (progn
+                  (indent-for-tab-command)
+                  (forward-line)
+                  (setq line-counter (+ line-counter 1))
+                  )
+               )
+            )
+         )
+      )
+   (bind-key* "C-M-j" 'cg/ac-indent-buffer)
+   ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
+   ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
+   ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
+   
+   (defun cg/trigger-autofill-on-line ()
+      "Trigger auto-fill-function at current line"
+      (interactive)
+      (save-excursion
+         (beginning-of-line)
+         (setq beg-line (point))
+         (end-of-line)
+         (setq end-line (point))
+         (fill-region beg-line end-line))
+      )
+   (bind-key* "S-SPC" 'cg/trigger-autofill-on-line)
+   
 #+END_SRC
 
 Furthermore, when relying completely on automatic indentation, it
@@ -222,7 +256,6 @@ adequate indentation. Hence, my standard settings for new lines will
 be with indentation.
 #+BEGIN_SRC emacs-lisp
 ;;  (bind-key "<return>" 'newline-and-indent) ; this overwrites ret in minibuffer
-  (bind-key* "<C-M-return>" 'newline)
   (bind-key* "<C-M-S-return>" 'indent-new-comment-line)
   
  (global-set-key (kbd "RET") 'newline-and-indent)
@@ -316,7 +349,12 @@ the best accessible keys.
      :config
      (bind-key* "C-." 'ace-jump-mode))
 #+END_SRC
-
+Allow jumping to last change:
+#+BEGIN_SRC emacs-lisp
+   (use-package goto-last-change
+      :config
+      (bind-key* "C-x C-u" 'goto-last-change))
+#+END_SRC
 
 *** Modify syntax tables
 #+BEGIN_SRC emacs-lisp
@@ -969,23 +1007,48 @@ Enable emacsclient
 (server-start)
 #+END_SRC
 
-Enable word count
-#+BEGIN_SRC 
-(defun count-words-region (posBegin posEnd)
-  "Print number of words and chars in region."
-  (interactive "r")
-  (message "Counting …")
-  (save-excursion
-    (let (wordCount charCount)
-      (setq wordCount 0)
-      (setq charCount (- posEnd posBegin))
-      (goto-char posBegin)
-      (while (and (< (point) posEnd)
-                  (re-search-forward "\\w+\\W*" posEnd t))
-        (setq wordCount (1+ wordCount)))
-
-      (message "Words: %d. Chars: %d." wordCount charCount)
-      )))
+Enable word count both for region and current sentence.
+#+BEGIN_SRC emacs-lisp
+   (defun count-words-region (posBegin posEnd)
+      "Print number of words and chars in region."
+      (interactive "r")
+      (message "Counting …")
+      (save-excursion
+         (let (wordCount charCount)
+            (setq wordCount 0)
+            (setq charCount (- posEnd posBegin))
+            (goto-char posBegin)
+            (while (and (< (point) posEnd)
+                      (re-search-forward "\\w+\\W*" posEnd t))
+               (setq wordCount (1+ wordCount)))
+            
+            (message "Words: %d. Chars: %d." wordCount charCount)
+            )))
+   (defalias 'word-count-region 'count-words-region)
+   
+   (defun count-words-noninteractive (start end)
+      "Print number of words in the region."
+      (save-excursion
+         (save-restriction
+            (narrow-to-region start end)
+            (goto-char (point-min))
+            (count-matches "\\sw+"))))
+   
+   (defun cg/count-words-sentence ()
+      "Count the number of words in the current sentence."
+      (interactive)
+      (save-excursion
+         (backward-sentence)
+         (setq beg-sentence (point))
+         (forward-sentence)
+         (setq end-sentence (point))
+         (setq number-of-words
+            (count-words-noninteractive
+               beg-sentence end-sentence))
+         (message "Words: %d." number-of-words)
+         )
+      )
+   (defalias 'count-words 'cg/count-words-sentence)
 #+END_SRC
 * org-mode INITIALIZATION                                               :org:
 ** Set global key bindings
@@ -1552,28 +1615,20 @@ where Dropbox is not installed.
 
 *** Customize variables
 #+BEGIN_SRC emacs-lisp
-  (custom-set-variables
-     '(org-deadline-warning-days 14)
-     '(org-agenda-show-all-dates t)
-     '(org-clock-into-drawer t)
-     '(org-agenda-skip-deadline-if-done t)
-     '(org-agenda-skip-scheduled-if-done t)
-     '(org-agenda-start-on-weekday nil) ; start agenda at current day
-     '(org-reverse-note-order nil) ; append new nodes
-     '(org-fast-tag-selection-single-key nil) ; you have to press RET to
-                                          ; exit tag menu
-     '(calendar-longitude 11.580) ; Munich coordinates to get sunrise
-                                  ; /sunset times
-     '(calendar-latitude 48.139)
-     )
-  (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-         (latex . t)
-         (sh . t)
-         (gnuplot . t)
-         (R . t)))
-  
+   (custom-set-variables
+      '(org-deadline-warning-days 14)
+      '(org-agenda-show-all-dates t)
+      '(org-clock-into-drawer t)
+      '(org-agenda-skip-deadline-if-done t)
+      '(org-agenda-skip-scheduled-if-done t)
+      '(org-agenda-start-on-weekday nil) ; start agenda at current day
+      '(org-reverse-note-order nil) ; append new nodes
+      '(org-fast-tag-selection-single-key nil) ; you have to press RET to
+                                           ; exit tag menu
+      '(calendar-longitude 11.580) ; Munich coordinates to get sunrise
+                                   ; /sunset times
+      '(calendar-latitude 48.139)
+      )
 #+END_SRC
 
 ** Org babel                                                          :babel:
@@ -1587,12 +1642,14 @@ Disable confirmation query for code evaluation and evaluation on export.
 
 Load languages.
 #+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
+   (org-babel-do-load-languages
       'org-babel-load-languages
-      '((emacs-lisp . nil)
-          (R . t)
+      '((emacs-lisp . t)
+          (latex . t)
+          (sh . t)
           (matlab . t)
-          (sh . t)))
+          (gnuplot . t)
+          (R . t)))
 #+END_SRC
 
 Open edit-src-block in same window.
@@ -2022,7 +2079,106 @@ Enable tooltips for R objects, hints to function arguments and debugging.
 #+END_SRC
 
 * R settings
-**
+** Coding conventions
+Since I once decided to change some of my coding style conventions, I
+was required to build some functions that allow easy conversion and
+checking of style mistakes.
+
+#+BEGIN_SRC emacs-lisp
+   (defun cg/space-after-comma ()
+      "Query replace regexp search for missing spaces after comma"
+      (interactive)
+      (query-replace-regexp ",\\([]a-zA-Z0-9]+\\)" ", \\1" nil 0 (buffer-end 1))
+      )
+   
+   (defun cg/spaces-surrounding-equal-signs ()
+      "Query replace regexp to search equal signs not surrounded with
+   spaces"
+      (interactive)
+      (query-replace-regexp "\\([]()a-zA-Z0-9]\\)=\\([[()a-zA-Z0-9]\\)"
+         "\\1 = \\2" nil 0 (buffer-end 1))
+      )
+   
+   (defun cg/fix-line-break ()
+      "Shift last part to next line, prepending it with correct
+   indentation"
+      (interactive)
+      (previous-line)
+      (end-of-line)
+      (backward-sexp)
+      (newline)
+      (end-of-line)
+      (kill-line)
+      (just-one-space)
+      (end-of-line)
+      (indent-for-tab-command)
+      (auto-fill-function)
+      )
+  (bind-key* "<C-M-return>" 'cg/fix-line-break)
+   
+   
+   (defun cg/name-to-camel-style ()
+      "change current variable name to camel style convention"
+      (interactive)
+      (save-excursion
+         (forward-sexp)
+         (backward-sexp)
+         (setq beg-word (point))
+         (forward-sexp)
+         (setq end-word (point))
+         (replace-regexp "_\\([a-zA-Z0-9]\\)" "\\,(upcase \\1)" nil
+            beg-word end-word)
+         )
+      )
+   
+   ;; http://www.bunkus.org/blog/2009/12/switching-identifier-naming-style-between-camel-case-and-c-style-in-emacs/
+   
+   (defun mo-toggle-identifier-naming-style ()
+      "Toggles the symbol at point between C-style naming,
+       e.g. `hello_world_string', and camel case,
+       e.g. `HelloWorldString'."
+      (interactive)
+      (setq old-word (thing-at-point 'sexp))
+      (let* ((symbol-pos (bounds-of-thing-at-point 'symbol))
+               case-fold-search symbol-at-point cstyle regexp func)
+         (unless symbol-pos
+            (error "No symbol at point"))
+         (save-excursion
+            (narrow-to-region (car symbol-pos) (cdr symbol-pos))
+            (setq cstyle (string-match-p "_" (buffer-string))
+               regexp (if cstyle "\\(?:\\_<\\|_\\)\\(\\w\\)" "\\([A-Z]\\)")
+               func (if cstyle
+                       'capitalize
+                       (lambda (s)
+                          (concat (if (= (match-beginning 1)
+                                         (car symbol-pos))
+                                     ""
+                                     "_")
+                             (downcase s)))))
+            (goto-char (point-min))
+            (while (re-search-forward regexp nil t)
+               (replace-match (funcall func (match-string 1))
+                  t nil))
+            (widen))
+         )
+      (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
+         (if (region-active-p)
+            (setq p1 (region-beginning) p2 (region-end))
+            (let ((bds (bounds-of-thing-at-point 'word) ) )
+               (setq p1 (car bds) p2 (cdr bds)) ) )
+         (save-excursion
+            (goto-char p1)
+            (downcase-region p1 (+ p1 1))
+            (setq new-word (thing-at-point 'sexp))
+            )
+         )
+      (replace-string old-word new-word)
+      )
+   
+   
+   (bind-key "C-t c" 'mo-toggle-identifier-naming-style)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
 (defun r-show-head ()
   (interactive)
@@ -2134,7 +2290,7 @@ Enable ess-tracebug:
      )
 #+END_SRC
 
-#+BEGIN_EXAMPLE
+#+BEGIN_EXAMPLE emacs-lisp
 (defun r-select-superior ()
   "Select superior word encompassing point."
   (interactive)
