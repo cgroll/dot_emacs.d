@@ -244,9 +244,19 @@ Now, set indentation key.
          (setq beg-line (point))
          (end-of-line)
          (setq end-line (point))
-         (fill-region beg-line end-line))
+         (fill-region beg-line end-line)
+         )
+      (indent-for-tab-command)
       )
    (bind-key* "S-SPC" 'cg/trigger-autofill-on-line)
+   
+   (defun cg/insert-tab ()
+      (interactive)
+      (insert-tab)
+      )
+   (bind-key* "<backtab>" 'cg/insert-tab)       
+   
+   
    
 #+END_SRC
 
@@ -2085,98 +2095,98 @@ was required to build some functions that allow easy conversion and
 checking of style mistakes.
 
 #+BEGIN_SRC emacs-lisp
-   (defun cg/space-after-comma ()
-      "Query replace regexp search for missing spaces after comma"
-      (interactive)
-      (query-replace-regexp ",\\([]a-zA-Z0-9]+\\)" ", \\1" nil 0 (buffer-end 1))
-      )
-   
-   (defun cg/spaces-surrounding-equal-signs ()
-      "Query replace regexp to search equal signs not surrounded with
-   spaces"
-      (interactive)
-      (query-replace-regexp "\\([]()a-zA-Z0-9]\\)=\\([[()a-zA-Z0-9]\\)"
-         "\\1 = \\2" nil 0 (buffer-end 1))
-      )
-   
-   (defun cg/fix-line-break ()
-      "Shift last part to next line, prepending it with correct
-   indentation"
-      (interactive)
-      (previous-line)
-      (end-of-line)
-      (backward-sexp)
-      (newline)
-      (end-of-line)
-      (kill-line)
-      (just-one-space)
-      (end-of-line)
-      (indent-for-tab-command)
-      (auto-fill-function)
-      )
-  (bind-key* "<C-M-return>" 'cg/fix-line-break)
-   
-   
-   (defun cg/name-to-camel-style ()
-      "change current variable name to camel style convention"
-      (interactive)
-      (save-excursion
-         (forward-sexp)
-         (backward-sexp)
-         (setq beg-word (point))
-         (forward-sexp)
-         (setq end-word (point))
-         (replace-regexp "_\\([a-zA-Z0-9]\\)" "\\,(upcase \\1)" nil
-            beg-word end-word)
-         )
-      )
-   
-   ;; http://www.bunkus.org/blog/2009/12/switching-identifier-naming-style-between-camel-case-and-c-style-in-emacs/
-   
-   (defun mo-toggle-identifier-naming-style ()
-      "Toggles the symbol at point between C-style naming,
-       e.g. `hello_world_string', and camel case,
-       e.g. `HelloWorldString'."
-      (interactive)
-      (setq old-word (thing-at-point 'sexp))
-      (let* ((symbol-pos (bounds-of-thing-at-point 'symbol))
-               case-fold-search symbol-at-point cstyle regexp func)
-         (unless symbol-pos
-            (error "No symbol at point"))
-         (save-excursion
-            (narrow-to-region (car symbol-pos) (cdr symbol-pos))
-            (setq cstyle (string-match-p "_" (buffer-string))
-               regexp (if cstyle "\\(?:\\_<\\|_\\)\\(\\w\\)" "\\([A-Z]\\)")
-               func (if cstyle
-                       'capitalize
-                       (lambda (s)
-                          (concat (if (= (match-beginning 1)
-                                         (car symbol-pos))
-                                     ""
-                                     "_")
-                             (downcase s)))))
-            (goto-char (point-min))
-            (while (re-search-forward regexp nil t)
-               (replace-match (funcall func (match-string 1))
-                  t nil))
-            (widen))
-         )
-      (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
-         (if (region-active-p)
-            (setq p1 (region-beginning) p2 (region-end))
-            (let ((bds (bounds-of-thing-at-point 'word) ) )
-               (setq p1 (car bds) p2 (cdr bds)) ) )
-         (save-excursion
-            (goto-char p1)
-            (downcase-region p1 (+ p1 1))
-            (setq new-word (thing-at-point 'sexp))
-            )
-         )
-      (replace-string old-word new-word)
-      )
-   
-   
-   (bind-key "C-t c" 'mo-toggle-identifier-naming-style)
+    (defun cg/space-after-comma ()
+       "Query replace regexp search for missing spaces after comma"
+       (interactive)
+       (query-replace-regexp ",\\([]a-zA-Z0-9]+\\)" ", \\1" nil 0 (buffer-end 1))
+       )
+    
+    (defun cg/spaces-surrounding-equal-signs ()
+       "Query replace regexp to search equal signs not surrounded with
+    spaces"
+       (interactive)
+       (query-replace-regexp "\\([]()\"a-zA-Z0-9]\\)=\\([[()\"a-zA-Z0-9]\\)"
+          "\\1 = \\2" nil 0 (buffer-end 1))
+       )
+    
+    (defun cg/fix-line-break ()
+       "Shift last part to next line, prepending it with correct
+    indentation"
+       (interactive)
+       (previous-line)
+       (end-of-line)
+       (backward-sexp)
+       (newline)
+       (end-of-line)
+       (kill-line)
+       (just-one-space)
+       (end-of-line)
+       (indent-for-tab-command)
+       (auto-fill-function)
+       )
+   (bind-key* "<C-M-return>" 'cg/fix-line-break)
+    
+    
+    (defun cg/name-to-camel-style ()
+       "change current variable name to camel style convention"
+       (interactive)
+       (save-excursion
+          (forward-sexp)
+          (backward-sexp)
+          (setq beg-word (point))
+          (forward-sexp)
+          (setq end-word (point))
+          (replace-regexp "_\\([a-zA-Z0-9]\\)" "\\,(upcase \\1)" nil
+             beg-word end-word)
+          )
+       )
+    
+    ;; http://www.bunkus.org/blog/2009/12/switching-identifier-naming-style-between-camel-case-and-c-style-in-emacs/
+    
+    (defun cg/toggle-camel-name-style ()
+       "Toggles the symbol at point between C-style naming,
+        e.g. `hello_world_string', and camel case,
+        e.g. `HelloWorldString'."
+       (interactive)
+       (setq old-word (thing-at-point 'sexp))
+       (let* ((symbol-pos (bounds-of-thing-at-point 'symbol))
+                case-fold-search symbol-at-point cstyle regexp func)
+          (unless symbol-pos
+             (error "No symbol at point"))
+          (save-excursion
+             (narrow-to-region (car symbol-pos) (cdr symbol-pos))
+             (setq cstyle (string-match-p "_" (buffer-string))
+                regexp (if cstyle "\\(?:\\_<\\|_\\)\\(\\w\\)" "\\([A-Z]\\)")
+                func (if cstyle
+                        'capitalize
+                        (lambda (s)
+                           (concat (if (= (match-beginning 1)
+                                          (car symbol-pos))
+                                      ""
+                                      "_")
+                              (downcase s)))))
+             (goto-char (point-min))
+             (while (re-search-forward regexp nil t)
+                (replace-match (funcall func (match-string 1))
+                   t nil))
+             (widen))
+          )
+       (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
+          (if (region-active-p)
+             (setq p1 (region-beginning) p2 (region-end))
+             (let ((bds (bounds-of-thing-at-point 'word) ) )
+                (setq p1 (car bds) p2 (cdr bds)) ) )
+          (save-excursion
+             (goto-char p1)
+             (downcase-region p1 (+ p1 1))
+             (setq new-word (thing-at-point 'sexp))
+             )
+          )
+       (replace-string old-word new-word)
+       )
+    
+    
+    (bind-key "C-t c" 'cg/toggle-camel-name-style)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
