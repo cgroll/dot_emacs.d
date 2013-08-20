@@ -250,14 +250,12 @@ Now, set indentation key.
       )
    (bind-key* "S-SPC" 'cg/trigger-autofill-on-line)
    
-   (defun cg/insert-tab ()
-      (interactive)
-      (insert-tab)
-      )
-   (bind-key* "<backtab>" 'cg/insert-tab)       
-   
-   
-   
+   ;; The following function was defined double! 
+   ;; (defun cg/insert-tab ()
+   ;;    (interactive)
+   ;;    (insert-tab)
+   ;;    )
+   ;; (bind-key* "<backtab>" 'cg/insert-tab)   
 #+END_SRC
 
 Furthermore, when relying completely on automatic indentation, it
