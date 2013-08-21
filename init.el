@@ -218,12 +218,29 @@ startup"
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; some ad-hoc matlab macros imitating R functionality in ESS 
+(fset 'eval-line-and-go
+   [?\C-a ?\C-  ?\C-e ?\C-c ?\C-r ?\C-a ?\C-n ?\C-  ?\C-f ?\C-b ?\C-  ?\C- ])
+
+(fset 'eval-cell-and-go
+   [?\C-e ?\C-r ?% ?% ?\C-m ?\C-n ?\C-n ?\M-x ?m ?a ?t ?l ?a ?b ?- ?s ?h ?e ?l ?l ?- ?r ?u ?n ?- ?c ?e ?l ?l return ?\C-s ?% ?% ?\C-m])
+
+(fset 'eval-whos-on-variable
+   [nil ?\C-x ?\C-b ?M ?A ?T ?L ?A ?B ?* return ?w ?h ?o ?s ?  ?\C-y return ?\C-x ?o])
+
+(fset 'eval-variable
+   [?\C-x ?\C-b ?* ?M ?A ?T ?L ?A ?B ?* return ?\C-y return ?\M-x ?c ?o ?m ?i ?n ?t ?- ?p ?r ?e ?v ?i tab ?p ?r ?o tab return ?\C-l ?\M-x ?c ?o ?m ?i ?n ?t ?- ?n ?e ?x ?- backspace ?t ?- ?p tab return ?\C-x ?o])
+
 (defun cg/modify-matlab-keybindings ()
    "adapt matlab-emacs keybindings"
    (bind-key "M-j" 'cg/insert-tab matlab-mode-map)
    (bind-key "C-j" 'indent-for-tab-command matlab-mode-map)
    (bind-key "C-#" 'comment-or-uncomment-line matlab-mode-map)
    (bind-key "M-;" 'comment-dwim matlab-mode-map)
+   (bind-key "C-c C-v" 'eval-variable matlab-mode-map)
+   (bind-key "C-c C-g" 'eval-whos-on-variable matlab-mode-map)
+   (bind-key "C-c C-n" 'eval-line-and-go matlab-mode-map)
+   (bind-key "C-c C-p" 'eval-cell-and-go matlab-mode-map)
    )
 
 ;; allow matlab to be loaded through call to matlab-mode or
@@ -259,23 +276,7 @@ startup"
    (bind-key* "C-t p" 'move-to-window-line-top-bottom)
    )
 
-;; some ad-hoc matlab macros imitating R functionality in ESS 
-(fset 'eval-line-and-go
-   [?\C-a ?\C-  ?\C-e ?\C-c ?\C-r ?\C-a ?\C-n ?\C-  ?\C-f ?\C-b ?\C-  ?\C- ])
 
-(fset 'eval-cell-and-go
-   [?\M-x ?m ?a ?t ?l ?a ?b ?- ?s ?h ?e ?l ?l ?- ?r ?u ?n ?- ?c ?e ?l ?l return ?\C-s ?% ?% ?\C-f])
-
-(fset 'eval-whos-on-variable
-   [nil ?\C-x ?\C-b ?M ?A ?T ?L ?A ?B ?* return ?w ?h ?o ?s ?  ?\C-y return ?\C-x ?o])
-
-(fset 'eval-variable
-   [?\C-x ?\C-b ?* ?M ?A ?T ?L ?A ?B ?* return ?\C-y return ?\M-x ?c ?o ?m ?i ?n ?t ?- ?p ?r ?e ?v ?i tab ?p ?r ?o tab return ?\C-l ?\M-x ?c ?o ?m ?i ?n ?t ?- ?n ?e ?x ?- backspace ?t ?- ?p tab return ?\C-x ?o])
-
-(bind-key "C-c C-v" 'eval-variable matlab-mode-map)
-(bind-key "C-c C-g" 'eval-whos-on-variable matlab-mode-map)
-(bind-key "C-c C-n" 'eval-line-and-go matlab-mode-map)
-(bind-key "C-c C-p" 'eval-cell-and-go matlab-mode-map)
 
 
 
