@@ -1879,7 +1879,12 @@ Allow resizing of images:
   (setq org-image-actual-width nil)
 #+END_SRC
 
+** org-deck
 
+#+BEGIN_SRC emacs-lisp
+(require 'ox-deck)
+(require 'ox-s5)
+#+END_SRC
 * auto-complete-mode INITIALIZATION
 The general idea of auto-complete-mode is to provide both static as
 well as dynamic completion on the fly, listed in a small pop-up
