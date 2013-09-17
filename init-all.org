@@ -1617,7 +1617,7 @@ Synchronization via orgmobile needs a server to sync the files to the
 mobile phone. In this case, I set it up with my Dropbox folder, which
 I explicitly name here. This could make problems on other computers,
 where Dropbox is not installed.
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (setq org-mobile-directory "~/Dropbox/MobileOrg")
 #+END_SRC
 
