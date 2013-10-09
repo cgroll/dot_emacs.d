@@ -452,6 +452,7 @@ startup"
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/magit-master")
 
+(bind-key "C-t m" 'magit-status)
 (use-package magit
    :defer t
    :load-path "/usr/share/emacs/site-lisp/magit-master"
