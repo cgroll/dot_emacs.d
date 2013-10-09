@@ -15,5 +15,5 @@
     ("uid-integer" 0)
     ("readlink" "\\readlink")
     ("~root" "/root"))
-   (["scpc" "git" "bitbucket.org" nil]
+   (["su" "root" "localhost" nil]
       nil))
