@@ -1,0 +1,22 @@
+# -*- mode: snippet -*-
+# name: new figure
+# key: newplot
+# group: org-mode
+# --
+#+NAME: ${1:plot file number}: ${3:Title}
+#+HEADER: :tangle ../../rpics/${2:current script file name}.R
+#+BEGIN_SRC R :exports code :eval never :results silent 
+$0
+#+END_SRC
+
+#+NAME: $1: ######## POST: SAVE FIGURE - NO EXPORT ##########
+#+HEADER: :tangle ../../rpics/$2.R
+#+BEGIN_SRC R :results silent :exports none :eval never
+   ggsave(plotID, file="pics/$2-$1.png", width=15, height = 10,
+          units = "cm")
+   ggsave(plotID, file="pics/$2-$1.pdf", width=15, height = 10,
+          units = "cm") 
+#+END_SRC
+
+#+attr_html: :width 400px
+[[file:pics/$2-$1.png]]
