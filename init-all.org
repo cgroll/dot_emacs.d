@@ -2367,6 +2367,13 @@ Enable ess-tracebug:
 
 
 * Bibtex INITIALIZATION
+** references in html
+In order to convert references to html, we need the package
+bibtex2html and the org-mode export function ox-bibtex:
+#+BEGIN_SRC emacs-lisp
+(require 'ox-bibtex)
+#+END_SRC
+
 ** Create entry
 
 - C-c C-b: bibtex-entry
