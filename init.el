@@ -1,3 +1,5 @@
+(add-to-list 'load-path "~/.emacs.d/elpa/auctex-11.87.2")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       measuring start-up time
@@ -52,8 +54,9 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
+(require 'auctex-autoloads)
+;;(load "auctex.el" nil t t)  ; previously, this was crucial!
+;;(load "preview-latex.el" nil t t) ; previously, this was crucial!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -297,6 +300,7 @@ startup"
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(add-to-list 'load-path "~/.emacs.d/extensions/ess-13.09/lisp")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09-2/lisp/")
 ;(require 'ess-site)
@@ -477,6 +481,7 @@ startup"
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(require 'gnus)
 ;(org-babel-load-file "~/.emacs.d/init-gnus.org")
   ;; (add-to-list 'load-path "~/.emacs.d/extensions/bbdb/lisp/")
   ;; (require 'bbdb)
@@ -714,7 +719,7 @@ startup"
 
 
 
-(message "My .emacs loaded in %ds" (destructuring-bind (hi lo ms) (current-time)
-                           (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
+;;(message "My .emacs loaded in %ds" (destructuring-bind (hi lo ms) (current-time)
+;;                           (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
 
 (put 'narrow-to-region 'disabled nil)
