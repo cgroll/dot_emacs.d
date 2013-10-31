@@ -18,7 +18,7 @@ accounts simultaneously.
 ** Mail retrieval
 These are the settings for mail retrieval.
 *** GMX
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp :tangle no
 (add-to-list 'gnus-secondary-select-methods '(nnimap "gmx"
 				  (nnimap-address "imap.gmx.com")
 				  (nnimap-server-port 993)
@@ -279,48 +279,49 @@ Change colors and line formats:
 ** Mail splitting
 Create split rule with patterns differing between servers:
 #+BEGIN_SRC emacs-lisp 
-  ;; define split-rule
-  (setq nnimap-split-rule
-     '(("gmx"    (".*"    
-                    (("gmx.lokal"
-                        "^From:.*support@lokalisten.de")
-                       ("gmx.lokal"
-                          "^From:.*no-reply@lokalisten.de")
-                       ("gmx.lokal"
-                          "^From:.*friends@lokalisten.de")
-                       ("gmx.amazon" "^From:.*bestellbestaetigung@amazon.de")
-                       ("gmx.amazon" "^From:.*mazon.de")
-                       ("gmx.spam" "^Subject:.*Spam-Report")
-                       ("gmx.spam" "^From:.*noreply@gmx.de")
-                       ("gmx.spam" "^From:.*news@clubstars.net")
-                       ("gmx.spam" "^From:.*mailings@gmxnet.de")
-                       ("gmx.spam" "^From:.*mailings@gmx.net")
-                       ("gmx.spam" "^Subject:.*LOVEFILM.*")
-                       ("gmx.MAIL" ""))
-                    )
+   ;; define split-rule
+   (setq nnimap-split-rule
+      '(
+          ;; ("gmx"    (".*"    
+          ;;              (("gmx.lokal"
+          ;;                  "^From:.*support@lokalisten.de")
+          ;;                 ("gmx.lokal"
+          ;;                    "^From:.*no-reply@lokalisten.de")
+          ;;                 ("gmx.lokal"
+          ;;                    "^From:.*friends@lokalisten.de")
+          ;;                 ("gmx.amazon" "^From:.*bestellbestaetigung@amazon.de")
+          ;;                 ("gmx.amazon" "^From:.*mazon.de")
+          ;;                 ("gmx.spam" "^Subject:.*Spam-Report")
+          ;;                 ("gmx.spam" "^From:.*noreply@gmx.de")
+          ;;                 ("gmx.spam" "^From:.*news@clubstars.net")
+          ;;                 ("gmx.spam" "^From:.*mailings@gmxnet.de")
+          ;;                 ("gmx.spam" "^From:.*mailings@gmx.net")
+          ;;                 ("gmx.spam" "^Subject:.*LOVEFILM.*")
+          ;;                 ("gmx.MAIL" ""))
+          ;;              )
+          ;;    )
+          ("gmail"    (".*"
+                         (("gmail.lokal"
+                             "^From:.*support@lokalisten.de")
+                            ("gmail.lokal"
+                               "^From:.*no-reply@lokalisten.de")
+                            ("gmail.amazon" "^From:.*bestellbestaetigung@amazon.de")
+                            ("gmail.amazon" "^From:.*mazon.de")
+                            ("gmail.spam" "^Subject:.*Automatischer
+         Spam-Report")
+                            ("gmx.spam" "^From:.*noreply@gmx.de")
+                            ("gmail.spam" "^From:.*news@clubstars.net")
+                            ("gmail.spam" "^From:.*mailings@gmxnet.de")
+                            ("gmail.spam" "^Subject:.*LOVEFILM.*")
+                            ("gmail.EDU" "^From:.*groll.christian.edu@gmail.com")
+                            ("gmail.HOLIDAY" "^From:.*cgroll@zoho.com")
+                            ("gmail.MAIL" "")))
+             )
+          ("lrz"    (".*" nnimap-split-fancy))
           )
-         ("gmail"    (".*"
-                        (("gmail.lokal"
-                            "^From:.*support@lokalisten.de")
-                           ("gmail.lokal"
-                              "^From:.*no-reply@lokalisten.de")
-                           ("gmail.amazon" "^From:.*bestellbestaetigung@amazon.de")
-                           ("gmail.amazon" "^From:.*mazon.de")
-                           ("gmail.spam" "^Subject:.*Automatischer
-      Spam-Report")
-                           ("gmx.spam" "^From:.*noreply@gmx.de")
-                           ("gmail.spam" "^From:.*news@clubstars.net")
-                           ("gmail.spam" "^From:.*mailings@gmxnet.de")
-                           ("gmail.spam" "^Subject:.*LOVEFILM.*")
-                           ("gmail.EDU" "^From:.*groll.christian.edu@gmail.com")
-                           ("gmail.HOLIDAY" "^From:.*cgroll@zoho.com")
-                           ("gmail.MAIL" "")))
-            )
-         ("lrz"    (".*" nnimap-split-fancy))
-         )
-     )
-  
-  
+      )
+   
+   
 #+END_SRC
 
 Allow testing of split rule through respooling: probably not possible
