@@ -1127,6 +1127,7 @@ my emacs settings the directories in Dropbox should be used directly.
                
                ;; software instruction notes
                "~/customs/notes/priv_comp_notes.org" ; private
+               "~/customs/notes/priv_install_notes.org" ; private
                "~/how_to/comp_records.org"           ; public
                
                ;; link collection: private
