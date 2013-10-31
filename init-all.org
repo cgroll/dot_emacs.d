@@ -2837,6 +2837,10 @@ bibtex-entry-field-alist
   (global-set-key (kbd "C-6") 'cg/create-new-literature-entry)
 #+END_SRC
 * Latex INITIALIZATION
+** beamer
+#+BEGIN_SRC emacs-lisp
+(require 'ox-beamer)
+#+END_SRC
 ** live display
 In order to display minor visual help, we enable UTF-8 displaying for
 greek letter and subindices and exponents. However, I tend to use
@@ -2844,7 +2848,7 @@ underscores frequently in variable and file names, so that
 underscores will be related to subindices only in conjunction with
 curly brackets.
 #+BEGIN_SRC emacs-lisp
-  (setq org-pretty-entities t)
+  (setq org-pretty-entities nil)
   (setq org-export-with-sub-superscripts "{}")
 #+END_SRC
 
