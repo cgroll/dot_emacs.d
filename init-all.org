@@ -1081,6 +1081,11 @@ Enable word count both for region and current sentence.
    (defalias 'count-words 'cg/count-words-sentence)
 #+END_SRC
 * org-mode INITIALIZATION                                               :org:
+Do not show files in folded state at startup:
+#+BEGIN_SRC emacs-lisp
+(setq org-startup-folded nil)
+#+END_SRC
+
 ** Set global key bindings
 At first, we want to set the most important key bindings.
 #+BEGIN_SRC emacs-lisp
