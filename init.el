@@ -1,5 +1,3 @@
-(add-to-list 'load-path "~/.emacs.d/elpa/auctex-11.87.2")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       measuring start-up time
@@ -54,9 +52,9 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'auctex-autoloads)
-;;(load "auctex.el" nil t t)  ; previously, this was crucial!
-;;(load "preview-latex.el" nil t t) ; previously, this was crucial!
+;; (require 'auctex-autoloads)		
+(load "auctex.el" nil t t)  ; previously, this was crucial!
+(load "preview-latex.el" nil t t) ; previously, this was crucial!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
