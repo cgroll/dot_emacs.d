@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: saveplot
+# key: saveplot
+# group: saveplot
+# --
+pdf("${2:filename}.pdf", width = ${3:30}, height = 15)
+${1:plot command}
+dev.off()
+   
+png("$2.png", width = ${4:1400}, height = 700)
+$1
+dev.off()
+$0
