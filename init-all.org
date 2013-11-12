@@ -1825,6 +1825,44 @@ Greek uppercase letters.
 *** Math-mode
 
 ** org2blog                                                            :blog:
+Toggle between \begin{align*} and $$\begin{aligned}:
+
+#+BEGIN_SRC emacs-lisp
+   (defun cg/toggle-align ()
+      "Switch between align and aligned"
+      (interactive)
+      (save-excursion
+         (let ((org2blog-environment nil))
+            (beginning-of-buffer)
+            ;; if no \begin{align} occurs, we are in org2blog environment 
+            (if (not (search-forward "\\begin{align*}" nil t)) 
+               (setq org2blog-environment t)
+               (setq org2blog-environment nil)
+               )
+            
+            (print org2blog-environment)
+            
+            (beginning-of-buffer)
+            ;; if org2blog environment
+            (if org2blog-environment
+               (let ()
+                  (replace-string "$$\\begin{aligned}" "\\begin{align*}")
+                  (beginning-of-buffer)
+                  (replace-string "\\end{aligned}$$" "\\end{align*}")
+                  )
+               (let ()
+                  (replace-string "\\begin{align*}" "$$\\begin{aligned}")
+                  (beginning-of-buffer)
+                  (replace-string "\\end{align*}" "\\end{aligned}$$")
+                  )
+               )
+            
+            )
+         )
+      )
+#+END_SRC
+
+
 Install [[https://github.com/punchagan/metaweblog.el/blob/master/metaweblog.el][metaweblog]], include:
 #+BEGIN_example 
 (defun metaweblog-upload-file (blog-xmlrpc user-name password blog-id file)
@@ -2842,6 +2880,10 @@ bibtex-entry-field-alist
   (global-set-key (kbd "C-6") 'cg/create-new-literature-entry)
 #+END_SRC
 * Latex INITIALIZATION
+** colorized code snippets in latex
+#+BEGIN_SRC emacs-lisp
+(setq org-latex-listings t)
+#+END_SRC
 ** beamer
 #+BEGIN_SRC emacs-lisp
 (require 'ox-beamer)
