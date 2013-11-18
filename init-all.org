@@ -1087,7 +1087,7 @@ Do not show files in folded state at startup:
 #+END_SRC
 Allow special blocks (theorems, definitions, ...) in html files:
 #+BEGIN_SRC emacs-lisp
-(require 'org-special-blocks)
+;;(require 'org-special-blocks)
 #+END_SRC
 
 ** Set global key bindings
