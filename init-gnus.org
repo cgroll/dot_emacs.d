@@ -309,7 +309,7 @@ Create split rule with patterns differing between servers:
                             ("gmail.amazon" "^From:.*mazon.de")
                             ("gmail.spam" "^Subject:.*Automatischer
          Spam-Report")
-                            ("gmx.spam" "^From:.*noreply@gmx.de")
+                            ("gmail.spam" "^From:.*noreply@gmx.de")
                             ("gmail.spam" "^From:.*news@clubstars.net")
                             ("gmail.spam" "^From:.*mailings@gmxnet.de")
                             ("gmail.spam" "^Subject:.*LOVEFILM.*")
