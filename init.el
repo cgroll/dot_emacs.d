@@ -213,6 +213,7 @@ startup"
 ;; (setq inferior-julia-program-name
 ;;    "~/julia/usr/bin/julia-release-basic")
 
+(setq inferior-julia-program-name "/usr/bin/julia-basic")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -354,7 +355,6 @@ startup"
 (use-package ess-julia.el
    :defer t
    :load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/"
-   :if (file-exists-p "~/julia/usr/bin/julia-release-basic")
    :commands julia
    :init
    (progn
@@ -362,11 +362,10 @@ startup"
       )
    :config
    (progn
-      (require 'julia-mode)
+      ;; (require 'julia-mode)             
       (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/ess-site")
       (require 'ess-site)
-      (setq inferior-julia-program-name
-         "~/julia/usr/bin/julia-release-basic")
+      (setq inferior-julia-program-name "/usr/bin/julia-basic")
       (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
       (setq ess-use-tracebug t)           ; tracebug is called for R
                                         ; AND JULIA!!
