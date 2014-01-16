@@ -1689,6 +1689,7 @@ Load languages.
           (latex . t)
           (sh . t)
           (matlab . t)
+          (julia . t)
           (gnuplot . t)
           (R . t)))
 #+END_SRC
