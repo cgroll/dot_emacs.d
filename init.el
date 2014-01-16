@@ -144,6 +144,7 @@
    
    )
 
+(setq inferior-julia-program-name "/usr/bin/julia-basic")
 (org-babel-load-file "~/.emacs.d/init-all.org")
 (bind-key "C-o" 'ac-complete)
 (bind-key* "C-O" 'auto-complete)
@@ -213,7 +214,7 @@ startup"
 ;; (setq inferior-julia-program-name
 ;;    "~/julia/usr/bin/julia-release-basic")
 
-(setq inferior-julia-program-name "/usr/bin/julia-basic")
+;; (setq inferior-julia-program-name "/usr/bin/julia-basic")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -348,7 +349,9 @@ startup"
    :config
    (progn
       (add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
-      (setq inferior-julia-program-name "~/julia/usr/bin/julia-release-basic")
+      (setq inferior-julia-program-name
+         "~/julia/usr/bin/julia-release-basic")
+      (setq inferior-julia-program-name "/usr/bin/julia-basic")
       )
    )
 
