@@ -302,7 +302,7 @@ startup"
 (defun cg/command-line-keybindings ()
    "set keybindings for searches with comint"
    (interactive)
-   (bind-key* "C-c M-r" 'comint-history-isearch)
+   (bind-key* "C-c M-r" 'comint-history-isearch-backward-regexp)
    (bind-key* "M-r" 'comint-previous-matching-input-from-input)
    (bind-key* "C-t p" 'move-to-window-line-top-bottom)
    )
@@ -352,6 +352,8 @@ startup"
       (setq inferior-julia-program-name
          "~/julia/usr/bin/julia-release-basic")
       (setq inferior-julia-program-name "/usr/bin/julia-basic")
+      (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
+      (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)      
       )
    )
 
@@ -373,6 +375,8 @@ startup"
       (setq ess-use-tracebug t)           ; tracebug is called for R
                                         ; AND JULIA!!
       (setq ess-tracebug-inject-source-p t)
+      (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
+      (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)            
       )
    )
 ;; in order to add ess-process afterward, apply julia-mode again on
