@@ -144,7 +144,7 @@
    
    )
 
-(setq inferior-julia-program-name "/usr/bin/julia-basic")
+(setq inferior-julia-program-name "/usr/bin/julia")
 (org-babel-load-file "~/.emacs.d/init-all.org")
 (bind-key "C-o" 'ac-complete)
 (bind-key* "C-O" 'auto-complete)
@@ -332,6 +332,7 @@ startup"
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/")
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09-2/lisp/")
                                         ;(require 'ess-site)
+(add-to-list 'load-path "~/ESS/lisp/ess-site")
 
 ;; allow julia to be loaded through call to julia-mode or
 ;; ess-inferior process
@@ -350,8 +351,8 @@ startup"
    (progn
       (add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
       (setq inferior-julia-program-name
-         "~/julia/usr/bin/julia-release-basic")
-      (setq inferior-julia-program-name "/usr/bin/julia-basic")
+         "~/julia/usr/bin/julia")
+      (setq inferior-julia-program-name "/usr/bin/julia")
       (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
       (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)      
       )
@@ -359,7 +360,8 @@ startup"
 
 (use-package ess-julia.el
    :defer t
-   :load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/"
+   ;; :load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/" 
+   :load-path "~/ESS/lisp/"   
    :commands julia
    :init
    (progn
@@ -368,9 +370,9 @@ startup"
    :config
    (progn
       ;; (require 'julia-mode)             
-      (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/ess-site")
+      (add-to-list 'load-path "~/ESS/lisp")
       (require 'ess-site)
-      (setq inferior-julia-program-name "/usr/bin/julia-basic")
+      (setq inferior-julia-program-name "/usr/bin/julia")
       (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
       (setq ess-use-tracebug t)           ; tracebug is called for R
                                         ; AND JULIA!!
