@@ -1954,8 +1954,8 @@ Allow resizing of images:
 ** org-deck
 
 #+BEGIN_SRC emacs-lisp
-(require 'ox-deck)
-(require 'ox-s5)
+;; (require 'ox-deck)
+;; (require 'ox-s5)
 #+END_SRC
 * auto-complete-mode INITIALIZATION
 The general idea of auto-complete-mode is to provide both static as

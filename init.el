@@ -4,9 +4,8 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar *emacs-load-start* (current-time))
 
-;; (setq tags-file-name nil)
+(defvar *emacs-load-start* (current-time))
 
 ;; show bookmark list at startup
 (setq inhibit-splash-screen t)
@@ -17,8 +16,22 @@
 (switch-to-buffer-other-window "*Bookmark List*")
 (recentf-mode 1)
 
-;; (bookmark-bmenu-list)
-;; (switch-to-buffer-other-window "*Bookmark List*")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       include package archives
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; org-mode archive
+(require 'package)
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/")
+   t)
+
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -28,13 +41,14 @@
 
 (add-to-list 'load-path "~/.emacs.d/extensions/")
 (add-to-list 'load-path "~/")
+(add-to-list 'load-path "~/auctex-11.87")
+(add-to-list 'load-path "~/auctex-11.87/preview")
 (add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
 (add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
-;;(add-to-list 'load-path "/usr/share/emacs/23.3/lisp/org/")
-(add-to-list 'load-path "~/.emacs.d/extensions/org-mode/lisp")
-(add-to-list 'load-path "~/.emacs.d/extensions/org-mode/contrib")
-(add-to-list 'load-path "~/.emacs.d/extensions/org/lisp")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/org")
+(add-to-list 'load-path
+   "~/.emacs.d/elpa/org-plus-contrib-20140616/org")
+(add-to-list 'load-path
+   "~/.emacs.d/elpa/org-plus-contrib-20140616/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -42,7 +56,6 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-                                        ;(require 'org-install)
 (require 'org)
 (require 'use-package)                  ; enables autoloading of functions
 
@@ -52,16 +65,16 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (require 'auctex-autoloads)		
-(load "auctex.el" nil t t)  ; previously, this was crucial!
-(load "preview-latex.el" nil t t) ; previously, this was crucial!
+;; (require 'auctex-autoloads)
+(require 'auto-loads)
+;; (load "auctex.el" nil t t)  ; previously, this was crucial!
+;; (load "preview-latex.el" nil t t) ; previously, this was crucial!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       IDO-mode
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ;; ido
 ;; (require 'ido)                          
@@ -107,7 +120,8 @@
    )
 
 (setq bbdb-always-add-addresses t)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       auto-complete-mode and yasnippet
 ;;;
@@ -144,7 +158,7 @@
    
    )
 
-(setq inferior-julia-program-name "/usr/bin/julia")
+
 (org-babel-load-file "~/.emacs.d/init-all.org")
 (bind-key "C-o" 'ac-complete)
 (bind-key* "C-O" 'auto-complete)
@@ -211,115 +225,6 @@ startup"
 
 ;; load tags-table, so that ac-source-etags will not fail
 (visit-tags-table "~/Dropbox/research_current_ntb_head/TAGS")
-;; (setq inferior-julia-program-name
-;;    "~/julia/usr/bin/julia-release-basic")
-
-;; (setq inferior-julia-program-name "/usr/bin/julia-basic")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       matlab
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; some ad-hoc matlab macros imitating R functionality in ESS 
-(fset 'eval-line-and-go
-   [?\C-a ?\C-  ?\C-e ?\C-c ?\C-r ?\C-a ?\C-n ?\C-  ?\C-f ?\C-b ?\C-  ?\C- ])
-
-(fset 'eval-cell-and-go
-   [?\C-e ?\C-r ?% ?% ?\C-m ?\C-n ?\C-n ?\M-x ?m ?a ?t ?l ?a ?b ?- ?s ?h ?e ?l ?l ?- ?r ?u ?n ?- ?c ?e ?l ?l return ?\C-s ?% ?% ?\C-m])
-
-(fset 'eval-whos-on-variable
-   [nil ?\C-x ?\C-b ?M ?A ?T ?L ?A ?B ?* return ?w ?h ?o ?s ?  ?\C-y return ?\C-x ?o])
-
-(fset 'eval-variable
-   [?\C-x ?\C-b ?* ?M ?A ?T ?L ?A ?B ?* return ?\C-y return ?\M-x ?c ?o ?m ?i ?n ?t ?- ?p ?r ?e ?v ?i tab ?p ?r ?o tab return ?\C-l ?\M-x ?c ?o ?m ?i ?n ?t ?- ?n ?e ?x ?- backspace ?t ?- ?p tab return ?\C-x ?o])
-
-(defun cg/matlab-eval-paragraph ()
-   "equivalent to ESS eval paragraph"
-   (interactive)
-   (forward-paragraph)
-   (backward-paragraph)
-   (push-mark)
-   (forward-paragraph)
-   (matlab-shell-run-region (mark) (point))
-   (keyboard-quit)
-   )
-
-(defun cg/modify-matlab-keybindings ()
-   "adapt matlab-emacs keybindings"
-   (bind-key "M-j" 'cg/insert-tab matlab-mode-map)
-   (bind-key "C-j" 'indent-for-tab-command matlab-mode-map)
-   (bind-key "C-#" 'comment-or-uncomment-line matlab-mode-map)
-   (bind-key "M-;" 'comment-dwim matlab-mode-map)
-   (bind-key "C-c C-v" 'eval-variable matlab-mode-map)
-   ;; (bind-key "C-c C-g" 'eval-whos-on-variable matlab-mode-map)
-   (bind-key "C-c C-g" 'cg/matlab-display-variable matlab-mode-map)
-   (bind-key "C-c C-n" 'eval-line-and-go matlab-mode-map)
-   ;; (bind-key "C-c C-p" 'eval-cell-and-go matlab-mode-map)
-   (bind-key "C-c C-p" 'cg/matlab-eval-paragraph matlab-mode-map)
-   (bind-key "C-c C-b" 'matlab-shell-run-cell)
-   )
-
-(defun cg/matlab-display-variable (variable)
-   "display variable information"
-   (interactive (list (read-from-minibuffer
-                         "MATLAB variable: "
-                         (cons (matlab-read-word-at-point) 0))))
-   ;; (cons (cg/copy-current-symbol) 0)    
-   ;; (setq matlab-variable (cons (matlab-read-word-at-point) 0))
-   (setq matlab-command (concat "str(" (concat variable) ")"))
-   (matlab-shell-run-command matlab-command)
-   )
-
-;; allow matlab to be loaded through call to matlab-mode or
-;; matlab-shell
-;; follow-ups: load cedet, etags
-(use-package matlab
-   :defer t
-   :load-path "~/matlab-emacs"   
-   ;;   :if (file-exists-p "/home/chris/MATLAB/R2012a/bin/matlab")
-   :commands (matlab-shell matlab-mode)
-   :mode ("\\.m$" . matlab-mode)
-   :init
-   (progn
-      (autoload 'matlab-shell "matlab" nil t)
-      (autoload 'matlab-mode "matlab" nil t)
-      )
-   :config
-   (progn
-      (require 'matlab-load)
-                                        ;(matlab-cedet-setup)
-      (add-to-list 'matlab-mode-hook 'cg/modify-current-syntax-table)
-      (add-to-list 'matlab-mode-hook 'cg/modify-matlab-keybindings)
-      (add-to-list 'matlab-mode-hook 'cg/command-line-keybindings)
-      ;; (setq matlab-shell-command
-      ;; "/home/chris/MATLAB/R2012a/bin/matlab")
-      (setq matlab-shell-command "matlab")
-      )
-   )
-
-(defun cg/command-line-keybindings ()
-   "set keybindings for searches with comint"
-   (interactive)
-   (bind-key* "C-c M-r" 'comint-history-isearch-backward-regexp)
-   (bind-key* "M-r" 'comint-previous-matching-input-from-input)
-   (bind-key* "C-t p" 'move-to-window-line-top-bottom)
-   )
-
-
-
-
-
-;;Setup cedet:
-;;   (load-file "~/cedet-1.1/common/cedet.el")
-;;   (semantic-load-enable-semantic-debugging-helpers)      ; Enable prototype help and smart completion 
-;; (require 'semantic-ia)
-;; ;  (global-ede-mode 1)                      ; Enable the Project management system
-;;   (global-srecode-minor-mode 1)            ; Enable template insertion menu
-;; (semantic-add-system-include "~/MATLAB/R2012a/toolbox/" 'matlab-shell-mode)
-;; (require 'semanticdb)
-;; (global-semanticdb-minor-mode 1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -328,19 +233,13 @@ startup"
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "~/.emacs.d/extensions/ess-13.09/lisp")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/ess-13.09-2/lisp/")
-                                        ;(require 'ess-site)
-(add-to-list 'load-path "~/ESS/lisp/ess-site")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/ess")
 
 ;; allow julia to be loaded through call to julia-mode or
 ;; ess-inferior process
 ;; follow-ups: etags?
 (use-package julia-mode
    :defer t
-   :load-path "~/julia/contrib"   
-   :if (file-exists-p "~/julia/contrib/julia-mode.el")
    :commands julia-mode
    :mode ("\\.jl$" . julia-mode)
    :init
@@ -350,8 +249,6 @@ startup"
    :config
    (progn
       (add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
-      (setq inferior-julia-program-name
-         "~/julia/usr/bin/julia")
       (setq inferior-julia-program-name "/usr/bin/julia")
       (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
       (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)      
@@ -360,17 +257,13 @@ startup"
 
 (use-package ess-julia.el
    :defer t
-   ;; :load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/" 
-   :load-path "~/ESS/lisp/"   
    :commands julia
-   :init
+   :init                                ; run before actual loading
    (progn
       (autoload 'julia "ess-julia.el" nil t)
       )
    :config
    (progn
-      ;; (require 'julia-mode)             
-      (add-to-list 'load-path "~/ESS/lisp")
       (require 'ess-site)
       (setq inferior-julia-program-name "/usr/bin/julia")
       (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
@@ -384,17 +277,6 @@ startup"
 ;; in order to add ess-process afterward, apply julia-mode again on
 ;; open buffers - probably ess-julia.el has to be loaded again also:
 ;; M-x load-file ess-julia.el
-
-;; OLD CODE:
-
-;; (add-to-list 'load-path "~/julia/contrib/") ;Tell emacs to look for the file there.
-;; (require 'julia-mode)                             ;Tell it to load it.
-;; (setq auto-mode-alist                             ;Tell it to go to
-;;                                         ;julia-mode when a Julia
-;;                                         ;file(.jl) is spotted. 
-;;       (append '(("\\.jl$" . julia-mode)) auto-mode-alist))
-;; (setq inferior-julia-program-name "~/julia/usr/bin/julia-release-basic")
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -411,7 +293,6 @@ startup"
 
 (use-package ess-site
    :defer t
-   :load-path "/usr/share/emacs/site-lisp/ess-13.09/lisp/"
    :commands R
    :mode ("\\.[Rr]$" . R-mode)
    :config
@@ -432,53 +313,6 @@ startup"
       )
    )
 
-
-                                        ; (define-key ess-mode-map (kbd "C-M--") 'cg/R-assign)
-                                        ;  (define-key ess-mode-map (kbd "_") 'self-insert-command)
-                                        ;  (define-key inferior-ess-mode-map (kbd "C-M--") 'cg/R-assign)
-                                        ;  (define-key inferior-ess-mode-map (kbd "_") 'self-insert-command)
-                                        ;  (global-set-key (kbd "_") 'self-insert-command)
-                                        ; (global-set-key (kbd "C-M--") 'cg/R-assign)
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       gnuplot
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;--------------------------------------------------------------------
-;; Lines enabling gnuplot-mode
-
-;; move the files gnuplot.el to someplace in your lisp load-path or
-;; use a line like
-;;  (setq load-path (append (list "/path/to/gnuplot") load-path))
-(add-to-list 'load-path "~/.emacs.d/extensions/gnuplot")
-
-;; these lines enable the use of gnuplot mode
-(autoload 'gnuplot-mode "gnuplot" "gnuplot major mode" t)
-(autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot mode" t)
-
-;; load the file
-;; (add-to-list 'load-path "/usr/bin")
-;; (require 'gnuplot)
-
-;; specify the gnuplot executable (if other than /usr/bin/gnuplot)
-;; (setq gnuplot-program "/sw/bin/gnuplot")
-
-;; automatically open files ending with .gp or .gnuplot in gnuplot mode
-(setq auto-mode-alist 
-   (append '(("\\.\\(gp\\|gnuplot\\)$" . gnuplot-mode)) auto-mode-alist))
-
-(add-hook 'gnuplot-mode-hook
-   '(lambda ()
-       (define-key gnuplot-mode-map (kbd "C-c C-n") 'gnuplot-send-line-and-forward)
-       (define-key gnuplot-mode-map (kbd "C-c C-j") 'gnuplot-send-line-to-gnuplot)
-       (define-key gnuplot-mode-map (kbd "C-c C-t") 'gnuplot-negate-option)
-       (define-key gnuplot-mode-map (kbd "C-c C-s") 'gnuplot-gui-set-options-and-insert)
-       ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -563,11 +397,6 @@ startup"
 (org-babel-load-file "~/.emacs.d/init-w3m.org")
 
 
-;; ;; magit
-;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/magit-master")
-;; (require 'magit)
-
-
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;
 ;; ;;;;;       google-translate
@@ -589,11 +418,10 @@ startup"
       (bind-key "C-t k" 'google-translate-at-point-reverse)
       )
    :config
-   (org-babel-load-file "~/.emacs.d/init-google-translate.org")
+   (setq google-translate-default-source-language "en")
+   (setq google-translate-default-target-language "de")
+   ;; (org-babel-load-file "~/.emacs.d/init-google-translate.org") 
    )
-
-;; ;; load settings
-;; (org-babel-load-file "~/.emacs.d/init-google-translate.org")
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;
@@ -608,41 +436,6 @@ startup"
       (bind-key "C-t u" 'thesaurus-choose-synonym-and-replace)
       )
    )
-
-;; (require 'thesaurus)
-;; (org-babel-load-file "~/Dropbox/personal_data/thesaurus_api_setup.org")
-;; (define-key global-map (kbd "C-t u") 'thesaurus-choose-synonym-and-replace)
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;
-;; ;;;;;       matlab
-;; ;;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;; load matlab only on some computers
-
-;; (if (string= system-name "chris-wk")
-;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
-;;    (custom-set-variables
-;;       '(matlab-shell-command "/home/chris/MATLAB/R2012a/bin/matlab")
-;;       )
-;;    )
-
-;; ;; (if (string= system-name "chris-lpt")
-;; ;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
-;; ;;    (custom-set-variables
-;; ;;       '(matlab-shell-command "~/remote_matlab")
-;; ;;       )
-;; ;;    )
-
-;; ;; (if (string= system-name "chris-ntb")
-;; ;;    (org-babel-load-file "~/.emacs.d/init-matlab.org")
-;; ;;    (custom-set-variables
-;; ;;       '(matlab-shell-command "~/remote_matlab")
-;; ;;       )
-;; ;;    )
-
-
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;;
@@ -663,13 +456,11 @@ startup"
       )
    )
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       miscellaneous
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 ;; new block
 (defun new-block ()
