@@ -41,8 +41,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/extensions/")
 (add-to-list 'load-path "~/")
-(add-to-list 'load-path "~/auctex-11.87")
-(add-to-list 'load-path "~/auctex-11.87/preview")
+(add-to-list 'load-path "~/.emacs.d/elpa/auctex-11.87.5")
 (add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
 (add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
 (add-to-list 'load-path
@@ -65,8 +64,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (require 'auctex-autoloads)
-(require 'auto-loads)
+(require 'auctex-autoloads)
 ;; (load "auctex.el" nil t t)  ; previously, this was crucial!
 ;; (load "preview-latex.el" nil t t) ; previously, this was crucial!
 

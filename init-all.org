@@ -109,6 +109,8 @@ shown.
 #+BEGIN_SRC emacs-lisp
   (column-number-mode 1)
 #+END_SRC
+*** Font size
+(set-face-attribute 'default nil :font "DejaVu Sans Mono-10")
 *** Color-theme
 Following the practice of most heavy-weight programmers, I adjust my
 emacs face-colors in order to have a dark-colored background and
@@ -2963,12 +2965,20 @@ Set math prefix.
 (setq reftex-default-bibliography (quote "~/literature/lit_man/references.bib"))
 #+END_SRC
 
-
 #+BEGIN_SRC emacs-lisp
-  (setq org-latex-to-pdf-process '("pdflatex -interaction nonstopmode %b"
-                                   "/usr/bin/bibtex %b"
-                                   "pdflatex -interaction nonstopmode %b"
-                                   "pdflatex -interaction nonstopmode %b"))
+    (setq org-latex-pdf-process
+       (quote
+          ("pdflatex -interaction nonstopmode -output-directory %o %f"
+             "bibtex %b" 
+             "pdflatex -interaction nonstopmode -output-directory %o %f"
+             "pdflatex -interaction nonstopmode -output-directory %o %f") ))
+
+
+   ;; old configuration
+   ;; (setq org-latex-to-pdf-process '("pdflatex -interaction nonstopmode %b"
+   ;;                                  "/usr/bin/bibtex %b"
+   ;;                                  "pdflatex -interaction nonstopmode %b"
+   ;;                                  "pdflatex -interaction nonstopmode %b"))
 #+END_SRC
 
 *** Keybindings
