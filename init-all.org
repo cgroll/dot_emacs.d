@@ -110,7 +110,10 @@ shown.
   (column-number-mode 1)
 #+END_SRC
 *** Font size
+#+BEGIN_SRC emacs-lisp
 (set-face-attribute 'default nil :font "DejaVu Sans Mono-10")
+#+END_SRC
+
 *** Color-theme
 Following the practice of most heavy-weight programmers, I adjust my
 emacs face-colors in order to have a dark-colored background and
