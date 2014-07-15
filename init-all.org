@@ -1036,6 +1036,12 @@ Enable emacsclient
 (server-start)
 #+END_SRC
 
+Re-activate circumflex, which is not working under emacs24 at my home
+pc: 
+#+BEGIN_SRC emacs-lisp
+(define-key key-translation-map [dead-circumflex] "^")
+#+END_SRC
+
 Show windows of ediff side by side.
 #+BEGIN_SRC emacs-lisp
 (setq ediff-split-window-function 'split-window-horizontally)
@@ -1093,6 +1099,11 @@ Do not show files in folded state at startup:
 Allow special blocks (theorems, definitions, ...) in html files:
 #+BEGIN_SRC emacs-lisp
 ;;(require 'org-special-blocks)
+#+END_SRC
+
+Set org directory
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/customs/gtd")
 #+END_SRC
 
 ** Set global key bindings
@@ -1656,6 +1667,7 @@ I explicitly name here. This could make problems on other computers,
 where Dropbox is not installed.
 #+BEGIN_SRC emacs-lisp
   (setq org-mobile-directory "~/Dropbox/MobileOrg")
+  (setq org-mobile-inbox-for-pull "~/customs/gtd/from-mobile.org")
 #+END_SRC
 
 *** Customize variables
