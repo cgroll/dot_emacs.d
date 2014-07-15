@@ -243,6 +243,7 @@ startup"
    :init
    (progn
       (autoload 'julia-mode "julia-mode" nil t)
+      (setq inferior-julia-program-name "/usr/bin/julia")
       )
    :config
    (progn
@@ -259,6 +260,7 @@ startup"
    :init                                ; run before actual loading
    (progn
       (autoload 'julia "ess-julia.el" nil t)
+      (setq inferior-julia-program-name "/usr/bin/julia")
       )
    :config
    (progn
