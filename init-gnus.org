@@ -278,7 +278,7 @@ Change colors and line formats:
 
 ** Mail splitting
 Create split rule with patterns differing between servers:
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle no
    ;; define split-rule
    (setq nnimap-split-rule
       '(
@@ -329,8 +329,8 @@ with extended syntax. Otherwise B q and B t would display where any
 given mail would be moved. This probably is originally designed for
 news instead of mails.
 #+BEGIN_SRC emacs-lisp
-(setq gnus-summary-respool-default-method 'nnimap-split-rule)
-(setq nnmail-split-methods nnimap-split-rule)
+   (setq gnus-summary-respool-default-method 'nnmail-split-methods)
+;;   (setq nnmail-split-methods 'nnimap-split-rule)
 #+END_SRC
 
 Some settings on splitting:
