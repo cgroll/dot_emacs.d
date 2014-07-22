@@ -11,6 +11,7 @@
 /init-matlab.el~
 /auto-save-list/.saves-2217-chris-wk~
 /auto-save-list/.saves-2403-chris-wk~
+/auto-save-list/*~
 /extensions/ess-R-object-tooltip.el~
 /init-google-translate.org~
 /ltxpng/
@@ -107,3 +108,6 @@ extensions/auctex-11.87
 /extensions/yasnippet_own_snippets/org-mode/overset.yasnippet~
 /extensions/yasnippet_own_snippets/org-mode/underset_eq.yasnippet~
 elpa
+/bookmarks
+/ac-comphist.dat
+/.org-id-locations
