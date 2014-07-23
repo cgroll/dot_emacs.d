@@ -432,7 +432,7 @@ startup"
 (use-package thesaurus
    :config
    (progn
-      (org-babel-load-file "~/Dropbox/personal_data/thesaurus_api_setup.org")
+      (org-babel-load-file "~/Dropbox/customs/personal_data/thesaurus_api_setup.org")
       (bind-key "C-t u" 'thesaurus-choose-synonym-and-replace)
       )
    )
