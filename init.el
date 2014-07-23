@@ -222,7 +222,7 @@ startup"
    (error nil))
 
 ;; load tags-table, so that ac-source-etags will not fail
-(visit-tags-table "~/Dropbox/db_research/TAGS")
+;; (visit-tags-table "~/Dropbox/db_research/TAGS")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
