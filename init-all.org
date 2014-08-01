@@ -1040,6 +1040,7 @@ Re-activate circumflex, which is not working under emacs24 at my home
 pc: 
 #+BEGIN_SRC emacs-lisp
 (define-key key-translation-map [dead-circumflex] "^")
+(define-key key-translation-map [S-dead-grave] "`")
 #+END_SRC
 
 Show windows of ediff side by side.
