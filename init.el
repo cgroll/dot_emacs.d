@@ -5,6 +5,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;; set path for ESS
+;;;;;;;;;;;;;;;;;;;
+
+(add-to-list 'load-path "/home/chris/programs/ESS/lisp/")
+(require 'ess-site)
+
+
 (defvar *emacs-load-start* (current-time))
 
 ;; show bookmark list at startup
@@ -231,7 +238,7 @@ startup"
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/ess")
+;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess")
 
 ;; allow julia to be loaded through call to julia-mode or
 ;; ess-inferior process
