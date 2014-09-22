@@ -4,7 +4,6 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;; set path for ESS
 ;;;;;;;;;;;;;;;;;;;
 
@@ -55,6 +54,19 @@
    "~/.emacs.d/elpa/org-plus-contrib-20140616/org")
 (add-to-list 'load-path
    "~/.emacs.d/elpa/org-plus-contrib-20140616/")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;;;;       htmlize
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (require 'htmlize)
+;; the problem is that htmlize uses the same syntax highlighting
+;; colors that I use within emacs itself. However, in emacs I have a
+;; black background, while I usually have a with one for exported
+;; files. This way, syntax highlighting might be leading to hardly
+;; visible code snippets.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
