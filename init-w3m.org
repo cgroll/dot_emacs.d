@@ -13,8 +13,8 @@
 
 ;; set w3m as standard browser
 #+BEGIN_SRC emacs-lisp
-(setq browse-url-browser-function 'browse-url-firefox)
-(setq w3m-fill-column 69)
+   ;; (setq browse-url-browser-function 'browse-url-chrome)
+   ;; (setq w3m-fill-column 69)
 #+END_SRC
 
 
