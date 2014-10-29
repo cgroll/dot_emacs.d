@@ -1669,6 +1669,7 @@ where Dropbox is not installed.
 #+BEGIN_SRC emacs-lisp
   (setq org-mobile-directory "~/Dropbox/MobileOrg")
   (setq org-mobile-inbox-for-pull "~/customs/gtd/from-mobile.org")
+  (bind-key* "C-t p" 'org-mobile-push)
 #+END_SRC
 
 *** Customize variables
