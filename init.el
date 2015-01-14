@@ -8,6 +8,7 @@
 ;;;;;;;;;;;;;;;;;;;
 
 (add-to-list 'load-path "/home/chris/programs/ESS/lisp/")
+(add-to-list 'load-path "/home/grollc/programs/ESS/lisp/")
 (require 'ess-site)
 
 
