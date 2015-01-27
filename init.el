@@ -55,6 +55,8 @@
    "~/.emacs.d/elpa/org-plus-contrib-20140616/org")
 (add-to-list 'load-path
    "~/.emacs.d/elpa/org-plus-contrib-20140616/")
+(add-to-list 'load-path
+   "~/.emacs.d/extensions/org-mode/lisp/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
