@@ -141,6 +141,27 @@ Color themes can be tested with M-x color-theme-select
 #+END_SRC
 Remark: sadly, this configuration seems to distort my auto-completion
 tooltip menu.
+
+
+#+BEGIN_SRC emacs-lisp
+   (defun cg/outside-appearance ()
+      "optimize appearance for outside"
+      (interactive)
+      (global-hl-line-mode 0)
+      (color-theme-high-contrast)
+      (set-face-background 'hl-line "gray")
+      )
+
+   (defun cg/inside-appearance ()
+      "set back appearance to inside settings"
+      (interactive)
+      (global-hl-line-mode 1)
+      (set-face-background 'hl-line "blue")
+      (color-theme-tty-dark)
+      )
+
+#+END_SRC
+
 I also like to highlight the current line and cursor point.
 #+BEGIN_SRC emacs-lisp  
   (global-hl-line-mode 1)
