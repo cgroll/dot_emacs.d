@@ -522,26 +522,29 @@ startup"
    (exchange-point-and-mark))
 
 (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(LaTeX-math-abbrev-prefix "M-g")
-   '(calendar-latitude 48.139)
-   '(calendar-longitude 11.58)
-   '(global-auto-complete-mode t)
-   '(matlab-shell-command "~/remote_matlab")
-   '(org-agenda-show-all-dates t)
-   '(org-agenda-skip-deadline-if-done t)
-   '(org-agenda-skip-scheduled-if-done t)
-   '(org-agenda-start-on-weekday nil)
-   '(org-clock-into-drawer t)
-   '(org-deadline-warning-days 14)
-   '(org-drill-optimal-factor-matrix (quote ((3 (2.46 . 2.46) (1.56 . 2.2) (2.04 . 2.244) (2.08 . 2.166) (2.6 . 2.6) (1.96 . 2.316) (2.2199999999999998 . 2.379) (1.9000000000000001 . 2.111) (1.8199999999999998 . 2.26) (2.5 . 2.5) (2.36 . 2.439)) (2 (2.08 . 2.166) (1.8199999999999998 . 2.26) (2.2199999999999998 . 2.379) (2.22 . 2.22) (2.46 . 2.497) (1.7000000000000002 . 2.255) (2.04 . 2.319) (1.96 . 2.238) (2.1799999999999997 . 2.325) (2.36 . 2.439) (2.5 . 2.5) (2.6 . 2.588) (1.56 . 2.2)) (1 (2.08 . 3.902) (1.8199999999999998 . 3.615) (1.56 . 3.52) (2.2199999999999998 . 3.806) (2.04 . 3.59) (2.36 . 3.902) (2.1799999999999997 . 3.804) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.706) (1.7000000000000002 . 3.608)))))
-   '(org-fast-tag-selection-single-key nil)
-   '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
-   '(org-reverse-note-order nil)
-   '(safe-local-variable-values (quote ((org-src-preserve-indentation . t) (TeX-master . evt_main\.tex) (org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export)))))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(LaTeX-math-abbrev-prefix "M-g")
+ '(calendar-latitude 48.139)
+ '(calendar-longitude 11.58)
+ '(ebib-citation-commands (quote ((any (("cite" "\\cite%<[%A]%>{%K}"))) (org-mode (("ebib" "[[ebib:%K][%D]]") ("text" "@%K%< [%A]%>") ("paren" "[%(%<%A %>@%K%<, %A%>%; )]") ("year" "[-@%K%< %A%>]") ("ci" "[@%K]"))) (markdown-mode (("text" "@%K%< [%A]%>") ("paren" "[%(%<%A %>@%K%<, %A%>%; )]") ("year" "[-@%K%< %A%>]") ("ci" "[@%K]"))))))
+ '(ebib-preload-bib-files (quote ("../refs.bib" "./refs.bib")))
+ '(global-auto-complete-mode t)
+ '(matlab-shell-command "~/remote_matlab")
+ '(org-agenda-show-all-dates t)
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-clock-into-drawer t)
+ '(org-clock-mode-line-total (quote current))
+ '(org-deadline-warning-days 14)
+ '(org-drill-optimal-factor-matrix (quote ((3 (2.46 . 2.46) (1.56 . 2.2) (2.04 . 2.244) (2.08 . 2.166) (2.6 . 2.6) (1.96 . 2.316) (2.2199999999999998 . 2.379) (1.9000000000000001 . 2.111) (1.8199999999999998 . 2.26) (2.5 . 2.5) (2.36 . 2.439)) (2 (2.08 . 2.166) (1.8199999999999998 . 2.26) (2.2199999999999998 . 2.379) (2.22 . 2.22) (2.46 . 2.497) (1.7000000000000002 . 2.255) (2.04 . 2.319) (1.96 . 2.238) (2.1799999999999997 . 2.325) (2.36 . 2.439) (2.5 . 2.5) (2.6 . 2.588) (1.56 . 2.2)) (1 (2.08 . 3.902) (1.8199999999999998 . 3.615) (1.56 . 3.52) (2.2199999999999998 . 3.806) (2.04 . 3.59) (2.36 . 3.902) (2.1799999999999997 . 3.804) (2.5 . 4.0) (2.6 . 4.14) (1.96 . 3.706) (1.7000000000000002 . 3.608)))))
+ '(org-fast-tag-selection-single-key nil)
+ '(org-format-latex-options (quote (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
+ '(org-reverse-note-order nil)
+ '(safe-local-variable-values (quote ((org-src-preserve-indentation . t) (TeX-master . evt_main\.tex) (org-export-babel-evaluate . t) (org-export-publishing-directory . "./src_results/") (org-export-babel-evaluate . no-export)))))
 ;; (custom-set-faces
 ;;   ;; custom-set-faces was added by Custom.
 ;;   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -553,15 +556,15 @@ startup"
 ;;  '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.2))))
 ;;  '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
 (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.1 :width expanded))))
-   '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.1 :width normal))))
-   '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.1 :width normal))))
-   '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.1))))
-   '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-level-1 ((t (:inherit outline-1 :foreground "yellow" :height 1.1 :width expanded))))
+ '(org-level-2 ((t (:inherit outline-2 :foreground "orange" :height 1.1 :width normal))))
+ '(org-level-3 ((t (:inherit outline-3 :foreground "green yellow" :height 1.1 :width normal))))
+ '(org-level-4 ((t (:inherit outline-4 :foreground "deep sky blue" :height 1.1))))
+ '(org-level-5 ((t (:inherit outline-5 :foreground "deep pink")))))
 (put 'upcase-region 'disabled nil)
 
 

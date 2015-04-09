@@ -2735,8 +2735,100 @@ bibtex-entry-field-alist
         
         )
      )
+
+(defun cg/bib_capturing_short ()
+     "capture bibtex entry of a type and copy bibtex to references"
+     (interactive)
+     
+     
+     (let
+        (
+           ;; set variables for paths
+           (lit_dir  "~/literature")
+           (rv_file_bib 
+              "~/literature/lit_man/bib_process_file.bib")
+           (bib_tex_file 
+              "~/literature/lit_man/references.bib")
+           
+           ;; set variables
+           bib-key
+           short-bib-key
+           clean_bibtex_entry
+           old_file_name
+           new_file_name
+           )
+        
+        ;; prompt for bibtex input, copy and jump to working file
+        (cg/get-bibtex-to-processing-buffer rv_file_bib)
+        
+        ;; clean up entry, get clean key, ask for content location
+        (beginning-of-buffer)
+        (bibtex-mode)
+        (bibtex-beginning-of-entry)
+        (bibtex-clean-entry t)            ; error could be thrown at
+                                          ; this point!!
+        (beginning-of-buffer)
+        (bibtex-beginning-of-entry)      
+        (bibtex-find-text)
+        (let (beg_point end_point)
+           (setq end_point (point))
+           (search-backward "{")
+           (forward-char)
+           (setq beg_point (point))
+           (setq bib-key (buffer-substring beg_point end_point))
+           )
   
-  (global-set-key (kbd "C-5") 'cg/bib_capturing)
+        (message bib-key)
+  
+        (beginning-of-buffer)
+        (insert "\n")      
+        (end-of-buffer)
+        (insert "\n")      
+        
+        ;; bibtex entry is finished and ready for copying
+        (setq clean_bibtex_entry (buffer-string))
+  
+        ;; copy to one processing buffer
+        (switch-to-buffer "bib_process_file.bib")
+  
+        ;; add rv_ to bibtex-key
+        (beginning-of-buffer)
+        (search-forward "@")
+        (search-forward "{")
+        (insert "rv_")
+  
+        ;; get clean bibtex with rv_ included
+        (let (beg_point end_point)
+           (bibtex-beginning-of-entry)
+           (setq beg_point (point))
+           (bibtex-end-of-entry)
+           (setq end_point (point))
+           (setq clean_bibtex_entry
+              (substring (buffer-string) (- beg_point 1)
+                 end_point))
+           )
+  
+        ;; insert org entry
+        (end-of-buffer)
+        
+        ;; if everything is correct, copy entries, else edit
+        (if (yes-or-no-p "Shall bibtex entry be copied?")
+           (progn
+              (save-excursion
+                 (find-file
+        "~/literature/lit_man/references.bib")
+                 (end-of-buffer)
+                 (insert clean_bibtex_entry)
+                 (bibtex-sort-buffer)
+                 (save-buffer)
+                 (switch-to-buffer "bib_process_file.bib")
+                 )
+              )
+           )
+        )
+     )
+  
+  (global-set-key (kbd "C-5") 'cg/bib_capturing_short)
   
   (defun cg/prompt-for-file-and-return-bibtex-key-file-name-with-extension
      (key)
@@ -2963,7 +3055,13 @@ Set math prefix.
 #+END_SRC
 
 ** bibtex
-  
+
+*** ebib
+ebib now mostly substitutes reftex
+#+BEGIN_SRC emacs-lisp
+(bind-key* "C-t e" 'ebib)
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
     (require 'reftex)
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
@@ -2972,14 +3070,16 @@ Set math prefix.
 
 
 #+BEGIN_SRC emacs-lisp
-  (defun org-mode-reftex-setup ()
-    (load-library "reftex")
-    (and (buffer-file-name)
+   (defun org-mode-reftex-setup ()
+      (load-library "reftex")
+      (and (buffer-file-name)
          (file-exists-p (buffer-file-name))
          (reftex-parse-all))
-    (define-key org-mode-map (kbd "C-c (") 'reftex-citation))
-  (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-(setq reftex-default-bibliography (quote "~/literature/lit_man/references.bib"))
+      (define-key org-mode-map (kbd "C-c (") 'reftex-citation)
+      ;; meanwhile, using ebib instead of reftex
+      (define-key org-mode-map (kbd "C-c (") 'ebib-insert-bibtex-key))
+   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+   (setq reftex-default-bibliography (quote "~/literature/lit_man/references.bib"))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
