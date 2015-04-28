@@ -302,7 +302,7 @@ the stops given by tab-stop-list. The function cg/insert-tab inserts
 TAB at point. More sophisticated behaviour like on regions still has
 to be inserted, as well as an inverting command.
 #+BEGIN_SRC emacs-lisp  
-  (setq-default indent-tabs-mode nil)
+  (setq-default indent-tabs-mode t)
   (setq indent-tabs-mode t)
   
   (defun cg/kill-tab ()
@@ -358,6 +358,12 @@ to be inserted, as well as an inverting command.
 
 Both functions should be extended with a convenient application to
 regions. 
+
+For markdown files and beamer / pdf export, TABS must not be spaces!
+#+BEGIN_SRC emacs-lisp
+(setq org-list-indent-offset 1)
+#+END_SRC
+
 
 *** Indentation according to org-outline
 Org documents can be indented according to their underlying outline
