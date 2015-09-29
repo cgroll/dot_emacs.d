@@ -1,3 +1,4 @@
+*.*~
 /init-R.el
 /init-google-translate.el
 /init-latex.el
@@ -116,6 +117,3 @@ elpa
 /session.10fcd85b3c9657fc08140799755287822000000018460048
 /url/
 /extensions/.thesaurus.cache
-/extensions/yasnippet_own_snippets/org-mode/Fb.yasnippet~
-/extensions/yasnippet_own_snippets/org-mode/fb.yasnippet~
-/extensions/yasnippet_own_snippets/org-mode/ll.yasnippet~
