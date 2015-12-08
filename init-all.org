@@ -2462,6 +2462,17 @@ Enable ess-tracebug:
 
 
 
+* Matlab settings
+Matlab mode was installed through elpa package manager. 
+#+BEGIN_SRC emacs-lisp
+ (autoload 'matlab-mode "matlab" "Matlab Editing Mode" t)
+ (add-to-list
+  'auto-mode-alist
+  '("\\.m$" . matlab-mode))
+ (setq matlab-indent-function t)
+ (setq matlab-shell-command "matlab")
+#+END_SRC
+
 * Bibtex INITIALIZATION
 ** references in html
 In order to convert references to html, we need the package
