@@ -93,7 +93,7 @@ dictionary to work
 
 Specify personal spelling dictionary.
 #+BEGIN_SRC emacs-lisp
-  (setq ispell-personal-dictionary "~/Dropbox/personal_data/.ispell_english")
+  (setq ispell-personal-dictionary "~/Dropbox/customs/personal_data/.ispell_english")
 #+END_SRC
 
 ** Layout
