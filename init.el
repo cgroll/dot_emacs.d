@@ -86,7 +86,7 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'auctex-autoloads)
+;; (require 'auctex-autoloads)
 ;; (load "auctex.el" nil t t)  ; previously, this was crucial!
 ;; (load "preview-latex.el" nil t t) ; previously, this was crucial!
 
