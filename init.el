@@ -530,7 +530,7 @@ startup"
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
  '(ebib-citation-commands (quote ((any (("cite" "\\cite%<[%A]%>{%K}"))) (org-mode (("ebib" "[[ebib:%K][%D]]") ("text" "@%K%< [%A]%>") ("paren" "[%(%<%A %>@%K%<, %A%>%; )]") ("year" "[-@%K%< %A%>]") ("ci" "[@%K]"))) (markdown-mode (("text" "@%K%< [%A]%>") ("paren" "[%(%<%A %>@%K%<, %A%>%; )]") ("year" "[-@%K%< %A%>]") ("ci" "[@%K]"))))))
- '(ebib-preload-bib-files (quote ("../refs.bib" "./refs.bib")))
+ '(ebib-preload-bib-files (quote ("~/research/project/dissertation_main/refs.bib")))
  '(global-auto-complete-mode t)
  '(matlab-shell-command "~/remote_matlab")
  '(org-agenda-show-all-dates t)
