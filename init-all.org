@@ -3108,16 +3108,19 @@ ebib now mostly substitutes reftex
 
 
 #+BEGIN_SRC emacs-lisp
-   (defun org-mode-reftex-setup ()
-      (load-library "reftex")
-      (and (buffer-file-name)
-         (file-exists-p (buffer-file-name))
-         (reftex-parse-all))
-      (define-key org-mode-map (kbd "C-c (") 'reftex-citation)
-      ;; meanwhile, using ebib instead of reftex
-      (define-key org-mode-map (kbd "C-c (") 'ebib-insert-bibtex-key))
-   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-   (setq reftex-default-bibliography (quote "~/literature/lit_man/references.bib"))
+      (defun org-mode-reftex-setup ()
+         (load-library "reftex")
+         (and (buffer-file-name)
+            (file-exists-p (buffer-file-name))
+            (reftex-parse-all))
+         (define-key org-mode-map (kbd "C-c (") 'reftex-citation)
+			(define-key org-mode-map (kbd "C-c )") 'reftex-reference)
+         ;; meanwhile, using ebib instead of reftex
+         ;;(define-key org-mode-map (kbd "C-c (")
+         ;;'ebib-insert-bibtex-key)
+         )
+      (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+      (setq reftex-default-bibliography '("../refs.bib"))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp

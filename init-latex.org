@@ -91,7 +91,7 @@ Set math prefix.
          (reftex-parse-all))
     (define-key org-mode-map (kbd "C-c (") 'reftex-citation))
   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-(setq reftex-default-bibliography (quote "~/Dropbox/literature/management/references.bib"))
+(setq reftex-default-bibliography '("../refs.bib"))
 #+END_SRC
 
 
