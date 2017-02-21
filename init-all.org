@@ -3108,19 +3108,25 @@ ebib now mostly substitutes reftex
 
 
 #+BEGIN_SRC emacs-lisp
-      (defun org-mode-reftex-setup ()
-         (load-library "reftex")
-         (and (buffer-file-name)
-            (file-exists-p (buffer-file-name))
-            (reftex-parse-all))
-         (define-key org-mode-map (kbd "C-c (") 'reftex-citation)
-			(define-key org-mode-map (kbd "C-c )") 'reftex-reference)
-         ;; meanwhile, using ebib instead of reftex
-         ;;(define-key org-mode-map (kbd "C-c (")
-         ;;'ebib-insert-bibtex-key)
-         )
-      (add-hook 'org-mode-hook 'org-mode-reftex-setup)
-      (setq reftex-default-bibliography '("../refs.bib"))
+   (fset 'cg/fix-cite-pandoc
+      (lambda (&optional arg) "Keyboard macro." (interactive "p")
+      (kmacro-exec-ring-item (quote ([backspace 93 134217744 C-backspace
+                                        backspace 4 91 64 134217744 33554448] 0 "%d")) arg)))
+
+   (defun org-mode-reftex-setup ()
+      (load-library "reftex")
+      (and (buffer-file-name)
+         (file-exists-p (buffer-file-name))
+         (reftex-parse-all))
+      (define-key org-mode-map (kbd "C-c (") 'reftex-citation)
+      (define-key org-mode-map (kbd "C-c )") 'reftex-reference)
+      (define-key org-mode-map (kbd "C-t f") 'cg/fix-cite-pandoc)
+      ;; meanwhile, using ebib instead of reftex
+      ;;(define-key org-mode-map (kbd "C-c (")
+      ;;'ebib-insert-bibtex-key)
+      )
+   (add-hook 'org-mode-hook 'org-mode-reftex-setup)
+   (setq reftex-default-bibliography '("../refs.bib"))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp

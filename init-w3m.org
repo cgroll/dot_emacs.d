@@ -50,7 +50,7 @@
   (interactive)
   (browse-url-firefox w3m-current-url)) ;; (1)
 
-(bind-key* "C-t f" 'wicked/w3m-open-current-page-in-firefox)
+;;(bind-key* "C-t f" 'wicked/w3m-open-current-page-in-firefox)
 
 (defun wicked/w3m-open-link-or-image-in-firefox ()
   "Open the current link or image in Firefox."
