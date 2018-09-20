@@ -37,26 +37,26 @@ These are the settings for mail retrieval.
 
 #+end_src
 *** GMail
-#+begin_src emacs-lisp 
-(add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
-				  (nnimap-address "imap.gmail.com")
-				  (nnimap-server-port 993)
-				  (nnimap-stream ssl)))
-#+end_src
+# #+begin_src emacs-lisp 
+# (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
+# 				  (nnimap-address "imap.gmail.com")
+# 				  (nnimap-server-port 993)
+# 				  (nnimap-stream ssl)))
+# #+end_src
 
-#+begin_src emacs-lisp :tangle no
-(setq gnus-select-method '(nnimap "gmail"
-				  (nnimap-address "imap.gmail.com")
-				  (nnimap-server-port 993)
-				  (nnimap-stream ssl)))
-#+end_src
+# #+begin_src emacs-lisp :tangle no
+# (setq gnus-select-method '(nnimap "gmail"
+# 				  (nnimap-address "imap.gmail.com")
+# 				  (nnimap-server-port 993)
+# 				  (nnimap-stream ssl)))
+# #+end_src
 
 In order to not ignore gmail folders, allegedly the following lines
 should be incorporated. However, I probably only want to subscribe to
 some folders anyway.
-#+begin_src emacs-lisp :tangle no
-(setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
-#+end_src
+# #+begin_src emacs-lisp :tangle no
+# (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+# #+end_src
 
 Some alternative gmail settings that I tried! This form would be
 chosen if mail were not be processed via IMAP.
