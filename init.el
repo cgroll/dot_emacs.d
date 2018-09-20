@@ -307,7 +307,7 @@ startup"
       (add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
       (setq inferior-julia-program-name "/usr/bin/julia")
       (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
-      (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)      
+      ;; (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)      
       )
    )
 
@@ -328,7 +328,7 @@ startup"
                                         ; AND JULIA!!
       (setq ess-tracebug-inject-source-p t)
       (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
-      (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)            
+      ;; (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)            
       )
    )
 ;; in order to add ess-process afterward, apply julia-mode again on
