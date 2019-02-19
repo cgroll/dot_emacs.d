@@ -19,6 +19,7 @@
 (require 'bookmark)
 (bookmark-bmenu-list)
 (split-window-horizontally)
+(setq split-height-threshold nil)
 (switch-to-buffer "*Messages*")
 (switch-to-buffer-other-window "*Bookmark List*")
 (recentf-mode 1)
@@ -554,6 +555,7 @@ startup"
       (incf counter))
    (newline)
    (exchange-point-and-mark))
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
