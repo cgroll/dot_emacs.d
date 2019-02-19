@@ -162,6 +162,16 @@ tooltip menu.
 
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+   (defun cg/blog-settings ()
+      "change emacs settings for research blog"
+      (interactive)
+      (set-fill-column 40000)
+      (visual-line-mode)
+      )
+#+END_SRC
+
+
 I also like to highlight the current line and cursor point.
 #+BEGIN_SRC emacs-lisp  
   (global-hl-line-mode 1)
