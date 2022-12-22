@@ -29,11 +29,9 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/")
    t)
 
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-   )
+(require 'package)
+(add-to-list 'package-archives
+   '("melpa" . "http://melpa.org/packages/") t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -201,88 +199,83 @@
  '(calendar-latitude 48.139)
  '(calendar-longitude 11.58)
 	'(ebib-citation-commands
-		 (quote
-			 ((any
-				  (("cite" "\\cite%<[%A]%>{%K}")))
-				 (org-mode
-					 (("ebib" "[[ebib:%K][%D]]")
-						 ("text" "@%K%< [%A]%>")
-						 ("paren" "[%(%<%A %>@%K%<, %A%>%; )]")
-						 ("year" "[-@%K%< %A%>]")
-						 ("ci" "[@%K]")))
-				 (markdown-mode
-					 (("text" "@%K%< [%A]%>")
-						 ("paren" "[%(%<%A %>@%K%<, %A%>%; )]")
-						 ("year" "[-@%K%< %A%>]")
-						 ("ci" "[@%K]"))))))
- '(ebib-preload-bib-files (quote ("~/research/project/dissertation_main/refs.bib")))
+		 '((any
+				(("cite" "\\cite%<[%A]%>{%K}")))
+			  (org-mode
+				  (("ebib" "[[ebib:%K][%D]]")
+					  ("text" "@%K%< [%A]%>")
+					  ("paren" "[%(%<%A %>@%K%<, %A%>%; )]")
+					  ("year" "[-@%K%< %A%>]")
+					  ("ci" "[@%K]")))
+			  (markdown-mode
+				  (("text" "@%K%< [%A]%>")
+					  ("paren" "[%(%<%A %>@%K%<, %A%>%; )]")
+					  ("year" "[-@%K%< %A%>]")
+					  ("ci" "[@%K]")))))
+ '(ebib-preload-bib-files '("~/research/project/dissertation_main/refs.bib"))
  '(global-auto-complete-mode t)
  '(matlab-shell-command "~/remote_matlab" t)
  '(mode-require-final-newline nil)
-	'(org-agenda-files
-		 (quote
-			 ("~/customs/gtd/todo.org" "~/customs/gtd/refile.org" "~/customs/notes/priv_comp_notes.org" "~/customs/notes/priv_install_notes.org" "~/how_to/comp_records.org" "~/customs/chronicle/oracle.org")))
+ '(org-agenda-files nil)
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
  '(org-agenda-skip-scheduled-if-done t)
  '(org-agenda-start-on-weekday nil)
  '(org-clock-into-drawer t)
- '(org-clock-mode-line-total (quote current))
+ '(org-clock-mode-line-total 'current)
  '(org-deadline-warning-days 14)
 	'(org-drill-optimal-factor-matrix
-		 (quote
-			 ((3
-				  (2.46 . 2.46)
-				  (1.56 . 2.2)
-				  (2.04 . 2.244)
+		 '((3
+				(2.46 . 2.46)
+				(1.56 . 2.2)
+				(2.04 . 2.244)
+				(2.08 . 2.166)
+				(2.6 . 2.6)
+				(1.96 . 2.316)
+				(2.2199999999999998 . 2.379)
+				(1.9000000000000001 . 2.111)
+				(1.8199999999999998 . 2.26)
+				(2.5 . 2.5)
+				(2.36 . 2.439))
+			  (2
 				  (2.08 . 2.166)
-				  (2.6 . 2.6)
-				  (1.96 . 2.316)
-				  (2.2199999999999998 . 2.379)
-				  (1.9000000000000001 . 2.111)
 				  (1.8199999999999998 . 2.26)
+				  (2.2199999999999998 . 2.379)
+				  (2.22 . 2.22)
+				  (2.46 . 2.497)
+				  (1.7000000000000002 . 2.255)
+				  (2.04 . 2.319)
+				  (1.96 . 2.238)
+				  (2.1799999999999997 . 2.325)
+				  (2.36 . 2.439)
 				  (2.5 . 2.5)
-				  (2.36 . 2.439))
-				 (2
-					 (2.08 . 2.166)
-					 (1.8199999999999998 . 2.26)
-					 (2.2199999999999998 . 2.379)
-					 (2.22 . 2.22)
-					 (2.46 . 2.497)
-					 (1.7000000000000002 . 2.255)
-					 (2.04 . 2.319)
-					 (1.96 . 2.238)
-					 (2.1799999999999997 . 2.325)
-					 (2.36 . 2.439)
-					 (2.5 . 2.5)
-					 (2.6 . 2.588)
-					 (1.56 . 2.2))
-				 (1
-					 (2.08 . 3.902)
-					 (1.8199999999999998 . 3.615)
-					 (1.56 . 3.52)
-					 (2.2199999999999998 . 3.806)
-					 (2.04 . 3.59)
-					 (2.36 . 3.902)
-					 (2.1799999999999997 . 3.804)
-					 (2.5 . 4.0)
-					 (2.6 . 4.14)
-					 (1.96 . 3.706)
-					 (1.7000000000000002 . 3.608)))))
+				  (2.6 . 2.588)
+				  (1.56 . 2.2))
+			  (1
+				  (2.08 . 3.902)
+				  (1.8199999999999998 . 3.615)
+				  (1.56 . 3.52)
+				  (2.2199999999999998 . 3.806)
+				  (2.04 . 3.59)
+				  (2.36 . 3.902)
+				  (2.1799999999999997 . 3.804)
+				  (2.5 . 4.0)
+				  (2.6 . 4.14)
+				  (1.96 . 3.706)
+				  (1.7000000000000002 . 3.608))))
  '(org-fast-tag-selection-single-key nil)
 	'(org-format-latex-options
-		 (quote
-			 (:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers
-				 ("begin" "$1" "$" "$$" "\\(" "\\["))))
+		 '(:foreground default :background default :scale 1.7 :html-foreground "Black" :html-background "Transparent" :html-scale 2.0 :matchers
+			  ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-reverse-note-order nil)
+ '(package-selected-packages '(magit))
  '(require-final-newline nil)
 	'(safe-local-variable-values
-		 (quote
-			 ((org-src-preserve-indentation . t)
-				 (TeX-master . evt_main\.tex)
-				 (org-export-babel-evaluate . t)
-				 (org-export-publishing-directory . "./src_results/")
-				 (org-export-babel-evaluate . no-export)))))
+		 '((org-src-preserve-indentation . t)
+			  (TeX-master . evt_main\.tex)
+			  (org-export-babel-evaluate . t)
+			  (org-export-publishing-directory . "./src_results/")
+			  (org-export-babel-evaluate . no-export))))
 ;; (custom-set-faces
 ;;   ;; custom-set-faces was added by Custom.
 ;;   ;; If you edit it by hand, you could mess it up, so be careful.
