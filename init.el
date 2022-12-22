@@ -4,13 +4,6 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; set path for ESS
-;;;;;;;;;;;;;;;;;;;
-
-(add-to-list 'load-path "/home/chris/programs/ESS/lisp/")
-(add-to-list 'load-path "/home/grollc/programs/ESS/lisp/")
-(require 'ess-site)
-
 
 (defvar *emacs-load-start* (current-time))
 
@@ -23,6 +16,7 @@
 (switch-to-buffer "*Messages*")
 (switch-to-buffer-other-window "*Bookmark List*")
 (recentf-mode 1)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -61,19 +55,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;;;;       htmlize
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (require 'htmlize)
-;; the problem is that htmlize uses the same syntax highlighting
-;; colors that I use within emacs itself. However, in emacs I have a
-;; black background, while I usually have a with one for exported
-;; files. This way, syntax highlighting might be leading to hardly
-;; visible code snippets.
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
 ;;;;;       require org-mode and use-package
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -81,15 +62,7 @@
 (require 'org)
 (require 'use-package)                  ; enables autoloading of functions
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       auctex
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (require 'auctex-autoloads)
-;; (load "auctex.el" nil t t)  ; previously, this was crucial!
-;; (load "preview-latex.el" nil t t) ; previously, this was crucial!
+(org-babel-load-file "~/.emacs.d/init-all.org")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -121,113 +94,6 @@
 (bind-key "C-x r B" 'bookmark-jump-other-window)
 (bind-key* "C-M-ü" 'bookmark-jump-other-window)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       bbdb
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; allow bbdb to be loaded through call to bbdb function
-;; externally, bbdb should be called whenever gnus is activated
-(use-package bbdb
-   :defer t
-   :command (bbdb )
-   :init
-   (autoload 'bbdb "bbdb" nil t)
-   
-   :load-path "~/.emacs.d/extensions/bbdb/lisp/"
-   :config
-   (bbdb-initialize 'gnus 'message)
-   )
-
-(setq bbdb-always-add-addresses t)
-;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       auto-complete-mode and yasnippet
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(add-to-list 'load-path "~/.emacs.d/extensions/yasnippet")
-(add-to-list 'load-path "~/.emacs.d/extensions/auto-complete")
-
-(use-package yasnippet
-   :config
-   (progn
-      (yas-global-mode 1)
-      (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-      )
-   )
-(global-set-key (kbd "C-i") 'yas-expand)
-
-(define-key yas-minor-mode-map (kbd "C-i") 'yas-expand)
-                                        ;(define-key yas-minor-mode-map (kbd "C-u") 'yas-next-field)
-                                        ;(define-key yas-minor-mode-map (kbd "C-U") 'yas-prev-field)
-(define-key yas-minor-mode-map (kbd "C-S-i") 'yas-prev-field)
-                                        ; REMARK: it behaves completely different than what the settings say:
-                                        ; C-u is yas-prev-field, while TAB is yas-next-field
-
-(use-package auto-complete-config
-   :config
-   (progn
-                                        ;(ac-set-trigger-key "C-o")
-      (bind-key "C-o" 'ac-expand ac-mode-map)
-      (bind-key "C-o" 'ac-complete) 
-                                        ;(unbind-key "M-/")
-                                        ;(bind-key "M-/" 'ac-stop)
-      )
-   
-   )
-
-
-(org-babel-load-file "~/.emacs.d/init-all.org")
-(bind-key "C-o" 'ac-complete)
-(bind-key* "C-O" 'auto-complete)
-(bind-key* "C-S-o" 'auto-complete)
-(bind-key "C-o" 'ac-expand ac-mode-map)
-
-
-                                        ;(require 'auto-complete)
-
-
-                                        ;(require 'yasnippet)
-                                        ;(global-set-key (kbd "C-o") 'yas-prev-field)
-                                        ;(define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
-
-
-;; Add ac-source-dictionary to ac-sources of all buffer
-(defun cg/ac-add-ess-functionality ()
-   "allow manually adding etags-source, so that it is not loaded from
-startup"
-   (interactive)
-   (setq ac-sources (append ac-sources '(ac-source-etags ac-source-R))))
-
-
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;
-;; ;;;;;       yasnippet
-;; ;;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (add-to-list 'load-path
-;;               "~/.emacs.d/extensions/yasnippet")
-;; (require 'yasnippet)
-;; (setq yas-snippet-dirs "~/.emacs.d/extensions/yasnippet/snippets")
-;; (add-hook 'LaTeX-mode-hook '(lambda ()
-;;                             (yas-minor-mode 1)))
-;; (add-hook 'org-mode-hook '(lambda () (yas-minor-mode 1)))
-
-;; (yas/reload-all)
-;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-i") 'auto-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-i") 'ac-complete) ; restart ac-mode
-;; (define-key yas-minor-mode-map (kbd "C-o") 'yas-expand)
-;; (define-key yas-minor-mode-map (kbd "C-S-o") 'yas-prev-field)
-
-
 
 
 
@@ -246,129 +112,6 @@ startup"
 
 ;; load tags-table, so that ac-source-etags will not fail
 ;; (visit-tags-table "~/Dropbox/db_research/TAGS")
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       python
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(package-initialize)
-(elpy-enable)
-(setq python-shell-interpreter "python"
-	python-shell-interpreter-args "-i")
-(unbind-key "C-c C-d" elpy-mode-map)
-(unbind-key "C-c C-n" elpy-mode-map)
-(unbind-key "C-c C-j" elpy-mode-map)
-(define-key elpy-mode-map (kbd "M-C-x") 'elpy-shell-send-group)
-(define-key elpy-mode-map (kbd "C-c C-c") 'elpy-shell-send-group-and-step)
-(define-key elpy-mode-map (kbd "C-c C-n") 'elpy-shell-send-group-and-step-and-go)
-(define-key elpy-mode-map (kbd "C-c C-j") 'elpy-shell-send-statement)
-(define-key elpy-mode-map (kbd "C-c M-j") 'elpy-shell-send-statement-and-step)
-(define-key elpy-mode-map (kbd "C-c C-b") 'elpy-shell-send-buffer)
-(define-key elpy-mode-map (kbd "C-c M-b") 'elpy-shell-send-buffer-and-go)
-(define-key elpy-mode-map (kbd "C-c C-d C-e") 'elpy-shell-set-local-shell)
-
-
-(defun cg/show-python-variable ()
-   "Show value of python variable in python process"
-   (interactive)
-	(save-window-excursion
-		(cg/copy-nowhitespace-or-double-sexp)
-		(elpy-shell-switch-to-shell)
-		(comint-send-input)
-		(yank)
-		(comint-send-input)
-		)
-	)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       julia
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/ess")
-
-;; allow julia to be loaded through call to julia-mode or
-;; ess-inferior process
-;; follow-ups: etags?
-(use-package julia-mode
-   :defer t
-   :commands julia-mode
-   :mode ("\\.jl$" . julia-mode)
-   :init
-   (progn
-      (autoload 'julia-mode "julia-mode" nil t)
-      (setq inferior-julia-program-name "/usr/bin/julia")
-      )
-   :config
-   (progn
-      (add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
-      (setq inferior-julia-program-name "/usr/bin/julia")
-      (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
-      ;; (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)      
-      )
-   )
-
-(use-package ess-julia.el
-   :defer t
-   :commands julia
-   :init                                ; run before actual loading
-   (progn
-      (autoload 'julia "ess-julia.el" nil t)
-      (setq inferior-julia-program-name "/usr/bin/julia")
-      )
-   :config
-   (progn
-      (require 'ess-site)
-      (setq inferior-julia-program-name "/usr/bin/julia")
-      (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
-      (setq ess-use-tracebug t)           ; tracebug is called for R
-                                        ; AND JULIA!!
-      (setq ess-tracebug-inject-source-p t)
-      (add-to-list 'julia-mode-hook 'cg/command-line-keybindings)
-      ;; (add-to-list 'inferior-ess-mode-hook 'cg/command-line-keybindings)            
-      )
-   )
-;; in order to add ess-process afterward, apply julia-mode again on
-;; open buffers - probably ess-julia.el has to be loaded again also:
-;; M-x load-file ess-julia.el
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       R-mode
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun cg/R-assign ()
-   "Insert assignment sign of R language"
-   (interactive)
-   (insert " <- ")
-   )
-
-(use-package ess-site
-   :defer t
-   :commands R
-   :mode ("\\.[Rr]$" . R-mode)
-   :config
-   (progn
-      (unbind-key "_" ess-mode-map)
-      (unbind-key "_" inferior-ess-mode-map)      
-      (bind-key "C-M--" 'cg/R-assign ess-mode-map)
-      (bind-key "C-M--" 'cg/R-assign inferior-ess-mode-map)
-      (setq ess-tracebug-prefix "\M-c")   ; define debug-mode starting key
-      (setq ess-use-tracebug t)           ; tracebug is called for R
-                                        ; AND JULIA!!
-      (setq ess-tracebug-inject-source-p t)
-      (require 'ess-r-args)
-      (require 'ess-R-object-tooltip)
-      (define-key ess-mode-map (kbd "C-c 1") 'r-show-head)
-      (define-key ess-mode-map (kbd "C-c 2") 'r-show-str)
-      
-      )
-   )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -390,39 +133,6 @@ startup"
    (bind-key "C-t m" 'magit-status)
    )
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       bibtex
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (org-babel-load-file "~/.emacs.d/init-bibtex-config.org")
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       gnus, additional to .gnus file
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'gnus)
-                                        ;(org-babel-load-file "~/.emacs.d/init-gnus.org")
-;; (add-to-list 'load-path "~/.emacs.d/extensions/bbdb/lisp/")
-;; (require 'bbdb)
-;; (bbdb-initialize 'gnus 'message)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       auctex
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; auctex
-;; (org-babel-load-file "~/.emacs.d/init-latex.org")
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;;;       autopair: parentheses matching
@@ -437,81 +147,6 @@ startup"
 
 ;; highlight matching parentheses
 (show-paren-mode 1)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;;;;       w3m
-;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; ;; load w3m
-;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m/")
-;; (add-to-list 'load-path "/usr/share/emacs/site-lisp/w3m")
-;; (require 'w3m)
-;; (require 'mime-w3m)
-
-;; ;; load settings
-(org-babel-load-file "~/.emacs.d/init-w3m.org")
-
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;
-;; ;;;;;       google-translate
-;; ;;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (require 'google-translate)
-(use-package google-translate
-   :defer t
-   :commands (google-translate-query-translate-reverse
-                google-translate-query-translate
-                google-translate-at-point
-                google-translate-at-point-reverse)
-   :init
-   (progn
-      (bind-key "C-t l" 'google-translate-query-translate-reverse)
-      (bind-key "C-t L" 'google-translate-query-translate)
-      (bind-key "C-t K" 'google-translate-at-point)
-      (bind-key "C-t k" 'google-translate-at-point-reverse)
-      )
-   :config
-   (setq google-translate-default-source-language "en")
-   (setq google-translate-default-target-language "de")
-   ;; (org-babel-load-file "~/.emacs.d/init-google-translate.org") 
-   )
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;
-;; ;;;;;       thesaurus.el
-;; ;;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package thesaurus
-   :config
-   (progn
-      (org-babel-load-file "~/Dropbox/customs/personal_data/thesaurus_api_setup.org")
-      (bind-key "C-t u" 'thesaurus-choose-synonym-and-replace)
-      )
-   )
-
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;
-;; ;;;;;       org-drill
-;; ;;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package org-drill
-   :defer t
-   :load-path "~/.emacs.d/extensions/org/contrib/lisp/"
-   :command org-drill
-   :config
-   (progn
-      (setq org-drill-add-random-noise-to-intervals-p t) ; add random noise
-      (setq org-drill-adjust-intervals-for-early-and-late-repetitions-p t)
-      (setq org-drill-maximum-duration 20)
-      (setq org-drill-learn-fraction 0.35)
-      )
-   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -584,6 +219,9 @@ startup"
  '(global-auto-complete-mode t)
  '(matlab-shell-command "~/remote_matlab" t)
  '(mode-require-final-newline nil)
+	'(org-agenda-files
+		 (quote
+			 ("~/customs/gtd/todo.org" "~/customs/gtd/refile.org" "~/customs/notes/priv_comp_notes.org" "~/customs/notes/priv_install_notes.org" "~/how_to/comp_records.org" "~/customs/chronicle/oracle.org")))
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
  '(org-agenda-skip-scheduled-if-done t)

@@ -44,57 +44,6 @@ e.g. to copy from emacs to firefox.
   (setq x-select-enable-clipboard t)
   (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 #+END_SRC
-** Spell checking
-Enable flyspell for all org-mode buffers.
-#+BEGIN_SRC emacs-lisp
-  (ispell-change-dictionary "american")
-    (add-hook 'org-mode-hook
-       (lambda()
-          (ac-flyspell-workaround) ; to avoid interference with ac-mode
-          (flyspell-mode t)
-          (unbind-key "C-." flyspell-mode-map)
-          )
-       )
-#+END_SRC
-
-Enable switching through languages:
-not able with flyspell, because I did not get on-board german
-dictionary to work
-#+BEGIN_SRC emacs-lisp
-    (defvar cg-current-language)
-    (setq cg-current-language "english")
-    
-    (defun cg/switch-language ()
-       "switch language for google-translate, autocomplete and ispell"
-       (interactive)
-       (if (string= cg-current-language "english")
-          (progn 
-             (setq cg-current-language "deutsch") 
-             ;(ispell-change-dictionary "deutsch") there was no on-board
-             ;linux dictionary that I could get running 
-             (flyspell-mode nil)
-             (setq ac-user-dictionary-files
-                '("~/.emacs.d/extensions/auto-complete_own_words/german_words"))
-             ; include google translate
-             )
-          ;; else-part
-          (setq language "english")
-          (flyspell-mode t)
-          (ispell-change-dictionary "english")
-          (setq ac-user-dictionary-files
-             '("~/.emacs.d/extensions/auto-complete_own_words/own_word_list"))
-          ; include google translate
-          )
-       (message "Language switched to %s" cg-current-language) 
-       )
-  (bind-key "C-t s" 'cg/switch-language)
-  ;; (global-set-key (kbd "C-t C-s")   'cg/switch-language)
-#+END_SRC
-
-Specify personal spelling dictionary.
-#+BEGIN_SRC emacs-lisp
-  (setq ispell-personal-dictionary "~/Dropbox/customs/personal_data/.ispell_english")
-#+END_SRC
 
 ** Layout
 *** Menus
@@ -162,16 +111,6 @@ tooltip menu.
 
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
-   (defun cg/blog-settings ()
-      "change emacs settings for research blog"
-      (interactive)
-      (set-fill-column 40000)
-      (visual-line-mode)
-      )
-#+END_SRC
-
-
 I also like to highlight the current line and cursor point.
 #+BEGIN_SRC emacs-lisp  
   (global-hl-line-mode 1)
@@ -233,41 +172,6 @@ Now, set indentation key.
    ;;(define-key ac-mode-map (kbd "C-j") 'indent-for-tab-command)
    ;;(define-key ess-mode-map (kbd "C-j") 'ess-indent-command)
    
-   (defun cg/ess-indent-buffer ()
-      "apply ess-indent to complete buffer"
-      (interactive)
-      (save-excursion
-         (let ((line-counter (line-number-at-pos (point-min)))
-                 (number-of-lines (count-lines (point-min) (point-max))))
-            (goto-char (point-min))
-            (while (<= line-counter number-of-lines)
-               (progn
-                  (ess-indent-command)
-                  (forward-line)
-                  (setq line-counter (+ line-counter 1))
-                  )
-               )
-            )
-         )
-      )
-   (defun cg/ac-indent-buffer ()
-      "apply automatic indentation to complete buffer"
-      (interactive)
-      (save-excursion
-         (let ((line-counter (line-number-at-pos (point-min)))
-                 (number-of-lines (count-lines (point-min) (point-max))))
-            (goto-char (point-min))
-            (while (<= line-counter number-of-lines)
-               (progn
-                  (indent-for-tab-command)
-                  (forward-line)
-                  (setq line-counter (+ line-counter 1))
-                  )
-               )
-            )
-         )
-      )
-   (bind-key* "C-M-j" 'cg/ac-indent-buffer)
    ;; (global-set-key (kbd "C-M-j") 'cg/ess-indent-buffer)
    ;; ;(define-key ess-mode-map (kbd "C-M-j") 'cg/ess-indent-buffer)
    ;; (define-key ac-mode-map (kbd "C-M-j") 'cg/ac-indent-buffer)
@@ -420,7 +324,6 @@ Allow jumping to last change:
        )
     
   (add-to-list 'ess-mode-hook 'cg/modify-current-syntax-table)
-  ;;(add-to-list 'julia-mode-hook 'cg/modify-current-syntax-table)
     
     (modify-syntax-entry ?\C-\j "-") ; newline as whitespace
     (modify-syntax-entry ?. "'")
@@ -944,7 +847,7 @@ vertically.
     (enlarge-window 20 t)
     )
 (bind-key "C-+" 'cg/increase-current-window)
-(bind-key "C-t h" 'cg/increase-current-window-horizontal)
+
 ;;  (global-set-key (kbd "C-+") 'cg/increase-current-window)
 #+END_SRC
 Decrease current window.
@@ -1155,7 +1058,6 @@ At first, we want to set the most important key bindings.
   ;; (global-set-key "\C-cc" 'org-capture)
   ;; (global-set-key "\C-ca" 'org-agenda)
   ;; (global-set-key "\C-cb" 'org-iswitchb)
-  (bind-key "C-t n" 'next-error)
 #+END_SRC
 
 ** Org-mode file formats
@@ -1495,26 +1397,6 @@ Notes with code snippet in clipboard or kill ring, and source file
 link.
 However, I have disabled these commands recently, since I never used
 them. Perhaps they might help someone else.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setq org-capture-templates       
-(append org-capture-templates
-          (quote (
-                    ;; code yanking
-                    ("c" "note with code"
-                       entry (file+headline "~/customs/gtd/refile.org" "notes")
-                       "* %? \n#+begin_src
-                    %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n")
-  
-                    ;; code yanking with source recording for w3m
-                    ("w" "note with code, source "
-                       entry (file+headline "~/customs/gtd/refile.org" "notes")
-                       "* %? \n#+begin_src
-                    %^{Language?|emacs-lisp|sh|matlab|r|julia} \n%^C\n#+end_src \n%a\n")
-             )
-          )
-       )
-)      
-#+END_SRC
 Additional notes to store:
 - emacs command / with shortcut / explanation
 - track things:
@@ -1706,7 +1588,6 @@ where Dropbox is not installed.
 #+BEGIN_SRC emacs-lisp
   (setq org-mobile-directory "~/Dropbox/MobileOrg")
   (setq org-mobile-inbox-for-pull "~/customs/gtd/from-mobile.org")
-  (bind-key* "C-t p" 'org-mobile-push)
 #+END_SRC
 
 *** Customize variables
@@ -1737,18 +1618,6 @@ Disable confirmation query for code evaluation and evaluation on export.
   (setq org-export-babel-evaluate nil)
 #+END_SRC
 
-Load languages.
-#+BEGIN_SRC emacs-lisp
-   (org-babel-do-load-languages
-      'org-babel-load-languages
-      '((emacs-lisp . t)
-          (latex . t)
-          (sh . t)
-          (matlab . t)
-          (julia . t)
-          (gnuplot . t)
-          (R . t)))
-#+END_SRC
 
 Open edit-src-block in same window.
 #+BEGIN_SRC emacs-lisp
@@ -2208,7 +2077,6 @@ Use auto-complete in nearly every mode.
 (add-to-list 'ac-modes 'python-mode)
 (add-to-list 'ac-modes 'inferior-python-mode)
 (add-to-list 'ac-modes 'comint-mode)
-(add-to-list 'ac-modes 'julia-mode)
 (add-to-list 'ac-modes 'gnuplot-mode)
 (add-to-list 'ac-modes 'makefile-mode)
 (add-to-list 'ac-modes 'M-Shell-mode)
@@ -2320,7 +2188,6 @@ checking of style mistakes.
        )
     
     
-    (bind-key "C-t c" 'cg/toggle-camel-name-style)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -3110,7 +2977,6 @@ Set math prefix.
 *** ebib
 ebib now mostly substitutes reftex
 #+BEGIN_SRC emacs-lisp
-(bind-key* "C-t e" 'ebib)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -3133,7 +2999,6 @@ ebib now mostly substitutes reftex
          (reftex-parse-all))
       (define-key org-mode-map (kbd "C-c (") 'reftex-citation)
       (define-key org-mode-map (kbd "C-c )") 'reftex-reference)
-      (define-key org-mode-map (kbd "C-t f") 'cg/fix-cite-pandoc)
       ;; meanwhile, using ebib instead of reftex
       ;;(define-key org-mode-map (kbd "C-c (")
       ;;'ebib-insert-bibtex-key)
