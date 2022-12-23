@@ -60,7 +60,7 @@ shown.
 #+END_SRC
 *** Font size
 #+BEGIN_SRC emacs-lisp
-(set-face-attribute 'default nil :font "DejaVu Sans Mono-10")
+(set-face-attribute 'default nil :font "DejaVu Sans Mono-10" :height 130)
 #+END_SRC
 
 *** Color-theme

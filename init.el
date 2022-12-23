@@ -17,6 +17,8 @@
 (switch-to-buffer-other-window "*Bookmark List*")
 (recentf-mode 1)
 
+;; (set-face-attribute 'default nil :height 130)
+;; or use C-x C-+ to increase font size
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -32,6 +34,10 @@
 (require 'package)
 (add-to-list 'package-archives
    '("melpa" . "http://melpa.org/packages/") t)
+
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -304,3 +310,6 @@
 ;;                           (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
 
 (put 'narrow-to-region 'disabled nil)
+
+
+
